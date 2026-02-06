@@ -225,12 +225,12 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL -->
+    <!-- SCRIPT PRINCIPAL - SOLO JSONP -->
     <script>
         // ===== CONFIGURACIÓN =====
         const PASSWORD = 'Ragnar2025';
-
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyWJRNevyv1NKJzZpNpBk11HnCRPRmlzlT5wG43hk5SgLGNmhIE79wUxT2qGASgIns/exec';
+        // ⚠️ REEMPLAZA CON TU URL DE APPS SCRIPT
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwaAWyCLx1vV6cQTTF7R3z8sOjrA-EdzxeW52E_AFEF6-KZV-pEFEhu66cQOfPkat_N/exec';
         
         // ===== VARIABLES =====
         let productos = [];
@@ -238,67 +238,99 @@
         
         // ===== INICIAR =====
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema iniciado');
+            console.log('🚀 Sistema iniciado - Usando JSONP');
             
             // Verificar sesión admin
             if (localStorage.getItem('adminActive') === 'true') {
                 activarAdmin();
             }
             
-            // Cargar productos
-            cargarProductos();
+            // Cargar productos CON JSONP
+            cargarProductosConJsonp();
             
             // Configurar eventos
             configurarEventos();
         });
         
-        // ===== FUNCIONES PRINCIPALES =====
+        // ===== FUNCIONES JSONP =====
         
-        // 1. CARGAR PRODUCTOS (GET normal)
-        async function cargarProductos() {
-            try {
+        // 1. CARGAR PRODUCTOS CON JSONP
+        function cargarProductosConJsonp() {
+            return new Promise((resolve, reject) => {
                 mostrarLoading(true);
                 mostrarMensaje('⏳ Cargando productos...', 'info');
                 
-                console.log('📥 Solicitando productos...');
+                const callbackName = 'jsonpLoad_' + Date.now();
+                const timestamp = Date.now();
                 
-                // Usar GET normal
-                const response = await fetch(API_URL + '?t=' + Date.now());
+                // Crear script para JSONP
+                const script = document.createElement('script');
+                script.src = API_URL + '?callback=' + callbackName + '&t=' + timestamp;
                 
-                if (!response.ok) {
-                    throw new Error('Error de red: ' + response.status);
-                }
+                // Función callback
+                window[callbackName] = function(response) {
+                    // Limpiar
+                    delete window[callbackName];
+                    if (script.parentNode) {
+                        script.parentNode.removeChild(script);
+                    }
+                    
+                    mostrarLoading(false);
+                    
+                    console.log('📦 Datos recibidos via JSONP:', response);
+                    
+                    if (response.success === false) {
+                        mostrarMensaje('❌ ' + (response.error || 'Error'), 'error');
+                        reject(new Error(response.error));
+                        return;
+                    }
+                    
+                    if (!response.productos || !Array.isArray(response.productos)) {
+                        mostrarMensaje('⚠️ Formato de datos inválido', 'error');
+                        reject(new Error('Formato inválido'));
+                        return;
+                    }
+                    
+                    productos = response.productos;
+                    mostrarProductos(productos);
+                    actualizarContador();
+                    mostrarMensaje('✅ ' + productos.length + ' productos cargados', 'success');
+                    resolve(productos);
+                };
                 
-                const data = await response.json();
-                console.log('📦 Datos recibidos:', data);
+                // Manejar errores
+                script.onerror = function() {
+                    delete window[callbackName];
+                    if (script.parentNode) {
+                        script.parentNode.removeChild(script);
+                    }
+                    
+                    mostrarLoading(false);
+                    mostrarMensaje('❌ Error de conexión', 'error');
+                    mostrarProductos([]);
+                    reject(new Error('Error de red'));
+                };
                 
-                if (data.success === false) {
-                    throw new Error(data.error || 'Error del servidor');
-                }
+                // Agregar script
+                document.body.appendChild(script);
                 
-                if (!data.productos || !Array.isArray(data.productos)) {
-                    throw new Error('Formato de datos inválido');
-                }
-                
-                productos = data.productos;
-                mostrarProductos(productos);
-                actualizarContador();
-                mostrarMensaje('✅ ' + productos.length + ' productos cargados', 'success');
-                
-            } catch(error) {
-                console.error('❌ Error:', error);
-                mostrarMensaje('⚠️ ' + error.message, 'error');
-                mostrarProductos([]);
-            } finally {
-                mostrarLoading(false);
-            }
+                // Timeout
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        delete window[callbackName];
+                        mostrarLoading(false);
+                        mostrarMensaje('⚠️ Timeout al cargar', 'error');
+                        reject(new Error('Timeout'));
+                    }
+                }, 10000);
+            });
         }
         
-        // 2. AGREGAR PRODUCTO CON JSONP (para evitar CORS)
+        // 2. AGREGAR PRODUCTO CON JSONP
         function agregarProductoJsonp(productData) {
             return new Promise((resolve, reject) => {
                 jsonpCallbackId++;
-                const callbackName = 'jsonpCallback_' + jsonpCallbackId;
+                const callbackName = 'jsonpAdd_' + jsonpCallbackId;
                 
                 // Crear URL con parámetros
                 const params = new URLSearchParams({
@@ -311,17 +343,21 @@
                     callback: callbackName
                 });
                 
+                console.log('📤 Enviando via JSONP:', productData);
+                
                 // Crear script para JSONP
                 const script = document.createElement('script');
                 script.src = API_URL + '?' + params.toString();
                 
-                // Función callback global
+                // Función callback
                 window[callbackName] = function(response) {
                     // Limpiar
                     delete window[callbackName];
                     if (script.parentNode) {
                         script.parentNode.removeChild(script);
                     }
+                    
+                    console.log('📥 Respuesta JSONP:', response);
                     
                     if (response.success) {
                         resolve(response);
@@ -339,16 +375,13 @@
                     reject(new Error('Error de red al enviar producto'));
                 };
                 
-                // Agregar script al DOM
+                // Agregar script
                 document.body.appendChild(script);
                 
-                // Timeout de seguridad
+                // Timeout
                 setTimeout(() => {
                     if (window[callbackName]) {
                         delete window[callbackName];
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
                         reject(new Error('Timeout al agregar producto'));
                     }
                 }, 10000);
@@ -427,7 +460,6 @@
         }
         
         function actualizarContador() {
-            // Puedes mostrar el conteo en algún lugar si quieres
             console.log('📊 Total productos:', productos.length);
         }
         
@@ -537,7 +569,7 @@
                 }
             });
             
-            // 8. Formulario de producto (USANDO JSONP)
+            // 8. Formulario de producto (SÓLO JSONP)
             document.getElementById('productForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
@@ -563,8 +595,7 @@
                 mostrarMensaje('⏳ Agregando producto...', 'info', 'message');
                 
                 try {
-                    // Usar JSONP para evitar CORS
-                    console.log('📤 Enviando via JSONP:', productData);
+                    // USAR SÓLO JSONP - NO MÁS FETCH
                     const resultado = await agregarProductoJsonp(productData);
                     
                     if (resultado.success) {
@@ -574,7 +605,7 @@
                         // Esperar y recargar productos
                         setTimeout(() => {
                             cerrarModal('modalProducto');
-                            cargarProductos();
+                            cargarProductosConJsonp();
                             mostrarMensaje('🔄 Productos actualizados', 'success');
                         }, 1500);
                         
@@ -632,7 +663,7 @@
             });
         }
         
-        console.log('✅ Sistema listo');
+        console.log('✅ Sistema listo - JSONP configurado');
     </script>
 </body>
 </html>
