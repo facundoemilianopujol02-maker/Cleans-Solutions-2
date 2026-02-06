@@ -327,72 +327,98 @@
         
         // ===== FUNCIONES JSONP =====
         
-        // 1. CARGAR PRODUCTOS CON JSONP (NO FETCH)
-        function cargarProductosConJsonp() {
-            return new Promise((resolve, reject) => {
-                mostrarMensaje('🔄 Cargando productos...', 'info');
+// ===== FUNCIÓN CARGAR PRODUCTOS (VERSIÓN ROBUSTA) =====
+function cargarProductosConJsonp() {
+    return new Promise((resolve, reject) => {
+        mostrarMensaje('🔄 Conectando con el servidor...', 'info');
+        
+        // Usar un nombre de callback único
+        const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        
+        console.log('📡 Intentando conectar a:', API_URL);
+        
+        // Crear el elemento script
+        const script = document.createElement('script');
+        
+        // IMPORTANTE: Verificar que la URL sea correcta
+        const url = API_URL + '?action=get&callback=' + callbackName + '&_=' + Date.now();
+        script.src = url;
+        
+        console.log('URL completa:', url);
+        
+        // Definir el callback ANTES de cargar el script
+        window[callbackName] = function(response) {
+            console.log('✅ Callback ejecutado, respuesta:', response);
+            
+            // Limpiar inmediatamente
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+            delete window[callbackName];
+            if (timeoutId) clearTimeout(timeoutId);
+            
+            if (response && response.success !== false) {
+                const productos = response.productos || [];
+                mostrarProductos(productos);
+                mostrarMensaje(`✅ ${productos.length} productos cargados`, 'success');
+                resolve(productos);
+            } else {
+                const errorMsg = response?.error || 'Error en la respuesta del servidor';
+                mostrarMensaje('❌ ' + errorMsg, 'error');
+                mostrarProductos([]);
+                reject(new Error(errorMsg));
+            }
+        };
+        
+        // Configurar manejo de errores
+        script.onerror = function(event) {
+            console.error('❌ ERROR DE RED al cargar script:', event);
+            
+            // Limpiar
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+            if (window[callbackName]) {
+                delete window[callbackName];
+            }
+            if (timeoutId) clearTimeout(timeoutId);
+            
+            mostrarMensaje('❌ Error de conexión. Verifica:', 'error');
+            
+            // Mostrar datos de ejemplo como fallback
+            const productosEjemplo = [
+                { id: 'EJ001', nombre: 'Detergente Líquido', precio: '12.99', descripcion: 'Producto de prueba' },
+                { id: 'EJ002', nombre: 'Desinfectante', precio: '8.50', descripcion: 'Producto de prueba' }
+            ];
+            mostrarProductos(productosEjemplo);
+            
+            reject(new Error('Error de red al cargar JSONP'));
+        };
+        
+        // Configurar onload por si acaso
+        script.onload = function() {
+            console.log('📦 Script cargado correctamente');
+        };
+        
+        // Agregar al DOM
+        document.head.appendChild(script);
+        
+        // Timeout de 10 segundos
+        const timeoutId = setTimeout(() => {
+            if (window[callbackName]) {
+                console.log('⏱️ Timeout - No se recibió respuesta');
+                if (script.parentNode) {
+                    script.parentNode.removeChild(script);
+                }
+                delete window[callbackName];
                 
-                const callbackName = 'jsonpLoad_' + Date.now();
-                
-                // Crear script para JSONP - SIN parámetro t=
-                const script = document.createElement('script');
-                script.src = API_URL + '?callback=' + callbackName;
-                
-                // Función callback
-                window[callbackName] = function(response) {
-                    // Limpiar
-                    delete window[callbackName];
-                    if (script.parentNode) {
-                        script.parentNode.removeChild(script);
-                    }
-                    
-                    console.log('📦 Datos recibidos via JSONP:', response);
-                    
-                    if (response.success === false) {
-                        mostrarMensaje('❌ ' + (response.error || 'Error'), 'error');
-                        mostrarProductos([]);
-                        reject(new Error(response.error));
-                        return;
-                    }
-                    
-                    if (!response.productos || !Array.isArray(response.productos)) {
-                        mostrarMensaje('⚠️ Formato de datos inválido', 'error');
-                        mostrarProductos([]);
-                        reject(new Error('Formato inválido'));
-                        return;
-                    }
-                    
-                    mostrarProductos(response.productos);
-                    mostrarMensaje('✅ ' + response.productos.length + ' productos cargados', 'success');
-                    resolve(response.productos);
-                };
-                
-                // Manejar errores
-                script.onerror = function() {
-                    delete window[callbackName];
-                    if (script.parentNode) {
-                        script.parentNode.removeChild(script);
-                    }
-                    
-                    mostrarMensaje('❌ Error de conexión', 'error');
-                    mostrarProductos([]);
-                    reject(new Error('Error de red'));
-                };
-                
-                // Agregar script
-                document.body.appendChild(script);
-                
-                // Timeout
-                setTimeout(() => {
-                    if (window[callbackName]) {
-                        delete window[callbackName];
-                        mostrarMensaje('⚠️ Timeout al cargar', 'error');
-                        mostrarProductos([]);
-                        reject(new Error('Timeout'));
-                    }
-                }, 10000);
-            });
-        }
+                mostrarMensaje('⚠️ El servidor tardó demasiado en responder', 'error');
+                mostrarProductos([]);
+                reject(new Error('Timeout'));
+            }
+        }, 10000);
+    });
+}
         
         // 2. AGREGAR PRODUCTO CON JSONP
         function agregarProductoJsonp(productData) {
@@ -772,4 +798,5 @@
     </script>
 </body>
 </html>
+
 
