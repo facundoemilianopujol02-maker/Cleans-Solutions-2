@@ -435,28 +435,38 @@
         try {
             console.log('📤 Enviando producto a:', SCRIPT_URL);
             
-            // Enviar a Google Sheets
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(productData)
+            // Construir URL con parámetros GET (EVITA CORS)
+            const params = new URLSearchParams({
+                action: 'add',
+                id: productData.id,
+                nombre: productData.nombre,
+                precio: productData.precio,
+                imagen: productData.imagen || '',
+                descripcion: productData.descripcion || ''
             });
             
-            console.log('📡 Respuesta recibida, status:', response.status);
+            const urlConParametros = SCRIPT_URL + '?' + params.toString();
+            console.log('🔗 URL completa:', urlConParametros);
             
-            // Leer la respuesta como texto primero
+            // Enviar como GET para evitar CORS preflight
+            const response = await fetch(urlConParametros, {
+                method: 'GET'
+            });
+            
+            console.log('📡 Status de respuesta:', response.status);
+            
             const responseText = await response.text();
-            console.log('📝 Respuesta texto:', responseText);
+            console.log('📝 Respuesta completa:', responseText);
             
-            // Intentar parsear como JSON
             let result;
             try {
                 result = JSON.parse(responseText);
             } catch(parseError) {
-                console.log('⚠️ Respuesta no es JSON, asumiendo éxito');
-                result = { success: true, message: 'Producto enviado correctamente' };
+                console.warn('⚠️ No se pudo parsear JSON:', parseError);
+                result = { 
+                    success: false, 
+                    error: 'Formato de respuesta inválido' 
+                };
             }
             
             if (result.success) {
@@ -480,7 +490,7 @@
             
         } catch(error) {
             console.error('❌ Error de red:', error);
-            mostrarMensaje('🌐 Error de conexión. Verifica tu internet.', 'error');
+            mostrarMensaje('🌐 Error de conexión: ' + error.message, 'error');
             submitBtn.textContent = '🔄 Reintentar';
             submitBtn.disabled = false;
         }
@@ -548,7 +558,7 @@
                                  alt="${producto.nombre}" 
                                  class="producto-imagen"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="sin-imagen" style="display: none;">🖼️ Imagen no disponible</div>
+                                                             <div class="sin-imagen" style="display: none;">🖼️ Imagen no disponible</div>
                         `;
                     } else {
                         // Si NO hay imagen o URL inválida
@@ -602,4 +612,3 @@
     </script>
 </body>
 </html>
-
