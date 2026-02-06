@@ -1,162 +1,166 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- FAVICON -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clean Solutions - Productos de Limpieza</title>
     
-    <!-- ESTILOS -->
+    <!-- ESTILOS COMPLETOS -->
     <style>
-        /* ===== RESET Y ESTILOS BASE ===== */
+        /* ===== RESET Y BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+            color: #1e293b;
             line-height: 1.6;
         }
 
-        /* ===== BARRA SUPERIOR ===== */
+        /* ===== HEADER ===== */
         .franjaSuperior {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             padding: 15px 30px;
             background: white;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             position: sticky;
             top: 0;
             z-index: 1000;
+            gap: 25px;
             flex-wrap: wrap;
-            gap: 20px;
         }
 
         .logoContainer {
             display: flex;
             align-items: center;
             gap: 15px;
+            min-width: 200px;
         }
 
-        .logoContainer img {
-            height: 50px;
-            max-width: 200px;
-            object-fit: contain;
-        }
-
-        /* Botón Admin */
         .botones {
-            background: #dc3545;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            font-size: 16px;
         }
 
         .botones:hover {
-            background: #c82333;
             transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
         }
 
-        /* Búsqueda */
+        .logoContainer img {
+            height: 45px;
+            object-fit: contain;
+        }
+
+        /* BÚSQUEDA */
         .busquedaContainer {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 800px;
+            max-width: 700px;
             min-width: 300px;
         }
 
         .busquedaForma {
-            width: 100%;
-            max-width: 600px;
             display: flex;
+            gap: 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .busquedaForma:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
         }
 
         .busquedaInput {
             flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #ddd;
-            border-radius: 8px 0 0 8px;
+            padding: 14px 20px;
+            border: none;
             font-size: 16px;
-            transition: border-color 0.3s;
+            background: transparent;
+            outline: none;
         }
 
-        .busquedaInput:focus {
-            outline: none;
-            border-color: #4a90e2;
+        .busquedaInput::placeholder {
+            color: #94a3b8;
         }
 
         .busquedaBoton {
-            background: #4a90e2;
+            background: #3b82f6;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 0 8px 8px 0;
+            padding: 0 25px;
             cursor: pointer;
             font-size: 16px;
             transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .busquedaBoton:hover {
-            background: #357ae8;
+            background: #2563eb;
         }
 
         .contador-resultados {
             margin-top: 8px;
             font-size: 14px;
-            color: #666;
+            color: #64748b;
+            text-align: center;
         }
 
-        /* Panel Admin */
+        /* PANEL ADMIN */
         .panel-admin {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         .btn-admin {
-            background: #28a745;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
             transition: all 0.3s;
-            font-weight: bold;
+            font-size: 14px;
         }
 
         .btn-admin:hover {
-            background: #218838;
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
 
         .btn-cerrar {
-            background: #6c757d;
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
         }
 
         .btn-cerrar:hover {
-            background: #5a6268;
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
         }
 
         /* ===== CONTENIDO PRINCIPAL ===== */
@@ -166,7 +170,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -174,50 +178,54 @@
         .section-title {
             text-align: center;
             margin-bottom: 40px;
-            color: #2c3e50;
-            font-size: 2.5rem;
+            color: #1e293b;
+            font-size: 2.8rem;
+            font-weight: 800;
             position: relative;
-            padding-bottom: 15px;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .section-title::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
             height: 4px;
-            background: linear-gradient(to right, #4a90e2, #28a745);
+            background: linear-gradient(to right, #3b82f6, #10b981);
             border-radius: 2px;
         }
 
-        /* Grid de Productos */
+        /* GRID DE PRODUCTOS */
         .productos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
-            margin-top: 30px;
+            margin-top: 50px;
         }
 
-        /* Tarjetas de Producto */
+        /* TARJETAS DE PRODUCTO */
         .producto-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
+            border: 1px solid #e2e8f0;
         }
 
         .producto-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border-color: #cbd5e1;
         }
 
         .producto-imagen-container {
-            height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 220px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -229,19 +237,20 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s;
+            transition: transform 0.6s ease;
         }
 
         .producto-card:hover .producto-imagen {
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         .sin-imagen {
             color: white;
-            font-size: 1.5rem;
+            font-size: 24px;
             text-align: center;
-            padding: 20px;
-            opacity: 0.8;
+            padding: 30px;
+            opacity: 0.9;
+            font-weight: 600;
         }
 
         .producto-info {
@@ -250,23 +259,33 @@
 
         .producto-nombre {
             font-size: 1.4rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
+            color: #1e293b;
+            margin-bottom: 12px;
             font-weight: 700;
+            line-height: 1.3;
         }
 
         .producto-precio {
-            font-size: 1.8rem;
-            color: #e74c3c;
-            font-weight: bold;
+            font-size: 2rem;
+            color: #ef4444;
+            font-weight: 800;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .producto-precio::before {
+            content: '$';
+            font-size: 1.2rem;
+            color: #ef4444;
         }
 
         .producto-descripcion {
-            color: #666;
+            color: #64748b;
             font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            line-height: 1.7;
+            margin-bottom: 20px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
@@ -274,24 +293,28 @@
         }
 
         .producto-id {
-            color: #95a5a6;
+            color: #94a3b8;
             font-size: 0.9rem;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         /* ===== FOOTER ===== */
         .footer {
-            background: #2c3e50;
-            color: white;
-            padding: 30px 20px;
+            background: #1e293b;
+            color: #cbd5e1;
+            padding: 40px 20px;
             text-align: center;
-            margin-top: 60px;
+            margin-top: 80px;
         }
 
         .footer p {
-            margin: 5px 0;
+            margin: 10px 0;
+            font-size: 1rem;
         }
 
         /* ===== MODALES ===== */
@@ -302,11 +325,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.3s ease-out;
         }
 
         @keyframes fadeIn {
@@ -317,20 +341,21 @@
         .modal-contenido {
             background: white;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
             max-width: 500px;
-            width: 90%;
+            width: 95%;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
-            animation: slideUp 0.4s ease;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #e2e8f0;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(50px);
+                transform: translateY(60px);
             }
             to {
                 opacity: 1;
@@ -339,130 +364,248 @@
         }
 
         .modal h3 {
-            color: #2c3e50;
-            margin-bottom: 25px;
+            color: #1e293b;
+            margin-bottom: 30px;
             font-size: 1.8rem;
             text-align: center;
+            font-weight: 700;
         }
 
-        /* Inputs del modal */
+        /* FORMULARIOS */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #475569;
+            font-size: 15px;
+        }
+
         input[type="text"],
         input[type="password"],
-        textarea,
-        select {
+        input[type="number"],
+        input[type="url"],
+        textarea {
             width: 100%;
-            padding: 14px;
-            margin-bottom: 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s;
+            background: #f8fafc;
         }
 
         input:focus,
         textarea:focus {
             outline: none;
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        label {
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        small {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
+            margin-top: 6px;
+            color: #94a3b8;
+            font-size: 13px;
         }
 
-        /* Botones del modal */
+        /* BOTONES MODAL */
         .modal-botones {
             display: flex;
             gap: 15px;
-            margin-top: 25px;
+            margin-top: 30px;
         }
 
         .btn-modal {
             flex: 1;
-            padding: 14px;
+            padding: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .btn-aceptar {
-            background: linear-gradient(to right, #4a90e2, #357ae8);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
         }
 
         .btn-aceptar:hover {
-            background: linear-gradient(to right, #357ae8, #2a65c4);
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
         }
 
         .btn-cancelar {
-            background: #f8f9fa;
-            color: #495057;
-            border: 2px solid #dee2e6;
+            background: #f1f5f9;
+            color: #475569;
+            border: 2px solid #cbd5e1;
         }
 
         .btn-cancelar:hover {
-            background: #e9ecef;
-            border-color: #ced4da;
+            background: #e2e8f0;
+            border-color: #94a3b8;
         }
 
+        /* MENSAJES */
         .mensaje-error {
-            color: #dc3545;
-            margin-top: 15px;
-            padding: 10px;
-            background: #f8d7da;
-            border-radius: 6px;
-            border: 1px solid #f5c6cb;
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #fecaca;
             display: none;
+            font-weight: 500;
         }
 
-        .mensaje-exito {
-            color: #28a745;
-            margin-top: 15px;
-            padding: 10px;
-            background: #d4edda;
-            border-radius: 6px;
-            border: 1px solid #c3e6cb;
+        .alert {
+            padding: 18px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-weight: 600;
             display: none;
+            text-align: center;
+            animation: slideIn 0.3s ease;
         }
 
-        /* Botón cerrar modal */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        /* BOTÓN CERRAR MODAL */
         .close-modal {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
+            top: 20px;
+            right: 20px;
+            background: #f1f5f9;
             border: none;
-            font-size: 28px;
-            color: #95a5a6;
-            cursor: pointer;
             width: 40px;
             height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            color: #64748b;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
             transition: all 0.3s;
         }
 
         .close-modal:hover {
-            background: #f8f9fa;
-            color: #dc3545;
+            background: #e2e8f0;
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
+
+        /* ESTADOS DE CARGA */
+        .loading {
+            text-align: center;
+            padding: 50px 20px;
+            color: #3b82f6;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            margin-left: 15px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* NO PRODUCTOS */
+        .no-products {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .no-products h3 {
+            color: #64748b;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .no-products p {
+            color: #94a3b8;
+            font-size: 1.1rem;
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 992px) {
+        @media (max-width: 1100px) {
+            .productos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 25px;
+            }
+        }
+
+        @media (max-width: 900px) {
             .franjaSuperior {
                 flex-direction: column;
-                gap: 15px;
-                padding: 15px;
+                gap: 20px;
+                padding: 20px;
             }
 
             .logoContainer {
@@ -480,6 +623,10 @@
                 justify-content: center;
                 margin-top: 15px;
             }
+
+            .section-title {
+                font-size: 2.3rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -489,8 +636,8 @@
             }
 
             .modal-contenido {
-                padding: 25px;
-                width: 95%;
+                padding: 30px 25px;
+                width: 90%;
             }
 
             .modal-botones {
@@ -500,11 +647,15 @@
             .btn-modal {
                 width: 100%;
             }
+
+            .main-content {
+                padding: 30px 15px;
+            }
         }
 
         @media (max-width: 480px) {
             .section-title {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .producto-card {
@@ -514,9 +665,24 @@
             .producto-info {
                 padding: 20px;
             }
+
+            .modal-contenido {
+                padding: 25px 20px;
+            }
         }
 
-        /* ===== ANIMACIONES ===== */
+        /* ANIMACIONES EXTRA */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* EFECTO PULSO */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -527,56 +693,23 @@
             animation: pulse 2s infinite;
         }
 
-        /* ===== ESTADO CARGA ===== */
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #4a90e2;
-            font-size: 1.2rem;
+        /* SCROLLBAR PERSONALIZADO */
+        ::-webkit-scrollbar {
+            width: 10px;
         }
 
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            margin-left: 10px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4a90e2;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 5px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 5px;
         }
 
-        /* ===== MENSAJES ===== */
-        .alert {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-weight: bold;
-            display: none;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
@@ -601,11 +734,11 @@
                 </button>
             </form>
             <div class="contador-resultados" id="contadorResultados">
-                Mostrando todos los productos
+                Cargando productos...
             </div>
         </div>
 
-        <!-- Botones de administrador -->
+        <!-- PANEL ADMINISTRADOR -->
         <div id="panelAdmin" class="panel-admin" style="display: none;">
             <button id="btnAgregar" class="btn-admin">
                 ➕ Agregar Producto
@@ -624,14 +757,14 @@
         <div class="container">
             <h2 class="section-title">Nuestros Productos</h2>
             
-            <!-- Mensajes de estado -->
+            <!-- MENSAJES DE ESTADO -->
             <div id="mensajeCarga" class="loading" style="display: none;">
                 Cargando productos...
             </div>
             
             <div id="alertContainer" class="alert"></div>
             
-            <!-- Contenedor de productos -->
+            <!-- CONTENEDOR DE PRODUCTOS -->
             <div id="contenedorProductos" class="productos-grid">
                 <!-- Los productos se cargarán aquí -->
             </div>
@@ -642,40 +775,42 @@
     <footer class="footer">
         <div class="container">
             <p>© 2026 Clean Solutions - Todos los derechos reservados</p>
-            <p style="margin-top: 10px; font-size: 14px; color: #ccc;">
+            <p style="margin-top: 10px; font-size: 14px; color: #94a3b8;">
                 📱 WhatsApp: +3794034489 | 📧 npamaciel@gmail.com | 📸 @clean.solutions610
             </p>
         </div>
     </footer>
 
     <!-- ===== MODALES ===== -->
-    <!-- MODAL 1: CONTRASEÑA ADMIN -->
+    <!-- MODAL: CONTRASEÑA ADMIN -->
     <div id="modalPassword" class="modal">
         <div class="modal-contenido">
             <button class="close-modal" id="closePasswordModal">×</button>
-            <h3>🔒 Acceso de Administrador</h3>
-            <input type="password"
-                   id="inputPassword"
-                   placeholder="Ingresa la contraseña"
-                   aria-label="Contraseña de administrador"
-                   autocomplete="off">
+            <h3>🔒 Acceso Administrador</h3>
+            <div class="form-group">
+                <input type="password"
+                       id="inputPassword"
+                       placeholder="Ingresa la contraseña"
+                       aria-label="Contraseña de administrador"
+                       autocomplete="off">
+            </div>
             <div class="modal-botones">
                 <button type="button" id="btnAcceder" class="btn-modal btn-aceptar">
-                    Acceder
+                    🔑 Acceder
                 </button>
                 <button type="button" id="btnCancelar" class="btn-modal btn-cancelar">
-                    Cancelar
+                    ❌ Cancelar
                 </button>
             </div>
             <p id="mensajeError" class="mensaje-error"></p>
         </div>
     </div>
 
-    <!-- MODAL 2: AGREGAR PRODUCTO -->
+    <!-- MODAL: AGREGAR PRODUCTO -->
     <div id="modalProducto" class="modal">
         <div class="modal-contenido">
             <button class="close-modal" id="closeProductModal">×</button>
-            <h3>➕ Agregar Nuevo Producto</h3>
+            <h3>➕ Nuevo Producto</h3>
             
             <!-- FORMULARIO -->
             <form id="productForm">
@@ -683,14 +818,16 @@
                     <label for="id">ID del Producto *</label>
                     <input type="text" id="id" name="id" 
                            placeholder="Ej: PROD001" required 
-                           pattern="[A-Za-z0-9-_]+"
-                           title="Solo letras, números, guiones y guiones bajos">
+                           pattern="[A-Za-z0-9-_.]+"
+                           title="Solo letras, números, guiones, puntos y guiones bajos">
+                    <small>Usa un ID único para identificar el producto</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="nombre">Nombre del Producto *</label>
                     <input type="text" id="nombre" name="nombre" 
                            placeholder="Ej: Champú Natural" required>
+                    <small>Nombre completo del producto</small>
                 </div>
                 
                 <div class="form-group">
@@ -698,26 +835,28 @@
                     <input type="number" id="precio" name="precio" 
                            placeholder="Ej: 29.99" required 
                            min="0" step="0.01">
+                    <small>Precio en dólares</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="imagen">URL de la Imagen</label>
                     <input type="url" id="imagen" name="imagen" 
                            placeholder="https://ejemplo.com/imagen.jpg">
-                    <small>Debe ser una URL válida (http:// o https://)</small>
+                    <small>URL completa de la imagen (opcional)</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="descripcion">Descripción</label>
                     <textarea id="descripcion" name="descripcion" 
-                              placeholder="Describe el producto aquí..." 
+                              placeholder="Describe las características y beneficios del producto..." 
                               rows="4"></textarea>
+                    <small>Descripción detallada del producto (opcional)</small>
                 </div>
 
-                <!-- BOTONES DEL FORMULARIO -->
+                <!-- BOTONES -->
                 <div class="modal-botones">
                     <button type="submit" id="btnGuardar" class="btn-modal btn-aceptar">
-                        ✅ Guardar Producto
+                        💾 Guardar Producto
                     </button>
                     <button type="button" id="cancelarFormProducto" class="btn-modal btn-cancelar">
                         ❌ Cancelar
@@ -734,7 +873,7 @@
     <script>
         // ===== CONFIGURACIÓN ===== //
         const CONTRASEÑA_ADMIN = 'Ragnar2025';
-        // REEMPLAZA ESTA URL CON LA DE TU APPS SCRIPT CORREGIDO
+        // ⚠️ REEMPLAZA ESTA URL CON LA TUYA
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby37sIczzzU_IPKDdlUpkk1NXrK8_F9Dt1MbSAoRlalke0SLzbg0IOqWepNi0nj5n1S/exec';
         
         // ===== VARIABLES GLOBALES ===== //
@@ -744,9 +883,13 @@
         // ===== INICIALIZACIÓN ===== //
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Clean Solutions - Sistema iniciado');
+            console.log('📡 URL API:', SCRIPT_URL);
             
-            // Verificar sesión previa
-            verificarSesion();
+            // Verificar sesión
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                activarModoAdmin();
+                console.log('✅ Sesión restaurada');
+            }
             
             // Cargar productos
             cargarProductos();
@@ -754,82 +897,104 @@
             // Configurar eventos
             configurarEventos();
             
-            // Configurar búsqueda
-            configurarBusqueda();
+            console.log('✅ Sistema listo');
         });
         
         // ===== FUNCIONES PRINCIPALES ===== //
         
-        // 1. VERIFICAR SESIÓN
-        function verificarSesion() {
-            const adminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-            if (adminLoggedIn) {
-                activarModoAdmin();
-                console.log('✅ Sesión restaurada desde localStorage');
-            }
-        }
-        
-        // 2. CARGAR PRODUCTOS DESDE GOOGLE SHEETS
+        // 1. CARGAR PRODUCTOS
         async function cargarProductos() {
             try {
                 mostrarCarga(true);
+                mostrarMensaje('⏳ Cargando productos...', 'info', 'alertContainer');
                 
-                console.log('📥 Cargando productos desde:', SCRIPT_URL);
-                const response = await fetch(SCRIPT_URL);
+                console.log('📥 Solicitando productos a:', SCRIPT_URL);
+                
+                // Usar fetch con parámetros para evitar caché
+                const timestamp = new Date().getTime();
+                const response = await fetch(`${SCRIPT_URL}?t=${timestamp}`);
                 
                 if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
+                    throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const data = await response.json();
-                console.log('📊 Productos recibidos:', data);
+                console.log('📦 Datos recibidos:', data);
                 
-                if (data.productos && Array.isArray(data.productos)) {
-                    productosGlobal = data.productos;
-                    mostrarProductos(productosGlobal);
-                    actualizarContador(productosGlobal.length, productosGlobal.length);
-                } else {
-                    throw new Error('Formato de datos inválido');
+                // Verificar estructura de datos
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Respuesta del servidor inválida');
                 }
                 
+                if (data.error) {
+                    throw new Error(`Error del servidor: ${data.error}`);
+                }
+                
+                // Aceptar diferentes formatos de respuesta
+                const productos = data.productos || data.data || [];
+                
+                if (!Array.isArray(productos)) {
+                    throw new Error('Los productos no están en formato array');
+                }
+                
+                productosGlobal = productos;
+                
+                if (productos.length === 0) {
+                    mostrarProductos([]);
+                    mostrarMensaje('📭 No hay productos disponibles. Agrega algunos desde el panel admin.', 'info', 'alertContainer');
+                } else {
+                    mostrarProductos(productos);
+                    mostrarMensaje(`✅ ${productos.length} productos cargados`, 'success', 'alertContainer');
+                }
+                
+                actualizarContador(productos.length, productos.length);
+                
             } catch(error) {
-                console.error('❌ Error al cargar productos:', error);
-                mostrarError('Error al cargar productos. Intenta recargar la página.');
+                console.error('❌ Error cargando productos:', error);
+                mostrarMensaje(`⚠️ Error: ${error.message}`, 'error', 'alertContainer');
+                mostrarProductos([]);
             } finally {
                 mostrarCarga(false);
+                // Ocultar mensaje después de 5 segundos
+                setTimeout(() => {
+                    const alert = document.getElementById('alertContainer');
+                    if (alert) alert.style.display = 'none';
+                }, 5000);
             }
         }
         
-        // 3. MOSTRAR PRODUCTOS EN PANTALLA
+        // 2. MOSTRAR PRODUCTOS
         function mostrarProductos(productos) {
             const contenedor = document.getElementById('contenedorProductos');
             
             if (!productos || productos.length === 0) {
                 contenedor.innerHTML = `
-                    <div class="no-products" style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                        <h3 style="color: #666; margin-bottom: 20px;">📭 No hay productos disponibles</h3>
-                        <p style="color: #999;">Agrega productos desde el panel de administración</p>
+                    <div class="no-products">
+                        <h3>📭 No hay productos disponibles</h3>
+                        <p>Agrega productos desde el panel de administración</p>
                     </div>
                 `;
                 return;
             }
             
             contenedor.innerHTML = productos.map(producto => `
-                <div class="producto-card" data-id="${producto.id}">
+                <div class="producto-card" data-id="${escapeHTML(producto.id)}">
                     <div class="producto-imagen-container">
                         ${obtenerImagenHTML(producto)}
                     </div>
                     <div class="producto-info">
                         <h3 class="producto-nombre">${escapeHTML(producto.nombre)}</h3>
-                        <p class="producto-precio">$${parseFloat(producto.precio).toFixed(2)}</p>
+                        <p class="producto-precio">${parseFloat(producto.precio || 0).toFixed(2)}</p>
                         <p class="producto-descripcion">${escapeHTML(producto.descripcion || 'Sin descripción')}</p>
-                        <p class="producto-id"><small>ID: ${escapeHTML(producto.id)}</small></p>
+                        <p class="producto-id">
+                            <span>🆔</span> ID: ${escapeHTML(producto.id)}
+                        </p>
                     </div>
                 </div>
             `).join('');
         }
         
-        // 4. FUNCIÓN PARA MANEJAR IMÁGENES
+        // 3. MANEJAR IMÁGENES
         function obtenerImagenHTML(producto) {
             const imagenUrl = producto.imagen?.trim();
             
@@ -840,80 +1005,101 @@
                          alt="${escapeHTML(producto.nombre)}" 
                          class="producto-imagen"
                          loading="lazy"
-                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="sin-imagen" style="display: none;">🖼️ Imagen no disponible</div>
+                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="sin-imagen" style="display: none;">🖼️</div>
                 `;
             }
             
-            return '<div class="sin-imagen">📦 Sin imagen</div>';
+            return '<div class="sin-imagen">📦</div>';
         }
         
-        // 5. SISTEMA DE BÚSQUEDA
-        function configurarBusqueda() {
-            const inputBusqueda = document.getElementById('inputBusqueda');
-            const formBusqueda = document.getElementById('formBusqueda');
+        // 4. AGREGAR PRODUCTO (CORREGIDO)
+        async function agregarProducto(productData) {
+            console.log('📤 Enviando producto:', productData);
             
-            inputBusqueda?.addEventListener('input', function(e) {
-                filtrarProductos(e.target.value);
-            });
-            
-            formBusqueda?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                filtrarProductos(inputBusqueda.value);
-            });
-        }
-        
-        function filtrarProductos(termino) {
-            if (!termino || termino.trim() === '') {
-                mostrarProductos(productosGlobal);
-                actualizarContador(productosGlobal.length, productosGlobal.length);
-                return;
-            }
-            
-            const terminoLower = termino.toLowerCase().trim();
-            const productosFiltrados = productosGlobal.filter(producto => 
-                producto.nombre?.toLowerCase().includes(terminoLower) ||
-                producto.descripcion?.toLowerCase().includes(terminoLower) ||
-                producto.id?.toLowerCase().includes(terminoLower)
-            );
-            
-            mostrarProductos(productosFiltrados);
-            actualizarContador(productosFiltrados.length, productosGlobal.length);
-        }
-        
-        function actualizarContador(mostrando, total) {
-            const contador = document.getElementById('contadorResultados');
-            if (contador) {
-                if (mostrando === total) {
-                    contador.textContent = `Mostrando todos los productos (${total})`;
-                } else {
-                    contador.textContent = `Mostrando ${mostrando} de ${total} productos`;
+            try {
+                // Enviar con CORS habilitado
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors',
+                    body: JSON.stringify(productData)
+                });
+                
+                console.log('📥 Respuesta recibida, status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Error ${response.status}: ${errorText}`);
                 }
+                
+                const data = await response.json();
+                console.log('✅ Respuesta del servidor:', data);
+                
+                return data;
+                
+            } catch(error) {
+                console.error('❌ Error completo al agregar:', error);
+                throw error;
             }
         }
         
-        // ===== SISTEMA DE ADMINISTRADOR ===== //
+        // ===== FUNCIONES AUXILIARES ===== //
         
-        // 6. ACTIVAR MODO ADMIN
+        // 5. ACTIVAR MODO ADMIN
         function activarModoAdmin() {
             modoAdminActivo = true;
             document.getElementById('panelAdmin').style.display = 'flex';
             document.getElementById('btnAdmin').style.display = 'none';
             localStorage.setItem('adminLoggedIn', 'true');
+            mostrarMensaje('✅ Modo administrador activado', 'success');
         }
         
-        // 7. DESACTIVAR MODO ADMIN
+        // 6. DESACTIVAR MODO ADMIN
         function desactivarModoAdmin() {
             modoAdminActivo = false;
             document.getElementById('panelAdmin').style.display = 'none';
             document.getElementById('btnAdmin').style.display = 'flex';
             localStorage.removeItem('adminLoggedIn');
             cerrarModal('modalProducto');
+            mostrarMensaje('✅ Sesión cerrada correctamente', 'success');
         }
         
-        // ===== MANEJO DE MODALES ===== //
+        // 7. MOSTRAR/OCULTAR CARGA
+        function mostrarCarga(mostrar) {
+            const carga = document.getElementById('mensajeCarga');
+            const contenedor = document.getElementById('contenedorProductos');
+            
+            if (carga) carga.style.display = mostrar ? 'block' : 'none';
+            if (contenedor && mostrar) contenedor.innerHTML = '';
+        }
         
-        // 8. ABRIR MODAL
+        // 8. MOSTRAR MENSAJES
+        function mostrarMensaje(texto, tipo = 'info', idContenedor = 'alertContainer') {
+            const contenedor = document.getElementById(idContenedor);
+            if (!contenedor) return;
+            
+            contenedor.textContent = texto;
+            contenedor.className = `alert alert-${tipo}`;
+            contenedor.style.display = 'block';
+            
+            if (tipo === 'success') {
+                setTimeout(() => {
+                    contenedor.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // 9. ESCAPAR HTML
+        function escapeHTML(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 10. ABRIR MODAL
         function abrirModal(idModal) {
             const modal = document.getElementById(idModal);
             if (modal) {
@@ -922,14 +1108,13 @@
             }
         }
         
-        // 9. CERRAR MODAL
+        // 11. CERRAR MODAL
         function cerrarModal(idModal) {
             const modal = document.getElementById(idModal);
             if (modal) {
                 modal.style.display = 'none';
                 document.body.style.overflow = 'auto';
                 
-                // Limpiar formularios y mensajes
                 if (idModal === 'modalPassword') {
                     document.getElementById('inputPassword').value = '';
                     document.getElementById('mensajeError').style.display = 'none';
@@ -940,78 +1125,41 @@
             }
         }
         
-        // 10. AGREGAR PRODUCTO (CORREGIDO)
-        async function agregarProducto(productData) {
-            console.log('📤 Enviando producto:', productData);
-            
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(productData)
-                });
-                
-                console.log('📥 Respuesta recibida:', response);
-                
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('✅ Respuesta del servidor:', data);
-                
-                return data;
-                
-            } catch(error) {
-                console.error('❌ Error completo:', error);
-                throw error;
+        // 12. ACTUALIZAR CONTADOR
+        function actualizarContador(mostrando, total) {
+            const contador = document.getElementById('contadorResultados');
+            if (contador) {
+                contador.textContent = total === 0 ? 
+                    'No hay productos' : 
+                    mostrando === total ? 
+                        `${total} productos` : 
+                        `${mostrando} de ${total} productos`;
             }
         }
         
-        // ===== FUNCIONES DE UTILIDAD ===== //
-        
-        // 11. MOSTRAR MENSAJES
-        function mostrarMensaje(texto, tipo = 'info', idContenedor = 'alertContainer') {
-            const contenedor = document.getElementById(idContenedor);
-            if (!contenedor) return;
-            
-            contenedor.textContent = texto;
-            contenedor.className = `alert alert-${tipo}`;
-            contenedor.style.display = 'block';
-            
-            // Auto-ocultar después de 5 segundos (excepto para errores)
-            if (tipo !== 'error') {
-                setTimeout(() => {
-                    contenedor.style.display = 'none';
-                }, 5000);
+        // 13. FILTRAR PRODUCTOS
+        function filtrarProductos(termino) {
+            if (!termino || termino.trim() === '') {
+                mostrarProductos(productosGlobal);
+                actualizarContador(productosGlobal.length, productosGlobal.length);
+                return;
             }
-        }
-        
-        // 12. MOSTRAR ERROR
-        function mostrarError(mensaje) {
-            mostrarMensaje(mensaje, 'error');
-        }
-        
-        // 13. MOSTRAR CARGA
-        function mostrarCarga(mostrar) {
-            const carga = document.getElementById('mensajeCarga');
-            const contenedor = document.getElementById('contenedorProductos');
             
-            if (carga) carga.style.display = mostrar ? 'block' : 'none';
-            if (contenedor) contenedor.style.opacity = mostrar ? '0.5' : '1';
-        }
-        
-        // 14. ESCAPAR HTML (seguridad)
-        function escapeHTML(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            const terminoLower = termino.toLowerCase().trim();
+            const productosFiltrados = productosGlobal.filter(producto => 
+                (producto.nombre && producto.nombre.toLowerCase().includes(terminoLower)) ||
+                (producto.descripcion && producto.descripcion.toLowerCase().includes(terminoLower)) ||
+                (producto.id && producto.id.toLowerCase().includes(terminoLower))
+            );
+            
+            mostrarProductos(productosFiltrados);
+            actualizarContador(productosFiltrados.length, productosGlobal.length);
         }
         
         // ===== CONFIGURACIÓN DE EVENTOS ===== //
         function configurarEventos() {
+            console.log('⚙️ Configurando eventos...');
+            
             // A. BOTÓN ADMIN
             document.getElementById('btnAdmin').addEventListener('click', () => {
                 abrirModal('modalPassword');
@@ -1023,49 +1171,37 @@
             document.getElementById('btnCancelar').addEventListener('click', () => cerrarModal('modalPassword'));
             document.getElementById('closePasswordModal').addEventListener('click', () => cerrarModal('modalPassword'));
             
-            // Enter en input de contraseña
             document.getElementById('inputPassword').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    verificarContraseña();
-                }
+                if (e.key === 'Enter') verificarContraseña();
             });
             
-            // C. PANEL ADMIN
+            // C. BOTÓN AGREGAR PRODUCTO
             document.getElementById('btnAgregar').addEventListener('click', () => {
                 cerrarModal('modalPassword');
-                abrirModal('modalProducto');
+                setTimeout(() => abrirModal('modalProducto'), 100);
                 document.getElementById('id').focus();
             });
             
+            // D. BOTÓN ELIMINAR
             document.getElementById('btnEliminar').addEventListener('click', () => {
-                alert('🚧 Función en desarrollo. Próximamente podrás eliminar productos.');
+                alert('🚧 Esta función estará disponible próximamente');
             });
             
+            // E. CERRAR SESIÓN
             document.getElementById('btnCerrarAdmin').addEventListener('click', () => {
-                if (confirm('¿Estás seguro de que quieres cerrar la sesión de administrador?')) {
+                if (confirm('¿Estás seguro de cerrar la sesión de administrador?')) {
                     desactivarModoAdmin();
-                    mostrarMensaje('✅ Sesión cerrada correctamente', 'success');
                 }
             });
             
-            // D. MODAL PRODUCTO
+            // F. MODAL PRODUCTO
             document.getElementById('closeProductModal').addEventListener('click', () => cerrarModal('modalProducto'));
             document.getElementById('cancelarFormProducto').addEventListener('click', () => cerrarModal('modalProducto'));
             
-            // Cerrar modal al hacer clic fuera
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        cerrarModal(modal.id);
-                    }
-                });
-            });
-            
-            // E. FORMULARIO DE PRODUCTO
+            // G. FORMULARIO DE PRODUCTO
             document.getElementById('productForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                // Obtener datos
                 const productData = {
                     id: document.getElementById('id').value.trim(),
                     nombre: document.getElementById('nombre').value.trim(),
@@ -1076,11 +1212,11 @@
                 
                 // Validar
                 if (!productData.id || !productData.nombre || !productData.precio) {
-                    mostrarMensaje('❌ Completa los campos obligatorios (ID, Nombre, Precio)', 'error', 'message');
+                    mostrarMensaje('❌ Completa los campos obligatorios', 'error', 'message');
                     return;
                 }
                 
-                // Mostrar estado de carga
+                // Estado de carga
                 const btnGuardar = document.getElementById('btnGuardar');
                 const textoOriginal = btnGuardar.textContent;
                 btnGuardar.textContent = '⏳ Enviando...';
@@ -1089,20 +1225,16 @@
                 mostrarMensaje('⏳ Agregando producto...', 'info', 'message');
                 
                 try {
-                    // Enviar a Google Sheets
                     const resultado = await agregarProducto(productData);
                     
                     if (resultado.success) {
-                        mostrarMensaje('✅ ' + (resultado.message || 'Producto agregado correctamente'), 'success', 'message');
-                        
-                        // Limpiar formulario
+                        mostrarMensaje('✅ ' + resultado.message, 'success', 'message');
                         this.reset();
                         
-                        // Recargar productos después de 2 segundos
                         setTimeout(() => {
                             cerrarModal('modalProducto');
                             cargarProductos();
-                        }, 2000);
+                        }, 1500);
                         
                     } else {
                         throw new Error(resultado.error || 'Error desconocido');
@@ -1110,15 +1242,29 @@
                     
                 } catch(error) {
                     console.error('❌ Error:', error);
-                    mostrarMensaje('❌ Error: ' + error.message, 'error', 'message');
+                    mostrarMensaje('❌ ' + error.message, 'error', 'message');
+                    btnGuardar.textContent = '🔄 Reintentar';
                     
                 } finally {
-                    btnGuardar.textContent = textoOriginal;
-                    btnGuardar.disabled = false;
+                    setTimeout(() => {
+                        btnGuardar.textContent = textoOriginal;
+                        btnGuardar.disabled = false;
+                    }, 2000);
                 }
             });
             
-            // F. TECLA ESC PARA CERRAR MODALES
+            // H. BÚSQUEDA
+            const inputBusqueda = document.getElementById('inputBusqueda');
+            inputBusqueda.addEventListener('input', (e) => {
+                filtrarProductos(e.target.value);
+            });
+            
+            document.getElementById('formBusqueda').addEventListener('submit', (e) => {
+                e.preventDefault();
+                filtrarProductos(inputBusqueda.value);
+            });
+            
+            // I. CERRAR MODALES CON ESC
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     const modales = document.querySelectorAll('.modal[style*="flex"]');
@@ -1127,9 +1273,16 @@
                     }
                 }
             });
+            
+            // J. CERRAR MODALES AL CLICAR FUERA
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) cerrarModal(modal.id);
+                });
+            });
         }
         
-        // 15. VERIFICAR CONTRASEÑA
+        // 14. VERIFICAR CONTRASEÑA
         function verificarContraseña() {
             const input = document.getElementById('inputPassword');
             const password = input.value;
@@ -1138,34 +1291,17 @@
             if (password === CONTRASEÑA_ADMIN) {
                 activarModoAdmin();
                 cerrarModal('modalPassword');
-                mostrarMensaje('✅ Acceso de administrador concedido', 'success');
             } else {
                 mensajeError.textContent = '❌ Contraseña incorrecta';
                 mensajeError.style.display = 'block';
                 input.value = '';
                 input.focus();
-                
-                // Efecto de vibración
-                input.style.animation = 'none';
-                setTimeout(() => {
-                    input.style.animation = 'shake 0.5s';
-                }, 10);
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
             }
         }
         
-        // ===== ANIMACIÓN DE VIBRACIÓN ===== //
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        console.log('✅ Frontend configurado correctamente');
+        console.log('✅ Eventos configurados');
     </script>
 </body>
 </html>
-
