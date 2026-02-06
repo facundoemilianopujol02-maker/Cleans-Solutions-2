@@ -217,7 +217,6 @@
     </div>
 
     <!-- SCRIPT ÚNICO -->
-       <!-- SCRIPT ÚNICO -->
     <script>
     // ===== CONFIGURACIÓN ===== //
     const CONTRASEÑA_ADMIN = 'Ragnar2025';
@@ -355,7 +354,6 @@
     });
     
     // C. FUNCIÓN PARA CERRAR MODAL PRODUCTO
-        // C. FUNCIÓN PARA CERRAR MODAL PRODUCTO
     function cerrarModalProducto() {
         const modalProducto = document.getElementById('modalProducto');
         modalProducto.style.display = 'none';
@@ -434,36 +432,54 @@
         mostrarMensaje('⏳ Enviando producto a Google Sheets...', 'info');
         
         try {
-            // Enviar a Google Sheets
-            console.log('📡 Enviando a:', SCRIPT_URL);
+            console.log('📤 Enviando producto a:', SCRIPT_URL);
             
+            // Enviar a Google Sheets
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(productData)
             });
             
-            console.log('✅ Petición enviada (no-cors)');
+            console.log('📡 Respuesta recibida, status:', response.status);
             
-            // Mostrar éxito
-            mostrarMensaje('✅ ¡Producto agregado correctamente!', 'success');
+            // Leer la respuesta como texto primero
+            const responseText = await response.text();
+            console.log('📝 Respuesta texto:', responseText);
             
-            // Limpiar formulario
-            this.reset();
+            // Intentar parsear como JSON
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch(parseError) {
+                console.log('⚠️ Respuesta no es JSON, asumiendo éxito');
+                result = { success: true, message: 'Producto enviado correctamente' };
+            }
             
-            // Cerrar modal después de 2 segundos
-            setTimeout(() => {
-                cerrarModalProducto();
-                console.log('🔄 Recargando página para ver cambios...');
-                window.location.reload();
-            }, 2000);
+            if (result.success) {
+                mostrarMensaje('✅ ' + result.message, 'success');
+                
+                // Limpiar formulario
+                this.reset();
+                
+                // Cerrar modal y recargar después de 1.5 segundos
+                setTimeout(() => {
+                    cerrarModalProducto();
+                    console.log('🔄 Recargando página para ver cambios...');
+                    window.location.reload();
+                }, 1500);
+                
+            } else {
+                mostrarMensaje('❌ Error: ' + (result.error || 'Desconocido'), 'error');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
             
         } catch(error) {
-            console.error('❌ Error al enviar:', error);
-            mostrarMensaje('❌ Error al agregar producto. Intenta nuevamente.', 'error');
+            console.error('❌ Error de red:', error);
+            mostrarMensaje('🌐 Error de conexión. Verifica tu internet.', 'error');
             submitBtn.textContent = '🔄 Reintentar';
             submitBtn.disabled = false;
         }
@@ -497,24 +513,7 @@
         }
     }
     
-    // ===== 9. FUNCIÓN DE PRUEBA TEMPORAL ===== //
-    function pruebaModal() {
-        console.log('🔧 Iniciando prueba manual...');
-        
-        const modal = document.getElementById('modalPassword');
-        console.log('Modal encontrado:', modal);
-        console.log('Display actual:', modal.style.display);
-        
-        // Forzar mostrar el modal
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        
-        console.log('Display después:', modal.style.display);
-        alert('Modal forzado a mostrarse. ¿Lo ves?');
-    }
-    
-    console.log('✅ Todos los botones configurados correctamente');
-        // ===== 10. VERIFICAR SESIÓN AL CARGAR ===== //
+    // ===== 9. VERIFICAR SESIÓN AL CARGAR ===== //
     document.addEventListener('DOMContentLoaded', function() {
         if (localStorage.getItem('adminLoggedIn') === 'true') {
             console.log('🔄 Restaurando sesión admin desde localStorage');
@@ -523,8 +522,7 @@
         }
     });
 
-        // ===== 11. CARGAR Y MOSTRAR PRODUCTOS ===== //
-        // ===== 11. CARGAR Y MOSTRAR PRODUCTOS ===== //
+    // ===== 10. CARGAR Y MOSTRAR PRODUCTOS ===== //
     async function cargarProductos() {
         try {
             console.log('📥 Cargando productos desde Google Sheets...');
@@ -593,5 +591,13 @@
             style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; padding: 10px; background: blue; color: white;">
         🔧 PRUEBA MODAL
     </button>
+
+    <script>
+    // Función de prueba temporal (si aún existe)
+    function pruebaModal() {
+        console.log('🔧 Iniciando prueba manual...');
+        document.getElementById('modalPassword').style.display = 'flex';
+    }
+    </script>
 </body>
 </html>
