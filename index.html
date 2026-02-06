@@ -72,17 +72,10 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
         
         .btn-delete {
             background: #e74c3c;
-        }
-        
-        .btn-delete:hover {
-            background: #c0392b;
         }
         
         .logout-btn {
@@ -314,20 +307,18 @@
     <script>
         // ===== CONFIGURACIÓN =====
         const PASSWORD = 'Ragnar2025';
-        // ⚠️ USA LA URL QUE SÍ FUNCIONABA:
-        // const API_URL = 'https://script.google.com/macros/s/AKfycbzmQCeOUQ0phMRCkBtHvCti_4oDbQ25zKjO1X9BwJaflBpujstVwdlVnO_LYFIk6xc/exec';
         const API_URL = 'https://script.google.com/macros/s/AKfycbw3GQM4NQnHvSzBgfRC8f-MmeZfEPUPoCBMfOzgH9UID57BpS5kfsZPEDvJZdUli92h/exec';
         
         // ===== INICIALIZACIÓN =====
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema iniciado - Usando JSONP');
+            console.log('🚀 Sistema iniciado - SOLO JSONP');
             
             // Verificar sesión
             if (localStorage.getItem('adminActive') === 'true') {
                 activarAdmin();
             }
             
-            // Cargar productos CON JSONP (no fetch)
+            // Cargar productos CON JSONP
             cargarProductosConJsonp();
             
             // Configurar eventos
@@ -336,17 +327,16 @@
         
         // ===== FUNCIONES JSONP =====
         
-        // 1. CARGAR PRODUCTOS CON JSONP
+        // 1. CARGAR PRODUCTOS CON JSONP (NO FETCH)
         function cargarProductosConJsonp() {
             return new Promise((resolve, reject) => {
                 mostrarMensaje('🔄 Cargando productos...', 'info');
                 
                 const callbackName = 'jsonpLoad_' + Date.now();
-                const timestamp = Date.now();
                 
-                // Crear script para JSONP
+                // Crear script para JSONP - SIN parámetro t=
                 const script = document.createElement('script');
-                script.src = API_URL + '?callback=' + callbackName + '&t=' + timestamp;
+                script.src = API_URL + '?callback=' + callbackName;
                 
                 // Función callback
                 window[callbackName] = function(response) {
@@ -474,7 +464,7 @@
                 params.append('id', id);
                 params.append('callback', callbackName);
                 
-                console.log('🗑️ Enviando eliminación:', id);
+                console.log('🗑️ Enviando eliminación via JSONP:', id);
                 
                 // Crear script
                 const script = document.createElement('script');
@@ -778,7 +768,7 @@
             });
         }
         
-        console.log('✅ Script cargado correctamente - JSONP configurado');
+        console.log('✅ Script cargado correctamente - SOLO JSONP');
     </script>
 </body>
 </html>
