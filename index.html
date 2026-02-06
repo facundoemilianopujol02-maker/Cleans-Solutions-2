@@ -505,77 +505,88 @@
         }
     }
     
-    // ===== 6. CARGAR PRODUCTOS =====
-    function cargarProductos() {
-        console.log('📥 Cargando productos...');
-        const contenedor = document.getElementById('contenedorProductos');
-        contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">⏳ Cargando productos...</div>';
+   // ===== 6. CARGAR PRODUCTOS =====
+function cargarProductos() {
+    console.log('📥 Cargando productos...');
+    const contenedor = document.getElementById('contenedorProductos');
+    contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">⏳ Cargando productos...</div>';
+    
+    const callbackName = 'loadProducts_' + Date.now();
+    
+    // URL CORRECTA para JSONP
+    const url = SCRIPT_URL + '?callback=' + encodeURIComponent(callbackName);
+    console.log('🔗 URL JSONP:', url);
+    
+    // Definir función callback GLOBALMENTE
+    window[callbackName] = function(data) {
+        console.log('📊 Productos recibidos:', data);
         
-        const callbackName = 'loadProducts_' + Date.now();
-        const url = SCRIPT_URL + '?callback=' + callbackName;
+        // Limpiar
+        delete window[callbackName];
+        if (script.parentNode) {
+            document.head.removeChild(script);
+        }
         
-        window[callbackName] = function(data) {
-            console.log('📊 Productos recibidos:', data);
-            delete window[callbackName];
-            
-            contenedor.innerHTML = '';
-            
-            if (data.productos && data.productos.length > 0) {
-                data.productos.forEach(producto => {
-                    // Verificar si hay imagen válida
-                    let imagenHTML = '';
-                    if (producto.imagen && producto.imagen.trim() !== '' && 
-                        (producto.imagen.startsWith('http://') || producto.imagen.startsWith('https://'))) {
-                        imagenHTML = `
-                            <img src="${producto.imagen}" 
-                                 alt="${producto.nombre}" 
-                                 class="producto-imagen"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                            <div class="sin-imagen" style="display: none;">🖼️ Imagen no disponible</div>
-                        `;
-                    } else {
-                        imagenHTML = '<div class="sin-imagen">📦 Sin imagen</div>';
-                    }
-                    
-                    const productoHTML = `
-                    <div class="producto-card">
-                        <div class="producto-imagen-container">
-                            ${imagenHTML}
-                        </div>
-                        <div class="producto-info">
-                            <h3 class="producto-nombre">${producto.nombre}</h3>
-                            <p class="producto-precio">$${producto.precio}</p>
-                            <p class="producto-descripcion">${producto.descripcion || 'Sin descripción'}</p>
-                            <p class="producto-id">ID: ${producto.id}</p>
-                        </div>
-                    </div>
-                    `;
-                    contenedor.innerHTML += productoHTML;
-                });
-                
-                console.log(`✅ ${data.productos.length} productos mostrados`);
+        mostrarProductosEnPagina(data);
+    };
+    
+    // Crear script
+    const script = document.createElement('script');
+    script.src = url;
+    
+    script.onerror = function() {
+        console.error('❌ Error cargando script JSONP');
+        contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:red;">❌ Error al cargar productos. Intenta recargar la página.</div>';
+        delete window[callbackName];
+    };
+    
+    document.head.appendChild(script);
+}
+
+// ===== FUNCIÓN PARA MOSTRAR PRODUCTOS =====
+function mostrarProductosEnPagina(data) {
+    const contenedor = document.getElementById('contenedorProductos');
+    contenedor.innerHTML = '';
+    
+    if (data.productos && data.productos.length > 0) {
+        data.productos.forEach(producto => {
+            // Verificar si hay imagen válida
+            let imagenHTML = '';
+            if (producto.imagen && producto.imagen.trim() !== '' && 
+                (producto.imagen.startsWith('http://') || producto.imagen.startsWith('https://'))) {
+                imagenHTML = `
+                    <img src="${producto.imagen}" 
+                         alt="${producto.nombre}" 
+                         class="producto-imagen"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="sin-imagen" style="display: none;">🖼️ Imagen no disponible</div>
+                `;
             } else {
-                contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">📭 No hay productos disponibles. Agrega algunos desde el panel de administración.</div>';
-                console.log('📭 No hay productos para mostrar');
+                imagenHTML = '<div class="sin-imagen">📦 Sin imagen</div>';
             }
             
-            // Limpiar script
-            if (script.parentNode) {
-                document.head.removeChild(script);
-            }
-        };
+            const productoHTML = `
+            <div class="producto-card">
+                <div class="producto-imagen-container">
+                    ${imagenHTML}
+                </div>
+                <div class="producto-info">
+                    <h3 class="producto-nombre">${producto.nombre}</h3>
+                    <p class="producto-precio">$${producto.precio}</p>
+                    <p class="producto-descripcion">${producto.descripcion || 'Sin descripción'}</p>
+                    <p class="producto-id">ID: ${producto.id}</p>
+                </div>
+            </div>
+            `;
+            contenedor.innerHTML += productoHTML;
+        });
         
-        const script = document.createElement('script');
-        script.src = url;
-        
-        script.onerror = function() {
-            console.error('❌ Error cargando productos');
-            contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:red;">❌ Error al cargar productos. Intenta recargar la página.</div>';
-            delete window[callbackName];
-        };
-        
-        document.head.appendChild(script);
+        console.log(`✅ ${data.productos.length} productos mostrados`);
+    } else {
+        contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">📭 No hay productos disponibles. Agrega algunos desde el panel de administración.</div>';
+        console.log('📭 No hay productos para mostrar');
     }
+}
     
     // ===== 7. INICIALIZAR =====
     document.addEventListener('DOMContentLoaded', () => {
@@ -594,3 +605,4 @@
     </script>
 </body>
 </html>
+
