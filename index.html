@@ -68,6 +68,14 @@
             cursor: pointer;
         }
         
+        .btn-delete {
+            background: #e74c3c;
+        }
+        
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+        
         .logout-btn {
             background: #7f8c8d;
         }
@@ -86,6 +94,13 @@
             border-radius: 8px;
             padding: 15px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         .product-name {
@@ -111,6 +126,33 @@
             color: #95a5a6;
             font-size: 12px;
             margin-top: 10px;
+        }
+        
+        /* Botón eliminar en tarjeta (solo visible en modo admin) */
+        .delete-product-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .delete-product-btn:hover {
+            background: #c0392b;
+        }
+        
+        /* Indicador modo admin */
+        .modo-admin .product-card {
+            border: 2px solid #27ae60;
         }
         
         /* MODALES */
@@ -176,6 +218,11 @@
             color: white;
         }
         
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
         /* MENSAJES */
         .alert {
             padding: 12px;
@@ -202,6 +249,89 @@
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
+        
+        /* LOADING */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #3498db;
+            font-size: 18px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* CHECKBOX PARA SELECCIÓN MÚLTIPLE */
+        .select-product-checkbox {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 20px;
+            height: 20px;
+            display: none;
+        }
+        
+        .modo-eliminar .select-product-checkbox {
+            display: block;
+        }
+        
+        .modo-eliminar .delete-product-btn {
+            display: none;
+        }
+        
+        /* BARRA DE HERRAMIENTAS ELIMINAR */
+        .delete-toolbar {
+            display: none;
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+            text-align: center;
+        }
+        
+        .delete-toolbar p {
+            margin-bottom: 10px;
+            color: #856404;
+            font-weight: bold;
+        }
+        
+        .delete-toolbar-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .admin-panel {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -212,12 +342,25 @@
                 <button id="btnAdmin" class="admin-btn">🔒 Admin</button>
                 <div id="panelAdmin" class="admin-panel">
                     <button id="btnAgregar" class="panel-btn">➕ Agregar</button>
+                    <button id="btnEliminar" class="panel-btn btn-delete">🗑️ Eliminar</button>
                     <button id="btnCerrarAdmin" class="panel-btn logout-btn">🚪 Salir</button>
                 </div>
             </div>
         </header>
         
+        <!-- Barra de herramientas para eliminar -->
+        <div id="deleteToolbar" class="delete-toolbar">
+            <p>📋 Modo eliminación: Selecciona los productos a eliminar</p>
+            <div class="delete-toolbar-buttons">
+                <button id="btnEliminarSeleccionados" class="panel-btn btn-delete">🗑️ Eliminar Seleccionados</button>
+                <button id="btnCancelarEliminar" class="panel-btn">❌ Cancelar</button>
+            </div>
+        </div>
+        
         <div id="alertContainer" class="alert"></div>
+        <div id="mensajeCarga" class="loading" style="display: none;">
+            Cargando... <span class="spinner"></span>
+        </div>
         
         <div id="contenedorProductos" class="products-grid">
             <!-- Los productos se cargarán aquí -->
@@ -264,15 +407,35 @@
             <div id="message" class="alert" style="margin-top: 15px;"></div>
         </div>
     </div>
+    
+    <!-- MODAL CONFIRMAR ELIMINACIÓN -->
+    <div id="modalConfirmarEliminar" class="modal">
+        <div class="modal-content">
+            <h3>⚠️ Confirmar Eliminación</h3>
+            <p id="confirmarEliminarTexto" style="margin-bottom: 20px;">
+                ¿Estás seguro de que deseas eliminar los productos seleccionados?
+            </p>
+            <div class="modal-buttons">
+                <button id="btnConfirmarEliminar" class="modal-btn btn-danger">🗑️ Sí, Eliminar</button>
+                <button id="btnCancelarEliminarModal" class="modal-btn btn-cancel">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // ===== CONFIGURACIÓN =====
         const PASSWORD = 'Ragnar2025';
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzraj8nnYO-wlF4MHXKk2aHH8_BvIXQTtaAEeeFXVQ-PIfKNfqXme7lXs5EAh1GCKrq/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw3GQM4NQnHvSzBgfRC8f-MmeZfEPUPoCBMfOzgH9UID57BpS5kfsZPEDvJZdUli92h/exec';
+        
+        // ===== VARIABLES GLOBALES =====
+        let productos = [];
+        let modoEliminarActivo = false;
+        let productosSeleccionados = new Set();
+        let modoAdminActivo = false;
         
         // ===== INICIALIZACIÓN =====
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema iniciado');
+            console.log('🚀 Sistema iniciado - Con eliminación de productos');
             
             // Verificar sesión
             if (localStorage.getItem('adminActive') === 'true') {
@@ -291,6 +454,7 @@
         // 1. CARGAR PRODUCTOS
         async function cargarProductos() {
             try {
+                mostrarCarga(true);
                 mostrarMensaje('🔄 Cargando productos...', 'info');
                 console.log('📥 Cargando productos desde:', API_URL);
                 
@@ -300,8 +464,9 @@
                 console.log('📦 Datos recibidos:', data);
                 
                 if (data.success && Array.isArray(data.productos)) {
-                    mostrarProductos(data.productos);
-                    mostrarMensaje(`✅ ${data.productos.length} productos cargados`, 'success');
+                    productos = data.productos;
+                    mostrarProductos(productos);
+                    mostrarMensaje(`✅ ${productos.length} productos cargados`, 'success');
                 } else {
                     throw new Error(data.error || 'Error en formato de datos');
                 }
@@ -310,12 +475,14 @@
                 console.error('❌ Error:', error);
                 mostrarMensaje('⚠️ ' + error.message, 'error');
                 mostrarProductos([]);
+            } finally {
+                mostrarCarga(false);
             }
         }
         
-        // 2. MOSTRAR PRODUCTOS (CORREGIDO)
-        function mostrarProductos(productos) {
-            console.log('🎨 Mostrando productos:', productos);
+        // 2. MOSTRAR PRODUCTOS (CON BOTONES DE ELIMINAR)
+        function mostrarProductos(listaProductos) {
+            console.log('🎨 Mostrando productos:', listaProductos);
             
             const contenedor = document.getElementById('contenedorProductos');
             if (!contenedor) {
@@ -326,7 +493,7 @@
             // Limpiar contenedor
             contenedor.innerHTML = '';
             
-            if (!productos || productos.length === 0) {
+            if (!listaProductos || listaProductos.length === 0) {
                 contenedor.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
                         <p>📭 No hay productos disponibles</p>
@@ -337,14 +504,33 @@
             }
             
             // Crear HTML para cada producto
-            productos.forEach(producto => {
+            listaProductos.forEach((producto, index) => {
                 const productoDiv = document.createElement('div');
                 productoDiv.className = 'product-card';
+                productoDiv.dataset.id = producto.id;
+                productoDiv.dataset.index = index;
                 
                 const nombre = producto.nombre || 'Sin nombre';
                 const precio = parseFloat(producto.precio || 0).toFixed(2);
                 const descripcion = producto.descripcion || 'Sin descripción';
                 const id = producto.id || 'N/A';
+                
+                // Checkbox para selección (solo visible en modo eliminar)
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'select-product-checkbox';
+                checkbox.dataset.id = producto.id;
+                checkbox.dataset.nombre = nombre;
+                
+                // Botón eliminar individual (solo visible en modo admin normal)
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-product-btn';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.title = 'Eliminar este producto';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    eliminarProductoIndividual(producto.id, nombre);
+                };
                 
                 productoDiv.innerHTML = `
                     <h3 class="product-name">${escapeHtml(nombre)}</h3>
@@ -353,13 +539,18 @@
                     <div class="product-id">ID: ${escapeHtml(id)}</div>
                 `;
                 
+                productoDiv.appendChild(checkbox);
+                productoDiv.appendChild(deleteBtn);
                 contenedor.appendChild(productoDiv);
             });
             
-            console.log(`✅ ${productos.length} productos mostrados`);
+            console.log(`✅ ${listaProductos.length} productos mostrados`);
+            
+            // Actualizar visibilidad de botones según modo
+            actualizarVisibilidadBotonesEliminar();
         }
         
-        // 3. AGREGAR PRODUCTO CON JSONP
+        // 3. AGREGAR PRODUCTO
         function agregarProductoJsonp(productData) {
             return new Promise((resolve, reject) => {
                 const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -422,6 +613,174 @@
             });
         }
         
+        // 4. ELIMINAR PRODUCTOS
+        function eliminarProductosJsonp(idsAEliminar) {
+            return new Promise((resolve, reject) => {
+                const callbackName = 'jsonpDelete_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                
+                // Construir URL - Necesitamos enviar múltiples IDs
+                const params = new URLSearchParams();
+                params.append('action', 'delete');
+                params.append('ids', JSON.stringify(idsAEliminar)); // Enviar como JSON
+                params.append('callback', callbackName);
+                
+                const url = API_URL + '?' + params.toString();
+                console.log('🗑️ Enviando eliminación a:', url);
+                
+                // Crear script
+                const script = document.createElement('script');
+                script.src = url;
+                
+                // Callback
+                window[callbackName] = function(response) {
+                    console.log('📥 Respuesta eliminación:', response);
+                    
+                    // Limpiar
+                    delete window[callbackName];
+                    if (script.parentNode) {
+                        script.parentNode.removeChild(script);
+                    }
+                    
+                    if (response.success) {
+                        resolve(response);
+                    } else {
+                        reject(new Error(response.error));
+                    }
+                };
+                
+                // Error
+                script.onerror = function() {
+                    delete window[callbackName];
+                    if (script.parentNode) {
+                        script.parentNode.removeChild(script);
+                    }
+                    reject(new Error('Error de conexión al eliminar'));
+                };
+                
+                // Agregar script
+                document.body.appendChild(script);
+                
+                // Timeout
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        delete window[callbackName];
+                        if (script.parentNode) {
+                            script.parentNode.removeChild(script);
+                        }
+                        reject(new Error('Timeout al eliminar'));
+                    }
+                }, 10000);
+            });
+        }
+        
+        // ===== FUNCIONES DE ELIMINACIÓN =====
+        
+        // Activar modo eliminación
+        function activarModoEliminar() {
+            modoEliminarActivo = true;
+            productosSeleccionados.clear();
+            
+            // Añadir clase al body para modo eliminar
+            document.body.classList.add('modo-eliminar');
+            if (modoAdminActivo) {
+                document.body.classList.add('modo-admin');
+            }
+            
+            // Mostrar barra de herramientas
+            document.getElementById('deleteToolbar').style.display = 'block';
+            
+            // Cambiar texto del botón
+            document.getElementById('btnEliminar').textContent = '✅ Finalizar Eliminación';
+            
+            // Actualizar visibilidad de botones
+            actualizarVisibilidadBotonesEliminar();
+            
+            mostrarMensaje('📋 Modo eliminación activado. Selecciona los productos a eliminar.', 'info');
+        }
+        
+        // Desactivar modo eliminación
+        function desactivarModoEliminar() {
+            modoEliminarActivo = false;
+            productosSeleccionados.clear();
+            
+            // Remover clases
+            document.body.classList.remove('modo-eliminar');
+            
+            // Ocultar barra de herramientas
+            document.getElementById('deleteToolbar').style.display = 'none';
+            
+            // Restaurar texto del botón
+            document.getElementById('btnEliminar').textContent = '🗑️ Eliminar';
+            
+            // Deseleccionar todos los checkboxes
+            document.querySelectorAll('.select-product-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // Actualizar visibilidad de botones
+            actualizarVisibilidadBotonesEliminar();
+        }
+        
+        // Actualizar visibilidad de botones de eliminar
+        function actualizarVisibilidadBotonesEliminar() {
+            const deleteButtons = document.querySelectorAll('.delete-product-btn');
+            const checkboxes = document.querySelectorAll('.select-product-checkbox');
+            
+            if (modoAdminActivo) {
+                if (modoEliminarActivo) {
+                    // Modo eliminación: mostrar checkboxes, ocultar botones individuales
+                    deleteButtons.forEach(btn => btn.style.display = 'none');
+                    checkboxes.forEach(cb => cb.style.display = 'block');
+                } else {
+                    // Modo admin normal: mostrar botones individuales, ocultar checkboxes
+                    deleteButtons.forEach(btn => btn.style.display = 'flex');
+                    checkboxes.forEach(cb => cb.style.display = 'none');
+                }
+            } else {
+                // No modo admin: ocultar todo
+                deleteButtons.forEach(btn => btn.style.display = 'none');
+                checkboxes.forEach(cb => cb.style.display = 'none');
+            }
+        }
+        
+        // Eliminar producto individual
+        function eliminarProductoIndividual(id, nombre) {
+            if (confirm(`¿Estás seguro de que deseas eliminar el producto "${nombre}" (ID: ${id})?`)) {
+                mostrarMensaje('⏳ Eliminando producto...', 'info');
+                
+                eliminarProductosJsonp([id])
+                    .then(response => {
+                        mostrarMensaje('✅ ' + response.message, 'success');
+                        cargarProductos(); // Recargar la lista
+                    })
+                    .catch(error => {
+                        mostrarMensaje('❌ Error: ' + error.message, 'error');
+                    });
+            }
+        }
+        
+        // Eliminar productos seleccionados
+        function eliminarProductosSeleccionados() {
+            if (productosSeleccionados.size === 0) {
+                mostrarMensaje('⚠️ No hay productos seleccionados para eliminar', 'error');
+                return;
+            }
+            
+            const ids = Array.from(productosSeleccionados);
+            const nombres = ids.map(id => {
+                const producto = productos.find(p => p.id === id);
+                return producto ? producto.nombre : id;
+            });
+            
+            // Mostrar confirmación
+            document.getElementById('confirmarEliminarTexto').textContent = 
+                `¿Estás seguro de que deseas eliminar ${ids.length} producto(s)?\n\n` +
+                nombres.slice(0, 5).map(n => `• ${n}`).join('\n') +
+                (nombres.length > 5 ? `\n... y ${nombres.length - 5} más` : '');
+            
+            abrirModal('modalConfirmarEliminar');
+        }
+        
         // ===== FUNCIONES AUXILIARES =====
         function escapeHtml(text) {
             const div = document.createElement('div');
@@ -431,38 +790,56 @@
         
         function mostrarMensaje(texto, tipo = 'info', id = 'alertContainer') {
             const contenedor = document.getElementById(id);
-            if (!contenedor) return;
-            
             contenedor.textContent = texto;
             contenedor.className = `alert alert-${tipo}`;
             contenedor.style.display = 'block';
             
-            if (tipo === 'success') {
+            if (tipo === 'success' || tipo === 'info') {
                 setTimeout(() => {
                     contenedor.style.display = 'none';
                 }, 3000);
             }
         }
         
+        function mostrarCarga(mostrar) {
+            document.getElementById('mensajeCarga').style.display = mostrar ? 'block' : 'none';
+        }
+        
         function activarAdmin() {
+            modoAdminActivo = true;
             document.getElementById('panelAdmin').style.display = 'flex';
             document.getElementById('btnAdmin').style.display = 'none';
+            document.body.classList.add('modo-admin');
             localStorage.setItem('adminActive', 'true');
+            
+            // Actualizar visibilidad de botones
+            actualizarVisibilidadBotonesEliminar();
+            
+            mostrarMensaje('✅ Modo administrador activado', 'success');
         }
         
         function desactivarAdmin() {
+            modoAdminActivo = false;
             document.getElementById('panelAdmin').style.display = 'none';
             document.getElementById('btnAdmin').style.display = 'block';
+            document.body.classList.remove('modo-admin', 'modo-eliminar');
             localStorage.removeItem('adminActive');
-            cerrarModal('modalProducto');
+            
+            // Salir del modo eliminación si está activo
+            desactivarModoEliminar();
+            
+            mostrarMensaje('✅ Sesión cerrada', 'success');
         }
         
         function abrirModal(id) {
             document.getElementById(id).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
         
         function cerrarModal(id) {
             document.getElementById(id).style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
             if (id === 'modalPassword') {
                 document.getElementById('inputPassword').value = '';
                 document.getElementById('mensajeError').style.display = 'none';
@@ -471,13 +848,13 @@
         
         // ===== EVENTOS =====
         function configurarEventos() {
-            // Admin
+            // 1. Botón Admin
             document.getElementById('btnAdmin').addEventListener('click', () => {
                 abrirModal('modalPassword');
                 document.getElementById('inputPassword').focus();
             });
             
-            // Acceder
+            // 2. Acceder Admin
             document.getElementById('btnAcceder').addEventListener('click', () => {
                 const pass = document.getElementById('inputPassword').value;
                 const errorMsg = document.getElementById('mensajeError');
@@ -485,7 +862,6 @@
                 if (pass === PASSWORD) {
                     activarAdmin();
                     cerrarModal('modalPassword');
-                    mostrarMensaje('✅ Modo admin activado', 'success');
                 } else {
                     errorMsg.textContent = '❌ Contraseña incorrecta';
                     errorMsg.style.display = 'block';
@@ -493,19 +869,19 @@
                 }
             });
             
-            // Cancelar
+            // 3. Cancelar modal
             document.getElementById('btnCancelar').addEventListener('click', () => {
                 cerrarModal('modalPassword');
             });
             
-            // Enter en contraseña
+            // 4. Enter en contraseña
             document.getElementById('inputPassword').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     document.getElementById('btnAcceder').click();
                 }
             });
             
-            // Agregar producto
+            // 5. Agregar producto
             document.getElementById('btnAgregar').addEventListener('click', () => {
                 cerrarModal('modalPassword');
                 setTimeout(() => {
@@ -514,15 +890,25 @@
                 }, 100);
             });
             
-            // Cerrar sesión
-            document.getElementById('btnCerrarAdmin').addEventListener('click', () => {
-                if (confirm('¿Cerrar sesión?')) {
-                    desactivarAdmin();
-                    mostrarMensaje('✅ Sesión cerrada', 'success');
+            // 6. ELIMINAR PRODUCTOS (botón principal)
+            document.getElementById('btnEliminar').addEventListener('click', () => {
+                if (!modoEliminarActivo) {
+                    // Activar modo eliminación
+                    activarModoEliminar();
+                } else {
+                    // Desactivar modo eliminación
+                    desactivarModoEliminar();
                 }
             });
             
-            // Formulario
+            // 7. Cerrar sesión
+            document.getElementById('btnCerrarAdmin').addEventListener('click', () => {
+                if (confirm('¿Cerrar sesión de administrador?')) {
+                    desactivarAdmin();
+                }
+            });
+            
+            // 8. Formulario agregar producto
             document.getElementById('productForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -553,7 +939,7 @@
                     
                     setTimeout(() => {
                         cerrarModal('modalProducto');
-                        cargarProductos(); // Recargar productos
+                        cargarProductos();
                     }, 1500);
                     
                 } catch(error) {
@@ -568,12 +954,60 @@
                 }
             });
             
-            // Cancelar formulario
+            // 9. Cancelar formulario
             document.getElementById('cancelarForm').addEventListener('click', () => {
                 cerrarModal('modalProducto');
             });
             
-            // Cerrar modales al hacer clic fuera
+            // 10. Eventos para checkboxes de selección
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('select-product-checkbox')) {
+                    const id = e.target.dataset.id;
+                    
+                    if (e.target.checked) {
+                        productosSeleccionados.add(id);
+                    } else {
+                        productosSeleccionados.delete(id);
+                    }
+                    
+                    console.log('Productos seleccionados:', Array.from(productosSeleccionados));
+                }
+            });
+            
+            // 11. Eliminar productos seleccionados
+            document.getElementById('btnEliminarSeleccionados').addEventListener('click', () => {
+                eliminarProductosSeleccionados();
+            });
+            
+            // 12. Cancelar eliminación desde barra de herramientas
+            document.getElementById('btnCancelarEliminar').addEventListener('click', () => {
+                desactivarModoEliminar();
+            });
+            
+            // 13. Confirmar eliminación en modal
+            document.getElementById('btnConfirmarEliminar').addEventListener('click', () => {
+                const ids = Array.from(productosSeleccionados);
+                
+                mostrarMensaje(`⏳ Eliminando ${ids.length} producto(s)...`, 'info');
+                cerrarModal('modalConfirmarEliminar');
+                
+                eliminarProductosJsonp(ids)
+                    .then(response => {
+                        mostrarMensaje('✅ ' + response.message, 'success');
+                        desactivarModoEliminar();
+                        cargarProductos(); // Recargar la lista
+                    })
+                    .catch(error => {
+                        mostrarMensaje('❌ Error: ' + error.message, 'error');
+                    });
+            });
+            
+            // 14. Cancelar eliminación en modal
+            document.getElementById('btnCancelarEliminarModal').addEventListener('click', () => {
+                cerrarModal('modalConfirmarEliminar');
+            });
+            
+            // 15. Cerrar modales al hacer clic fuera
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
@@ -582,7 +1016,7 @@
                 });
             });
             
-            // Cerrar con Escape
+            // 16. Cerrar con Escape
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     const modales = document.querySelectorAll('.modal[style*="flex"]');
