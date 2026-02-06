@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- FAVICON - Agrega aquí tu logo -->
+    <!-- FAVICON -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -17,25 +17,25 @@
             display: flex;
             align-items: center;
             padding: 10px 20px;
-            gap: 20px; /* Espacio entre elementos */
+            gap: 20px;
         }
         
         .logoContainer {
-            flex-shrink: 0; /* Evita que el logo se encoja */
+            flex-shrink: 0;
         }
         
         .busquedaContainer {
-            flex: 1; /* Toma el espacio disponible */
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centra horizontalmente */
-            max-width: 800px; /* Ancho máximo para no extenderse demasiado */
-            margin: 0 auto; /* Centra el contenedor */
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
         }
         
         .busquedaForma {
             width: 100%;
-            max-width: 600px; /* Ancho máximo de la barra */
+            max-width: 600px;
             display: flex;
         }
         
@@ -53,7 +53,7 @@
             }
             
             .busquedaContainer {
-                order: 3; /* Coloca la búsqueda al final en móviles */
+                order: 3;
                 width: 100%;
                 margin-top: 10px;
             }
@@ -62,197 +62,283 @@
                 max-width: 100%;
             }
         }
+        
+        /* ESTILOS PARA PRODUCTOS */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .producto-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .producto-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .producto-imagen-container {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .producto-imagen {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .sin-imagen {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .producto-info {
+            padding: 15px;
+        }
+        
+        .producto-nombre {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .producto-precio {
+            color: #4caf50;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+        }
+        
+        .producto-descripcion {
+            color: #666;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .producto-id {
+            color: #999;
+            font-size: 12px;
+            margin: 0;
+        }
+        
+        /* MODALES */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-contenido {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* BOTONES */
+        .botones {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .panel-admin {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-admin {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn-admin:hover {
+            background: #0056b3;
+        }
+        
+        .btn-cerrar {
+            background: #6c757d;
+        }
     </style>
 </head>
 <body>
     <!-- BARRA SUPERIOR -->
     <header class="franjaSuperior">
         <div class="logoContainer">
-            <button id="btnAdmin" class="botones">🔒Admin</button>
-            <img src="logocleans.jpg" alt="Clean Solutions Logo">
+            <button id="btnAdmin" class="botones">🔒 Admin</button>
+            <img src="logocleans.jpg" alt="Clean Solutions Logo" style="height: 40px;">
         </div>
 
-        <!-- BÚSQUEDA CENTRADA -->
+        <!-- BÚSQUEDA -->
         <div class="busquedaContainer">
             <form class="busquedaForma">
                 <input type="text" 
                        class="busquedaInput" 
-                       placeholder="🔍 Buscar productos por nombre, descripción..."
-                       aria-label="Buscar productos">
-                <button type="submit" class="busquedaBoton">
+                       placeholder="🔍 Buscar productos..."
+                       style="flex:1; padding: 10px; border: 1px solid #ddd; border-radius: 5px 0 0 5px;">
+                <button type="submit" class="busquedaBoton" style="background: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 0 5px 5px 0; cursor: pointer;">
                     🔍
                 </button>
             </form>
-            <div class="contador-resultados"></div>
         </div>
 
-        <!-- Botones de administrador ocultos al inicio -->
+        <!-- PANEL ADMIN -->
         <div id="panelAdmin" class="panel-admin" style="display: none;">
-            <button id="btnAgregar" class="btn-admin">
-                ➕ Agregar Producto
-            </button>
-            <button id="btnEliminar" class="btn-admin">
-                🗑️ Eliminar Producto
-            </button>
-            <button id="btnCerrarAdmin" class="btn-admin btn-cerrar">
-                🚪 Cerrar Sesión
-            </button>
+            <button id="btnAgregar" class="btn-admin">➕ Agregar</button>
+            <button id="btnEliminar" class="btn-admin">🗑️ Eliminar</button>
+            <button id="btnCerrarAdmin" class="btn-admin btn-cerrar">🚪 Cerrar</button>
         </div>
     </header>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
         <div class="container">
-            <h2 class="section-title">Nuestros Productos</h2>
+            <h2 style="text-align: center; margin: 30px 0; color: #333;">Nuestros Productos</h2>
             <div id="contenedorProductos" class="productos-grid"></div>
         </div>
     </main>
 
     <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <p>© 2026 Clean Solutions - Todos los derechos reservados</p>
-            <p style="margin-top: 10px; font-size: 14px; color: #999;">
-                📱 WhatsApp: +3794034489 | 📧 npamaciel@gmail.com | 📸 @clean.solutions610
-            </p>
-        </div>
+    <footer style="background: #333; color: white; padding: 20px; margin-top: 50px; text-align: center;">
+        <p>© 2026 Clean Solutions - Todos los derechos reservados</p>
+        <p style="margin-top: 10px; font-size: 14px; color: #999;">
+            📱 WhatsApp: +3794034489 | 📧 npamaciel@gmail.com | 📸 @clean.solutions610
+        </p>
     </footer>
 
-    <!-- ===== MODALES ===== -->
-    <!-- MODAL 1: CONTRASEÑA ADMIN -->
+    <!-- MODAL CONTRASEÑA -->
     <div id="modalPassword" class="modal">
         <div class="modal-contenido">
-            <h3>Acceso de administrador</h3>
-            <input type="password"
-                   id="inputPassword"
-                   placeholder="Ingresa la contraseña"
-                   aria-label="Contraseña de administrador">
-            <div class="modal-botones">
-                <button type="button" id="btnAcceder" class="btn-modal btn-aceptar">
+            <h3 style="margin-top: 0;">Acceso de administrador</h3>
+            <input type="password" id="inputPassword" placeholder="Ingresa la contraseña" 
+                   style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button id="btnAcceder" style="flex:1; background: #4caf50; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">
                     Acceder
                 </button>
-                <button type="button" id="btnCancelar" class="btn-modal btn-cancelar">
+                <button id="btnCancelar" style="flex:1; background: #f44336; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">
                     Cancelar
                 </button>
             </div>
-            <p id="mensajeError" class="mensaje-error"></p>
+            <p id="mensajeError" style="color: #f44336; margin-top: 10px; display: none;"></p>
         </div>
     </div>
 
-    <!-- MODAL 2: AGREGAR EL PRODUCTO (OCULTO) -->
-    <div id="modalProducto" class="modal" style="display: none;">
+    <!-- MODAL AGREGAR PRODUCTO -->
+    <div id="modalProducto" class="modal">
         <div class="modal-contenido" style="max-width: 500px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="margin: 0;">➕ Agregar Nuevo Producto</h3>
-                <button id="cerrarModalProducto" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">
-                    ×
-                </button>
+                <button id="cerrarModalProducto" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">×</button>
             </div>
             
-            <!-- FORMULARIO -->
             <form id="productForm">
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: bold;">ID del producto *</label>
-                    <input type="text" id="id" placeholder="Ej: PROD001" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="text" id="id" placeholder="Ej: PROD001" required 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nombre del producto *</label>
-                    <input type="text" id="nombre" placeholder="Ej: Champú Natural" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nombre *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Jabón Antibacterial" required 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                 </div>
                 
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: bold;">Precio *</label>
-                    <input type="text" id="precio" placeholder="Ej: 29.99" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="text" id="precio" placeholder="Ej: 29.99" required 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">URL de la imagen</label>
-                    <input type="text" id="imagen" placeholder="https://ejemplo.com/imagen.jpg" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">URL de imagen</label>
+                    <input type="text" id="imagen" placeholder="https://ejemplo.com/imagen.jpg" 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                 </div>
                 
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: bold;">Descripción</label>
-                    <textarea id="descripcion" placeholder="Descripción del producto" rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                    <textarea id="descripcion" placeholder="Descripción del producto" rows="3" 
+                              style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
                 </div>
 
-                <!-- BOTONES DEL FORMULARIO -->
                 <div style="display: flex; gap: 10px">
-                    <button type="submit" style="
-                        flex: 2;
-                        background: #4caf50;
-                        color: white;
-                        padding: 12px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-weight: bold;
-                    ">
+                    <button type="submit" style="flex:2; background: #4caf50; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
                         ✅ Guardar Producto
                     </button>
-                    <button type="button" id="cancelarFormProducto" style="
-                        flex: 1;
-                        background: #f44336;
-                        color: white;
-                        padding: 12px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    ">
+                    <button type="button" id="cancelarFormProducto" style="flex:1; background: #f44336; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer;">
                         ❌ Cancelar
                     </button>
                 </div>
             </form>
             
-            <!-- MENSAJE DE ESTADO -->
-            <div id="message" style="
-                margin-top: 15px;
-                padding: 10px;
-                border-radius: 5px;
-                text-align: center;
-                font-weight: bold;
-                display: none;
-            "></div>
+            <div id="message" style="margin-top: 15px; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; display: none;"></div>
         </div>
     </div>
 
-    <!-- SCRIPT ÚNICO CON JSONP -->
+    <!-- SCRIPT PRINCIPAL -->
     <script>
-    // ===== CONFIGURACIÓN ===== //
+    // ===== CONFIGURACIÓN =====
     const CONTRASEÑA_ADMIN = 'Ragnar2025';
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxU7yUE7N0pEFyq8iI2uDxv-Zht5vTLej6Z1AMvOz7rK-BEtAILDwXQ-rzn_YdUMvJL/exec';
     
     console.log('🚀 Clean Solutions - Sistema iniciado');
     console.log('✅ API URL:', SCRIPT_URL);
     
-    // ===== 1. MOSTRAR MODAL AL CLIC EN ADMIN ===== //
-    document.getElementById('btnAdmin').addEventListener('click', function() {
-        console.log('🔓 Botón Admin presionado');
-        const modal = document.getElementById('modalPassword');
-        modal.style.display = 'flex';
+    // ===== 1. SISTEMA ADMIN =====
+    document.getElementById('btnAdmin').addEventListener('click', () => {
+        console.log('🔓 Botón Admin clickeado');
+        document.getElementById('modalPassword').style.display = 'flex';
         document.body.style.overflow = 'hidden';
         document.getElementById('inputPassword').focus();
-        console.log('🪟 Modal mostrado');
     });
     
-    // ===== 2. BOTÓN ACCEDER ===== //
-    document.getElementById('btnAcceder').addEventListener('click', function() {
+    document.getElementById('btnAcceder').addEventListener('click', () => {
         const input = document.getElementById('inputPassword');
         const password = input.value;
         
-        console.log('🔑 Verificando contraseña:', password);
-        
         if (password === CONTRASEÑA_ADMIN) {
-            console.log('✅ Contraseña CORRECTA');
+            console.log('✅ Contraseña correcta');
             document.getElementById('modalPassword').style.display = 'none';
             document.body.style.overflow = 'auto';
             document.getElementById('panelAdmin').style.display = 'block';
             document.getElementById('btnAdmin').style.display = 'none';
             input.value = '';
+            localStorage.setItem('adminLoggedIn', 'true');
             alert('🎉 ¡Acceso de administrador concedido!');
-            console.log('👨‍💼 Panel admin activado');
         } else {
-            console.log('❌ Contraseña INCORRECTA');
+            console.log('❌ Contraseña incorrecta');
             document.getElementById('mensajeError').textContent = '❌ Contraseña incorrecta';
             document.getElementById('mensajeError').style.display = 'block';
             input.value = '';
@@ -260,85 +346,65 @@
         }
     });
     
-    // ===== 3. BOTÓN CANCELAR ===== //
-    document.getElementById('btnCancelar').addEventListener('click', function() {
-        console.log('🚫 Cancelando...');
+    document.getElementById('btnCancelar').addEventListener('click', () => {
         document.getElementById('modalPassword').style.display = 'none';
         document.body.style.overflow = 'auto';
         document.getElementById('inputPassword').value = '';
         document.getElementById('mensajeError').style.display = 'none';
     });
     
-    // ===== 4. ENTER EN INPUT ===== //
-    document.getElementById('inputPassword').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            console.log('↵ Enter presionado');
-            document.getElementById('btnAcceder').click();
-        }
+    document.getElementById('inputPassword').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('btnAcceder').click();
     });
     
-    console.log('✅ Sistema configurado correctamente');
-
-    // ===== 5. BOTONES DEL PANEL ADMIN ===== //
-    document.getElementById('btnAgregar').addEventListener('click', function() {
-        console.log('➕ Botón "Agregar Producto" clickeado');
+    // ===== 2. PANEL ADMIN =====
+    document.getElementById('btnAgregar').addEventListener('click', () => {
+        console.log('➕ Agregar producto');
         document.getElementById('panelAdmin').style.display = 'none';
         document.getElementById('modalProducto').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        console.log('📋 Modal producto mostrado');
     });
     
-    document.getElementById('btnEliminar').addEventListener('click', function() {
-        console.log('🗑️ Botón "Eliminar Producto" clickeado');
-        alert('🚧 Función "Eliminar Producto" en desarrollo.\nPróximamente podrás seleccionar productos para eliminar.');
+    document.getElementById('btnEliminar').addEventListener('click', () => {
+        alert('🚧 Función "Eliminar Producto" en desarrollo.');
     });
     
-    document.getElementById('btnCerrarAdmin').addEventListener('click', function() {
-        console.log('🚪 Botón "Cerrar Sesión" clickeado');
+    document.getElementById('btnCerrarAdmin').addEventListener('click', () => {
+        console.log('🚪 Cerrando sesión');
         document.getElementById('panelAdmin').style.display = 'none';
         document.getElementById('btnAdmin').style.display = 'flex';
         localStorage.removeItem('adminLoggedIn');
-        alert('👋 Sesión de administrador cerrada correctamente.');
-        console.log('✅ Sesión cerrada');
+        alert('👋 Sesión cerrada correctamente.');
     });
     
-    // ===== 6. MODAL AGREGAR PRODUCTO - BOTONES DE CERRAR ===== //
+    // ===== 3. MODAL PRODUCTO =====
+    function cerrarModalProducto() {
+        document.getElementById('modalProducto').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.getElementById('productForm').reset();
+        document.getElementById('message').style.display = 'none';
+        document.getElementById('panelAdmin').style.display = 'block';
+    }
+    
     document.getElementById('cerrarModalProducto').addEventListener('click', cerrarModalProducto);
     document.getElementById('cancelarFormProducto').addEventListener('click', cerrarModalProducto);
     
-    function cerrarModalProducto() {
-        const modalProducto = document.getElementById('modalProducto');
-        modalProducto.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        const form = document.getElementById('productForm');
-        if (form) form.reset();
-        const messageDiv = document.getElementById('message');
-        if (messageDiv) messageDiv.style.display = 'none';
-        document.getElementById('panelAdmin').style.display = 'block';
-        console.log('📦 Modal producto cerrado, panel admin restaurado');
-    }
-    
-    document.getElementById('modalProducto').addEventListener('click', function(e) {
-        if (e.target === this) {
-            console.log('🎯 Clic fuera del modal');
+    document.getElementById('modalProducto').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modalProducto')) {
             cerrarModalProducto();
         }
     });
     
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const modalProducto = document.getElementById('modalProducto');
-            if (modalProducto.style.display === 'flex') {
-                console.log('⎋ Tecla ESC presionada');
-                cerrarModalProducto();
-            }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('modalProducto').style.display === 'flex') {
+            cerrarModalProducto();
         }
     });
     
-    // ===== 7. ENVÍO DEL FORMULARIO CON JSONP ===== //
+    // ===== 4. ENVÍO DE PRODUCTO (JSONP) =====
     document.getElementById('productForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        console.log('📤 Enviando formulario de producto...');
+        console.log('📤 Enviando producto...');
         
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
@@ -353,68 +419,55 @@
             descripcion: document.getElementById('descripcion').value.trim()
         };
         
-        console.log('📝 Datos a enviar:', productData);
-        
+        // Validación
         if (!productData.id || !productData.nombre || !productData.precio) {
-            mostrarMensaje('❌ Completa los campos obligatorios (ID, Nombre, Precio)', 'error');
+            mostrarMensaje('❌ Completa ID, Nombre y Precio', 'error');
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
             return;
         }
         
-        mostrarMensaje('⏳ Enviando producto a Google Sheets...', 'info');
+        mostrarMensaje('⏳ Enviando producto...', 'info');
         
-        // USAR JSONP PARA EVITAR CORS
-        const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const form = this;
+        // JSONP - Método que funciona con CORS
+        const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const url = `${SCRIPT_URL}?callback=${callbackName}&action=add&id=${encodeURIComponent(productData.id)}&nombre=${encodeURIComponent(productData.nombre)}&precio=${encodeURIComponent(productData.precio)}&imagen=${encodeURIComponent(productData.imagen)}&descripcion=${encodeURIComponent(productData.descripcion)}`;
         
-        // Crear URL con parámetros
-        const params = new URLSearchParams();
-        params.append('callback', callbackName);
-        params.append('action', 'add');
-        params.append('id', productData.id);
-        params.append('nombre', productData.nombre);
-        params.append('precio', productData.precio);
-        params.append('imagen', productData.imagen);
-        params.append('descripcion', productData.descripcion);
+        console.log('📡 URL JSONP:', url);
         
-        const urlConParametros = SCRIPT_URL + '?' + params.toString();
-        console.log('🔗 URL JSONP:', urlConParametros);
-        
-        // Definir función de callback
         window[callbackName] = function(response) {
-            console.log('📡 Respuesta JSONP recibida:', response);
-            
-            // Limpiar
+            console.log('✅ Respuesta recibida:', response);
             delete window[callbackName];
-            if (script.parentNode) {
-                document.head.removeChild(script);
-            }
             
             if (response && response.success) {
                 mostrarMensaje('✅ ' + response.message, 'success');
-                form.reset();
+                document.getElementById('productForm').reset();
                 
+                // Cerrar modal y recargar productos después de 1.5 segundos
                 setTimeout(() => {
                     cerrarModalProducto();
-                    console.log('🔄 Recargando página...');
-                    window.location.reload();
+                    cargarProductos();
                 }, 1500);
                 
             } else {
                 mostrarMensaje('❌ Error: ' + (response?.error || 'Desconocido'), 'error');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+            }
+            
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            
+            // Limpiar script
+            if (script.parentNode) {
+                document.head.removeChild(script);
             }
         };
         
-        // Crear y agregar script
         const script = document.createElement('script');
-        script.src = urlConParametros;
+        script.src = url;
         
         script.onerror = function() {
-            console.error('❌ Error cargando script JSONP');
-            mostrarMensaje('❌ Error de conexión con el servidor', 'error');
+            console.error('❌ Error cargando script');
+            mostrarMensaje('❌ Error de conexión', 'error');
             delete window[callbackName];
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
@@ -427,69 +480,49 @@
         document.head.appendChild(script);
     });
     
-    // ===== 8. FUNCIÓN PARA MOSTRAR MENSAJES ===== //
-    function mostrarMensaje(texto, tipo = 'info') {
+    // ===== 5. FUNCIÓN PARA MOSTRAR MENSAJES =====
+    function mostrarMensaje(texto, tipo) {
         const messageDiv = document.getElementById('message');
-        if (!messageDiv) return;
-        
         messageDiv.textContent = texto;
         messageDiv.style.display = 'block';
         
         switch(tipo) {
             case 'success':
+                messageDiv.style.background = '#d4edda';
                 messageDiv.style.color = '#155724';
-                messageDiv.style.backgroundColor = '#d4edda';
                 messageDiv.style.border = '1px solid #c3e6cb';
                 break;
             case 'error':
+                messageDiv.style.background = '#f8d7da';
                 messageDiv.style.color = '#721c24';
-                messageDiv.style.backgroundColor = '#f8d7da';
                 messageDiv.style.border = '1px solid #f5c6cb';
                 break;
             case 'info':
+                messageDiv.style.background = '#d1ecf1';
                 messageDiv.style.color = '#0c5460';
-                messageDiv.style.backgroundColor = '#d1ecf1';
                 messageDiv.style.border = '1px solid #bee5eb';
                 break;
         }
     }
     
-    // ===== 9. VERIFICAR SESIÓN AL CARGAR ===== //
-    document.addEventListener('DOMContentLoaded', function() {
-        if (localStorage.getItem('adminLoggedIn') === 'true') {
-            console.log('🔄 Restaurando sesión admin desde localStorage');
-            document.getElementById('panelAdmin').style.display = 'block';
-            document.getElementById('btnAdmin').style.display = 'none';
-        }
-    });
-
-    // ===== 10. CARGAR Y MOSTRAR PRODUCTOS CON JSONP ===== //
+    // ===== 6. CARGAR PRODUCTOS =====
     function cargarProductos() {
         console.log('📥 Cargando productos...');
+        const contenedor = document.getElementById('contenedorProductos');
+        contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">⏳ Cargando productos...</div>';
         
         const callbackName = 'loadProducts_' + Date.now();
-        const contenedor = document.getElementById('contenedorProductos');
-        
-        // Mostrar cargando
-        contenedor.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">Cargando productos...</p>';
-        
-        // Crear URL con callback
         const url = SCRIPT_URL + '?callback=' + callbackName;
         
-        // Definir callback
         window[callbackName] = function(data) {
             console.log('📊 Productos recibidos:', data);
-            
-            // Limpiar
             delete window[callbackName];
-            if (script.parentNode) {
-                document.head.removeChild(script);
-            }
             
             contenedor.innerHTML = '';
             
             if (data.productos && data.productos.length > 0) {
                 data.productos.forEach(producto => {
+                    // Verificar si hay imagen válida
                     let imagenHTML = '';
                     if (producto.imagen && producto.imagen.trim() !== '' && 
                         (producto.imagen.startsWith('http://') || producto.imagen.startsWith('https://'))) {
@@ -513,7 +546,7 @@
                             <h3 class="producto-nombre">${producto.nombre}</h3>
                             <p class="producto-precio">$${producto.precio}</p>
                             <p class="producto-descripcion">${producto.descripcion || 'Sin descripción'}</p>
-                            <p class="producto-id"><small>ID: ${producto.id}</small></p>
+                            <p class="producto-id">ID: ${producto.id}</p>
                         </div>
                     </div>
                     `;
@@ -522,39 +555,42 @@
                 
                 console.log(`✅ ${data.productos.length} productos mostrados`);
             } else {
-                contenedor.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">No hay productos disponibles. Agrega algunos desde el panel de administración.</p>';
+                contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">📭 No hay productos disponibles. Agrega algunos desde el panel de administración.</div>';
                 console.log('📭 No hay productos para mostrar');
+            }
+            
+            // Limpiar script
+            if (script.parentNode) {
+                document.head.removeChild(script);
             }
         };
         
-        // Crear y agregar script
         const script = document.createElement('script');
         script.src = url;
         
         script.onerror = function() {
             console.error('❌ Error cargando productos');
-            contenedor.innerHTML = '<p style="text-align: center; color: red;">Error al cargar productos. Intenta recargar la página.</p>';
+            contenedor.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:red;">❌ Error al cargar productos. Intenta recargar la página.</div>';
             delete window[callbackName];
         };
         
         document.head.appendChild(script);
     }
-
-    // Cargar productos cuando la página se abra
-    document.addEventListener('DOMContentLoaded', cargarProductos);
-    </script>
-
-    <!-- BOTÓN DE PRUEBA TEMPORAL -->
-    <button onclick="pruebaModal()" 
-            style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; padding: 10px; background: blue; color: white;">
-        🔧 PRUEBA MODAL
-    </button>
-
-    <script>
-    function pruebaModal() {
-        console.log('🔧 Iniciando prueba manual...');
-        document.getElementById('modalPassword').style.display = 'flex';
-    }
+    
+    // ===== 7. INICIALIZAR =====
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('✅ Página cargada');
+        
+        // Restaurar sesión admin si existe
+        if (localStorage.getItem('adminLoggedIn') === 'true') {
+            console.log('🔄 Restaurando sesión admin');
+            document.getElementById('panelAdmin').style.display = 'block';
+            document.getElementById('btnAdmin').style.display = 'none';
+        }
+        
+        // Cargar productos
+        cargarProductos();
+    });
     </script>
 </body>
 </html>
