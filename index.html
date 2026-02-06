@@ -216,11 +216,10 @@
         </div>
     </div>
 
-    <!-- SCRIPT ÚNICO -->
+    <!-- SCRIPT ÚNICO CON JSONP -->
     <script>
     // ===== CONFIGURACIÓN ===== //
     const CONTRASEÑA_ADMIN = 'Ragnar2025';
-    // NUEVA URL ACTUALIZADA ↓↓↓
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxU7yUE7N0pEFyq8iI2uDxv-Zht5vTLej6Z1AMvOz7rK-BEtAILDwXQ-rzn_YdUMvJL/exec';
     
     console.log('🚀 Clean Solutions - Sistema iniciado');
@@ -229,17 +228,10 @@
     // ===== 1. MOSTRAR MODAL AL CLIC EN ADMIN ===== //
     document.getElementById('btnAdmin').addEventListener('click', function() {
         console.log('🔓 Botón Admin presionado');
-        
         const modal = document.getElementById('modalPassword');
-        console.log('📦 Modal encontrado:', modal);
-        
-        // Mostrar modal
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        
-        // Enfocar input
         document.getElementById('inputPassword').focus();
-        
         console.log('🪟 Modal mostrado');
     });
     
@@ -252,23 +244,12 @@
         
         if (password === CONTRASEÑA_ADMIN) {
             console.log('✅ Contraseña CORRECTA');
-            
-            // Ocultar modal
             document.getElementById('modalPassword').style.display = 'none';
             document.body.style.overflow = 'auto';
-            
-            // Mostrar panel admin
             document.getElementById('panelAdmin').style.display = 'block';
-
-            // Ocultar boton admin
             document.getElementById('btnAdmin').style.display = 'none';
-            
-            // Limpiar input
             input.value = '';
-            
-            // Mensaje de éxito
             alert('🎉 ¡Acceso de administrador concedido!');
-            
             console.log('👨‍💼 Panel admin activado');
         } else {
             console.log('❌ Contraseña INCORRECTA');
@@ -299,86 +280,44 @@
     console.log('✅ Sistema configurado correctamente');
 
     // ===== 5. BOTONES DEL PANEL ADMIN ===== //
-    
-    // A. BOTÓN AGREGAR PRODUCTO
     document.getElementById('btnAgregar').addEventListener('click', function() {
         console.log('➕ Botón "Agregar Producto" clickeado');
-        
-        // 1. Ocultar panel admin
         document.getElementById('panelAdmin').style.display = 'none';
-        
-        // 2. Mostrar modal de producto
-        const modalProducto = document.getElementById('modalProducto');
-        modalProducto.style.display = 'flex';
+        document.getElementById('modalProducto').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        
         console.log('📋 Modal producto mostrado');
     });
     
-    // B. BOTÓN ELIMINAR PRODUCTO (por ahora solo mensaje)
     document.getElementById('btnEliminar').addEventListener('click', function() {
         console.log('🗑️ Botón "Eliminar Producto" clickeado');
         alert('🚧 Función "Eliminar Producto" en desarrollo.\nPróximamente podrás seleccionar productos para eliminar.');
     });
     
-    // C. BOTÓN CERRAR SESIÓN
     document.getElementById('btnCerrarAdmin').addEventListener('click', function() {
         console.log('🚪 Botón "Cerrar Sesión" clickeado');
-        
-        // 1. Ocultar panel admin
         document.getElementById('panelAdmin').style.display = 'none';
-
-        // 2. MOSTRAR botón rojo Admin otra vez (NUEVO)
         document.getElementById('btnAdmin').style.display = 'flex';
-        
-        // 3. Limpiar localStorage
         localStorage.removeItem('adminLoggedIn');
-        
-        // 4. Mensaje de confirmación
         alert('👋 Sesión de administrador cerrada correctamente.');
-        
         console.log('✅ Sesión cerrada');
     });
     
     // ===== 6. MODAL AGREGAR PRODUCTO - BOTONES DE CERRAR ===== //
+    document.getElementById('cerrarModalProducto').addEventListener('click', cerrarModalProducto);
+    document.getElementById('cancelarFormProducto').addEventListener('click', cerrarModalProducto);
     
-    // A. BOTÓN X PARA CERRAR
-    document.getElementById('cerrarModalProducto').addEventListener('click', function() {
-        console.log('❌ Botón X clickeado');
-        cerrarModalProducto();
-    });
-    
-    // B. BOTÓN CANCELAR EN FORMULARIO
-    document.getElementById('cancelarFormProducto').addEventListener('click', function() {
-        console.log('🚫 Botón Cancelar clickeado');
-        cerrarModalProducto();
-    });
-    
-    // C. FUNCIÓN PARA CERRAR MODAL PRODUCTO
     function cerrarModalProducto() {
         const modalProducto = document.getElementById('modalProducto');
         modalProducto.style.display = 'none';
         document.body.style.overflow = 'auto';
-        
-        // Limpiar formulario si existe
         const form = document.getElementById('productForm');
-        if (form) {
-            form.reset();
-        }
-        
-        // Ocultar mensajes
+        if (form) form.reset();
         const messageDiv = document.getElementById('message');
-        if (messageDiv) {
-            messageDiv.style.display = 'none';
-        }
-        
-        // MOSTRAR PANEL ADMIN NUEVAMENTE (NUEVA LÍNEA)
+        if (messageDiv) messageDiv.style.display = 'none';
         document.getElementById('panelAdmin').style.display = 'block';
-        
         console.log('📦 Modal producto cerrado, panel admin restaurado');
     }
     
-    // D. CERRAR AL HACER CLIC FUERA DEL MODAL
     document.getElementById('modalProducto').addEventListener('click', function(e) {
         if (e.target === this) {
             console.log('🎯 Clic fuera del modal');
@@ -386,7 +325,6 @@
         }
     });
     
-    // E. CERRAR CON TECLA ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             const modalProducto = document.getElementById('modalProducto');
@@ -397,20 +335,16 @@
         }
     });
     
-    // ===== 7. ENVÍO DEL FORMULARIO DE PRODUCTO ===== //
-    document.getElementById('productForm').addEventListener('submit', async function(e) {
+    // ===== 7. ENVÍO DEL FORMULARIO CON JSONP ===== //
+    document.getElementById('productForm').addEventListener('submit', function(e) {
         e.preventDefault();
         console.log('📤 Enviando formulario de producto...');
         
-        // Obtener botón de enviar
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
-        
-        // Mostrar estado de carga
         submitBtn.textContent = '⏳ Enviando...';
         submitBtn.disabled = true;
         
-        // Obtener datos del formulario
         const productData = {
             id: document.getElementById('id').value.trim(),
             nombre: document.getElementById('nombre').value.trim(),
@@ -421,7 +355,6 @@
         
         console.log('📝 Datos a enviar:', productData);
         
-        // Validación básica
         if (!productData.id || !productData.nombre || !productData.precio) {
             mostrarMensaje('❌ Completa los campos obligatorios (ID, Nombre, Precio)', 'error');
             submitBtn.textContent = originalText;
@@ -429,71 +362,69 @@
             return;
         }
         
-        // Mostrar mensaje de "enviando"
         mostrarMensaje('⏳ Enviando producto a Google Sheets...', 'info');
         
-        try {
-            console.log('📤 Enviando producto a:', SCRIPT_URL);
+        // USAR JSONP PARA EVITAR CORS
+        const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const form = this;
+        
+        // Crear URL con parámetros
+        const params = new URLSearchParams();
+        params.append('callback', callbackName);
+        params.append('action', 'add');
+        params.append('id', productData.id);
+        params.append('nombre', productData.nombre);
+        params.append('precio', productData.precio);
+        params.append('imagen', productData.imagen);
+        params.append('descripcion', productData.descripcion);
+        
+        const urlConParametros = SCRIPT_URL + '?' + params.toString();
+        console.log('🔗 URL JSONP:', urlConParametros);
+        
+        // Definir función de callback
+        window[callbackName] = function(response) {
+            console.log('📡 Respuesta JSONP recibida:', response);
             
-            // Construir URL con parámetros GET (EVITA CORS)
-            const params = new URLSearchParams({
-                action: 'add',
-                id: productData.id,
-                nombre: productData.nombre,
-                precio: productData.precio,
-                imagen: productData.imagen || '',
-                descripcion: productData.descripcion || ''
-            });
-            
-            const urlConParametros = SCRIPT_URL + '?' + params.toString();
-            console.log('🔗 URL completa:', urlConParametros);
-            
-            // Enviar como GET para evitar CORS preflight
-            const response = await fetch(urlConParametros, {
-                method: 'GET'
-            });
-            
-            console.log('📡 Status de respuesta:', response.status);
-            
-            const responseText = await response.text();
-            console.log('📝 Respuesta completa:', responseText);
-            
-            let result;
-            try {
-                result = JSON.parse(responseText);
-            } catch(parseError) {
-                console.warn('⚠️ No se pudo parsear JSON:', parseError);
-                result = { 
-                    success: false, 
-                    error: 'Formato de respuesta inválido' 
-                };
+            // Limpiar
+            delete window[callbackName];
+            if (script.parentNode) {
+                document.head.removeChild(script);
             }
             
-            if (result.success) {
-                mostrarMensaje('✅ ' + result.message, 'success');
+            if (response && response.success) {
+                mostrarMensaje('✅ ' + response.message, 'success');
+                form.reset();
                 
-                // Limpiar formulario
-                this.reset();
-                
-                // Cerrar modal y recargar después de 1.5 segundos
                 setTimeout(() => {
                     cerrarModalProducto();
-                    console.log('🔄 Recargando página para ver cambios...');
+                    console.log('🔄 Recargando página...');
                     window.location.reload();
                 }, 1500);
                 
             } else {
-                mostrarMensaje('❌ Error: ' + (result.error || 'Desconocido'), 'error');
+                mostrarMensaje('❌ Error: ' + (response?.error || 'Desconocido'), 'error');
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
             }
-            
-        } catch(error) {
-            console.error('❌ Error de red:', error);
-            mostrarMensaje('🌐 Error de conexión: ' + error.message, 'error');
-            submitBtn.textContent = '🔄 Reintentar';
+        };
+        
+        // Crear y agregar script
+        const script = document.createElement('script');
+        script.src = urlConParametros;
+        
+        script.onerror = function() {
+            console.error('❌ Error cargando script JSONP');
+            mostrarMensaje('❌ Error de conexión con el servidor', 'error');
+            delete window[callbackName];
+            submitBtn.textContent = originalText;
             submitBtn.disabled = false;
-        }
+            
+            if (script.parentNode) {
+                document.head.removeChild(script);
+            }
+        };
+        
+        document.head.appendChild(script);
     });
     
     // ===== 8. FUNCIÓN PARA MOSTRAR MENSAJES ===== //
@@ -504,7 +435,6 @@
         messageDiv.textContent = texto;
         messageDiv.style.display = 'block';
         
-        // Colores según tipo
         switch(tipo) {
             case 'success':
                 messageDiv.style.color = '#155724';
@@ -533,35 +463,44 @@
         }
     });
 
-    // ===== 10. CARGAR Y MOSTRAR PRODUCTOS ===== //
-    async function cargarProductos() {
-        try {
-            console.log('📥 Cargando productos desde Google Sheets...');
-            
-            const response = await fetch(SCRIPT_URL);
-            const data = await response.json();
-            
+    // ===== 10. CARGAR Y MOSTRAR PRODUCTOS CON JSONP ===== //
+    function cargarProductos() {
+        console.log('📥 Cargando productos...');
+        
+        const callbackName = 'loadProducts_' + Date.now();
+        const contenedor = document.getElementById('contenedorProductos');
+        
+        // Mostrar cargando
+        contenedor.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">Cargando productos...</p>';
+        
+        // Crear URL con callback
+        const url = SCRIPT_URL + '?callback=' + callbackName;
+        
+        // Definir callback
+        window[callbackName] = function(data) {
             console.log('📊 Productos recibidos:', data);
             
-            const contenedor = document.getElementById('contenedorProductos');
+            // Limpiar
+            delete window[callbackName];
+            if (script.parentNode) {
+                document.head.removeChild(script);
+            }
+            
             contenedor.innerHTML = '';
             
             if (data.productos && data.productos.length > 0) {
                 data.productos.forEach(producto => {
-                    // Verificar si hay imagen válida
                     let imagenHTML = '';
                     if (producto.imagen && producto.imagen.trim() !== '' && 
                         (producto.imagen.startsWith('http://') || producto.imagen.startsWith('https://'))) {
-                        // Si hay URL de imagen válida
                         imagenHTML = `
                             <img src="${producto.imagen}" 
                                  alt="${producto.nombre}" 
                                  class="producto-imagen"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                             <div class="sin-imagen" style="display: none;">🖼️ Imagen no disponible</div>
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="sin-imagen" style="display: none;">🖼️ Imagen no disponible</div>
                         `;
                     } else {
-                        // Si NO hay imagen o URL inválida
                         imagenHTML = '<div class="sin-imagen">📦 Sin imagen</div>';
                     }
                     
@@ -586,11 +525,19 @@
                 contenedor.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">No hay productos disponibles. Agrega algunos desde el panel de administración.</p>';
                 console.log('📭 No hay productos para mostrar');
             }
-        } catch(error) {
-            console.error('❌ Error al cargar productos:', error);
-            document.getElementById('contenedorProductos').innerHTML = 
-                '<p style="text-align: center; color: red;">Error al cargar productos. Intenta recargar la página.</p>';
-        }
+        };
+        
+        // Crear y agregar script
+        const script = document.createElement('script');
+        script.src = url;
+        
+        script.onerror = function() {
+            console.error('❌ Error cargando productos');
+            contenedor.innerHTML = '<p style="text-align: center; color: red;">Error al cargar productos. Intenta recargar la página.</p>';
+            delete window[callbackName];
+        };
+        
+        document.head.appendChild(script);
     }
 
     // Cargar productos cuando la página se abra
@@ -604,7 +551,6 @@
     </button>
 
     <script>
-    // Función de prueba temporal (si aún existe)
     function pruebaModal() {
         console.log('🔧 Iniciando prueba manual...');
         document.getElementById('modalPassword').style.display = 'flex';
