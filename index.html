@@ -126,12 +126,13 @@
             const isAdmin = localStorage.getItem('sesionClean') === 'true';
 
             lista.forEach(p => {
+                const imgUrl = p.imagen || p.img || 'https://via.placeholder.com/400';
                 const card = document.createElement('div');
                 card.className = 'item-card';
                 card.onclick = () => verDetalle(p.id);
                 card.innerHTML = `
                     <div class="item-img">
-                        <img src="${p.imagen || 'https://via.placeholder.com/400'}" alt="">
+                        <img src="${imgUrl}" alt="">
                         ${isAdmin ? `<button onclick="event.stopPropagation(); ejecutarBorrar('${p.id}')" class="quick-del">✕</button>` : ''}
                     </div>
                     <div class="item-info">
@@ -159,7 +160,7 @@
         function verDetalle(id) {
             const p = productosLocales.find(x => x.id == id);
             if(!p) return;
-            document.getElementById('det-img').src = p.imagen || 'https://via.placeholder.com/400';
+            document.getElementById('det-img').src = p.imagen || p.img || 'https://via.placeholder.com/400';
             document.getElementById('det-nombre').innerText = p.nombre;
             document.getElementById('det-precio').innerText = `$${p.precio}`;
             document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción disponible.';
@@ -216,15 +217,21 @@
             const fId = document.getElementById('f_id');
             fId.disabled = false;
             document.getElementById('formularioPrincipal').reset();
+            
             if(tipo === 'edit') {
                 const p = productosLocales.find(x => x.id == idProd);
                 if(p) {
-                    fId.value = p.id; fId.disabled = true;
-                    document.getElementById('f_nombre').value = p.nombre;
-                    document.getElementById('f_precio').value = p.precio;
-                    document.getElementById('f_img').value = p.imagen;
-                    document.getElementById('f_desc').value = p.descripcion;
+                    fId.value = p.id; 
+                    fId.disabled = true;
+                    document.getElementById('f_nombre').value = p.nombre || '';
+                    document.getElementById('f_precio').value = p.precio || '';
+                    // SOLUCIÓN AL UNDEFINED:
+                    document.getElementById('f_img').value = p.imagen || p.img || '';
+                    document.getElementById('f_desc').value = p.descripcion || '';
+                    document.getElementById('tituloForm').innerText = 'Modificar Producto';
                 }
+            } else {
+                document.getElementById('tituloForm').innerText = 'Agregar Nuevo Producto';
             }
             abrirModal('modalDeProducto');
         }
