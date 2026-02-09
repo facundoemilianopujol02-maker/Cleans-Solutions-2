@@ -10,29 +10,21 @@
 
     <header class="navbar">
         <div class="nav-container">
-            <div class="nav-left">
-                <div class="brand">
-                    <img src="logo.png" alt="Logo" class="logo-img">
-                    <div class="brand-text">
-                        <span class="brand-title">CLEAN</span>
-                        <span class="brand-sub">SOLUTIONS</span>
-                    </div>
-                </div>
+            <div class="brand">
+                <img src="logo.png" alt="Logo" class="logo-img">
+                <span class="brand-name">CLEAN SOLUTIONS</span>
             </div>
             
-            <div class="nav-center">
-                <div class="search-box">
-                    <input type="text" id="inputBusqueda" placeholder="¿Qué estás buscando?" onkeyup="filtrarProductos()">
-                    <span class="search-icon">🔍</span>
-                </div>
+            <div class="search-container">
+                <input type="text" id="inputBusqueda" placeholder="Buscar productos..." onkeyup="filtrarProductos()">
             </div>
             
-            <div class="nav-right">
-                <button id="btnEntrarAdmin" class="btn-login-minimal" onclick="abrirModal('modalDeLogin')">🔑 Admin</button>
-                <div id="panelAdminGlobal" class="admin-controls" style="display: none;">
-                    <button onclick="prepararFormulario('add')" class="btn-circle bg-verde">➕</button>
-                    <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-circle bg-naranja">🗑️</button>
-                    <button onclick="salirAdmin()" class="btn-circle bg-gris">🚪</button>
+            <div class="nav-actions">
+                <button id="btnEntrarAdmin" class="btn-admin" onclick="abrirModal('modalDeLogin')">Acceso Admin</button>
+                <div id="panelAdminGlobal" style="display: none; gap: 10px;">
+                    <button onclick="prepararFormulario('add')" class="btn-pro bg-verde">➕ Agregar</button>
+                    <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-pro bg-naranja">🗑️ Modo Borrar</button>
+                    <button onclick="salirAdmin()" class="btn-pro bg-gris">Salir</button>
                 </div>
             </div>
         </div>
@@ -40,53 +32,48 @@
 
     <main class="content-wrapper">
         <div id="contenedorProductos" class="product-grid">
-            <p class="loading-text">Sincronizando catálogo...</p>
+            <p>Cargando productos...</p>
         </div>
     </main>
 
     <div id="modalVerProducto" class="modal-overlay">
         <div class="modal-card detail-card">
-            <button class="close-x" onclick="cerrarModal('modalVerProducto')">&times;</button>
-            <div class="detail-grid">
-                <div class="detail-image-side">
+            <span class="close-x" onclick="cerrarModal('modalVerProducto')">&times;</span>
+            <div class="detail-content-wrapper">
+                <div class="detail-img-box">
                     <img id="det-img" src="" alt="">
                 </div>
-                <div class="detail-info-side">
+                <div class="detail-text-box">
                     <h2 id="det-nombre"></h2>
-                    <div class="price-tag" id="det-precio"></div>
-                    <div class="divider"></div>
-                    <p id="det-desc" class="description-text"></p>
-                    <a href="https://wa.me/543794034489" target="_blank" class="btn-whatsapp">
-                        <span>Consultar por WhatsApp</span>
-                    </a>
+                    <p class="detail-price" id="det-precio"></p>
+                    <p id="det-desc" class="detail-description"></p>
+                    <a href="https://wa.me/543794034489" target="_blank" class="btn-whatsapp">Consultar por WhatsApp</a>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="modalDeLogin" class="modal-overlay">
-        <div class="modal-card floating-card">
-            <button class="close-x" onclick="cerrarModal('modalDeLogin')">&times;</button>
-            <h3>Acceso Administrativo</h3>
-            <div class="form-group">
-                <input type="password" id="inputClave" placeholder="Introduce la clave">
-            </div>
-            <button onclick="validarAcceso()" class="btn-full bg-azul">Ingresar</button>
-            <p id="errorTexto" class="error-hint">Clave incorrecta</p>
+        <div class="modal-card small-card">
+            <span class="close-x" onclick="cerrarModal('modalDeLogin')">&times;</span>
+            <h3>Ingreso Admin</h3>
+            <input type="password" id="inputClave" placeholder="Contraseña" style="width:100%; padding:10px; margin:20px 0;">
+            <button onclick="validarAcceso()" class="btn-pro bg-azul" style="width:100%;">Entrar</button>
+            <p id="errorTexto" style="display:none; color:red; margin-top:10px;">Clave incorrecta</p>
         </div>
     </div>
 
     <div id="modalDeProducto" class="modal-overlay">
-        <div class="modal-card floating-card">
-            <button class="close-x" onclick="cerrarModal('modalDeProducto')">&times;</button>
-            <h3 id="tituloForm">Gestionar Producto</h3>
+        <div class="modal-card medium-card">
+            <span class="close-x" onclick="cerrarModal('modalDeProducto')">&times;</span>
+            <h3 id="tituloForm">Producto</h3>
             <form id="formularioPrincipal" class="admin-form">
-                <input type="text" id="f_id" placeholder="Código (ID)" required>
-                <input type="text" id="f_nombre" placeholder="Nombre del producto" required>
-                <input type="number" id="f_precio" placeholder="Precio ($)" required>
-                <input type="url" id="f_img" placeholder="URL de la imagen (Directa)">
-                <textarea id="f_desc" rows="3" placeholder="Breve descripción..."></textarea>
-                <button type="submit" class="btn-full bg-verde">Guardar Cambios</button>
+                <input type="text" id="f_id" placeholder="ID (ej: P001)" required>
+                <input type="text" id="f_nombre" placeholder="Nombre" required>
+                <input type="number" id="f_precio" placeholder="Precio" required>
+                <input type="url" id="f_img" placeholder="URL Imagen">
+                <textarea id="f_desc" placeholder="Descripción" rows="3"></textarea>
+                <button type="submit" class="btn-pro bg-verde" style="width:100%;">Guardar</button>
             </form>
         </div>
     </div>
@@ -96,68 +83,65 @@
         let productosLocales = [];
 
         window.onload = () => {
-            actualizarInterfazAdmin();
-            cargarDatos();
+            actualizarInterfaz();
+            obtenerDatos();
         };
 
-        function cargarDatos() {
+        function obtenerDatos() {
             const s = document.createElement('script');
-            s.src = `${URL_GOOGLE}?action=get&callback=procesarRespuesta`;
+            s.src = `${URL_GOOGLE}?action=get&callback=cargarGrid`;
             document.body.appendChild(s);
         }
 
-        window.procesarRespuesta = function(data) {
-            productosLocales = data.productos || [];
-            renderizarCards(productosLocales);
+        window.cargarGrid = function(res) {
+            productosLocales = res.productos || [];
+            renderizar(productosLocales);
         };
 
-        function renderizarCards(lista) {
-            const grid = document.getElementById('contenedorProductos');
-            grid.innerHTML = '';
+        function renderizar(lista) {
+            const container = document.getElementById('contenedorProductos');
+            container.innerHTML = '';
             const isAdmin = localStorage.getItem('sesionClean') === 'true';
 
             lista.forEach(p => {
-                const img = p.imagen || p.img || 'https://via.placeholder.com/400?text=Clean+Solutions';
                 const card = document.createElement('div');
-                card.className = 'product-card';
+                card.className = 'item-card';
                 card.onclick = () => verDetalle(p.id);
                 card.innerHTML = `
-                    <div class="card-img-container">
-                        <img src="${img}" alt="${p.nombre}">
-                        ${isAdmin ? `<button onclick="event.stopPropagation(); eliminarProducto('${p.id}')" class="btn-delete-quick">✕</button>` : ''}
+                    <div class="item-img-container">
+                        <img src="${p.imagen || p.img || 'https://via.placeholder.com/300'}" alt="${p.nombre}">
+                        ${isAdmin ? `<button class="del-btn" onclick="event.stopPropagation(); eliminar('${p.id}')">✕</button>` : ''}
                     </div>
-                    <div class="card-body">
+                    <div class="item-info">
                         <h4>${p.nombre}</h4>
-                        <p class="card-price">$${p.precio}</p>
-                        ${isAdmin ? `<button onclick="event.stopPropagation(); abrirEditor('${p.id}')" class="btn-edit-inline">Modificar</button>` : ''}
+                        <p class="price">$${p.precio}</p>
+                        ${isAdmin ? `<button class="edit-link" onclick="event.stopPropagation(); abrirEditor('${p.id}')">Modificar</button>` : ''}
                     </div>
                 `;
-                grid.appendChild(card);
+                container.appendChild(card);
             });
         }
 
         function verDetalle(id) {
             const p = productosLocales.find(x => x.id == id);
             if(!p) return;
-            document.getElementById('det-img').src = p.imagen || p.img || 'https://via.placeholder.com/400';
+            document.getElementById('det-img').src = p.imagen || p.img || 'https://via.placeholder.com/300';
             document.getElementById('det-nombre').innerText = p.nombre;
             document.getElementById('det-precio').innerText = `$${p.precio}`;
-            document.getElementById('det-desc').innerText = p.descripcion || 'No hay descripción disponible para este producto.';
+            document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción.';
             abrirModal('modalVerProducto');
         }
 
         function abrirEditor(id) {
             const p = productosLocales.find(x => x.id == id);
-            if(p) {
-                document.getElementById('f_id').value = p.id;
-                document.getElementById('f_id').disabled = true;
-                document.getElementById('f_nombre').value = p.nombre;
-                document.getElementById('f_precio').value = p.precio;
-                document.getElementById('f_img').value = p.imagen || p.img || '';
-                document.getElementById('f_desc').value = p.descripcion || '';
-                document.getElementById('tituloForm').innerText = 'Modificar Producto';
-                abrirModal('modalDeProducto');
-            }
+            document.getElementById('f_id').value = p.id;
+            document.getElementById('f_id').disabled = true;
+            document.getElementById('f_nombre').value = p.nombre;
+            document.getElementById('f_precio').value = p.precio;
+            document.getElementById('f_img').value = p.imagen || p.img || '';
+            document.getElementById('f_desc').value = p.descripcion || '';
+            document.getElementById('tituloForm').innerText = 'Editar Producto';
+            abrirModal('modalDeProducto');
         }
 
         function prepararFormulario(tipo) {
@@ -172,10 +156,6 @@
         document.getElementById('formularioPrincipal').onsubmit = function(e) {
             e.preventDefault();
             const action = document.getElementById('f_id').disabled ? 'edit' : 'add';
-            enviarASheet(action);
-        };
-
-        function enviarASheet(action) {
             const params = new URLSearchParams({
                 action: action,
                 id: document.getElementById('f_id').value,
@@ -183,28 +163,28 @@
                 precio: document.getElementById('f_precio').value,
                 imagen: document.getElementById('f_img').value,
                 descripcion: document.getElementById('f_desc').value,
-                callback: 'finalizarOperacion'
+                callback: 'respuestaFinal'
             });
             const s = document.createElement('script');
             s.src = `${URL_GOOGLE}?${params.toString()}`;
             document.body.appendChild(s);
-        }
+        };
 
-        window.finalizarOperacion = (res) => { alert(res.message); location.reload(); };
+        window.respuestaFinal = (res) => { alert(res.message); location.reload(); };
 
-        function eliminarProducto(id) {
-            if(confirm('¿Eliminar este producto permanentemente?')) {
+        function eliminar(id) {
+            if(confirm('¿Borrar producto?')) {
                 const s = document.createElement('script');
-                s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=finalizarOperacion`;
+                s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=respuestaFinal`;
                 document.body.appendChild(s);
             }
         }
 
-        function abrirModal(id) { document.getElementById(id).classList.add('active'); }
-        function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
+        function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
         function filtrarProductos() {
             const b = document.getElementById('inputBusqueda').value.toLowerCase();
-            renderizarCards(productosLocales.filter(p => p.nombre.toLowerCase().includes(b)));
+            renderizar(productosLocales.filter(p => p.nombre.toLowerCase().includes(b)));
         }
         function validarAcceso() {
             if(document.getElementById('inputClave').value === 'Ragnar2025') {
@@ -212,7 +192,7 @@
                 location.reload();
             } else { document.getElementById('errorTexto').style.display = 'block'; }
         }
-        function actualizarInterfazAdmin() {
+        function actualizarInterfaz() {
             if(localStorage.getItem('sesionClean') === 'true') {
                 document.getElementById('btnEntrarAdmin').style.display = 'none';
                 document.getElementById('panelAdminGlobal').style.display = 'flex';
