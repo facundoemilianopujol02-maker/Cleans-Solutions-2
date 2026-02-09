@@ -3,26 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Catálogo Profesional</title>
+    <title>Clean Solutions - Admin Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="franjaSuperior">
         <div class="logo">CLEAN SOLUTIONS</div>
-        
         <button id="btnEntrarAdmin" class="btn-main">🔑 Admin</button>
 
         <div id="panelAdminGlobal" class="admin-panel" style="display: none;">
             <button onclick="prepararFormulario('add')" class="btn-admin btn-add">➕ Agregar</button>
-            <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-admin btn-mode">🗑️ Borrar: OFF</button>
+            <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-admin btn-mode">🗑️ Modo Borrar: OFF</button>
             <button onclick="salirAdmin()" class="btn-admin btn-logout">🚪 Salir</button>
         </div>
     </div>
 
     <div class="container">
         <div id="contenedorProductos" class="grid-productos">
-            <p>Cargando productos...</p>
+            <p>Cargando productos de limpieza...</p>
         </div>
     </div>
 
@@ -43,10 +42,10 @@
             <h3 id="tituloForm">Producto</h3>
             <form id="formularioPrincipal">
                 <input type="text" id="f_id" placeholder="ID (Código único)" required>
-                <input type="text" id="f_nombre" placeholder="Nombre del producto" required>
+                <input type="text" id="f_nombre" placeholder="Nombre" required>
                 <input type="number" id="f_precio" placeholder="Precio ($)" required>
-                <input type="url" id="f_img" placeholder="URL de imagen (opcional)">
-                <textarea id="f_desc" placeholder="Descripción breve"></textarea>
+                <input type="url" id="f_img" placeholder="URL de imagen">
+                <textarea id="f_desc" placeholder="Descripción"></textarea>
                 <div class="modal-buttons">
                     <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cancel">Cerrar</button>
                     <button type="submit" id="btnEnviarForm" class="btn-confirm">Guardar</button>
@@ -77,9 +76,7 @@
                 cerrarModal('modalDeLogin');
                 actualizarBarras();
                 dibujarCatalogo();
-            } else {
-                document.getElementById('errorTexto').style.display = 'block';
-            }
+            } else { document.getElementById('errorTexto').style.display = 'block'; }
         }
 
         function salirAdmin() {
@@ -107,17 +104,15 @@
                 div.innerHTML = `
                     <div class="img-container">
                         <img src="${p.imagen || 'https://via.placeholder.com/400'}" alt="${p.nombre}">
-                        ${isAdmin ? `<button onclick="ejecutarBorrar('${p.id}')" class="btn-quick-del" title="Eliminar producto">✕</button>` : ''}
+                        ${isAdmin ? `<button onclick="ejecutarBorrar('${p.id}')" class="btn-quick-del">✕</button>` : ''}
                     </div>
                     <div class="info">
                         <h4>${p.nombre}</h4>
                         <p class="price">$${p.precio}</p>
                         ${isAdmin ? `
-                            <div class="admin-btns">
-                                <button onclick="prepararFormulario('edit', '${p.id}')" class="btn-edit-modern">
-                                   📝 Editar Producto
-                                </button>
-                            </div>
+                            <button onclick="prepararFormulario('edit', '${p.id}')" class="btn-edit-modern">
+                               <span class="icon">✎</span> Editar Datos
+                            </button>
                         ` : ''}
                     </div>
                 `;
@@ -142,9 +137,7 @@
                     document.getElementById('f_img').value = p.imagen;
                     document.getElementById('f_desc').value = p.descripcion;
                 }
-            } else {
-                document.getElementById('tituloForm').textContent = '➕ Nuevo Producto';
-            }
+            } else { document.getElementById('tituloForm').textContent = '➕ Nuevo Producto'; }
             abrirModal('modalDeProducto');
         }
 
@@ -152,7 +145,7 @@
             e.preventDefault();
             const btn = document.getElementById('btnEnviarForm');
             btn.disabled = true;
-            btn.textContent = 'Enviando...';
+            btn.textContent = 'Guardando...';
 
             const p = new URLSearchParams({
                 action: modoActual,
@@ -169,7 +162,7 @@
         }
 
         window.respuestaServidor = function(res) {
-            alert(res.message || "Operación terminada");
+            alert(res.message || "Listo");
             cerrarModal('modalDeProducto');
             document.getElementById('btnEnviarForm').disabled = false;
             document.getElementById('btnEnviarForm').textContent = 'Guardar';
@@ -177,7 +170,7 @@
         }
 
         window.ejecutarBorrar = function(id) {
-            if(!confirm('¿Estás seguro de eliminar este producto?')) return;
+            if(!confirm('¿Eliminar este producto permanentemente?')) return;
             const s = document.createElement('script');
             s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=respuestaServidor`;
             document.body.appendChild(s);
@@ -186,8 +179,8 @@
         function toggleBorrado() {
             const activo = document.body.classList.toggle('borrar-activo');
             const btn = document.getElementById('btnModoBorrar');
-            btn.textContent = activo ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
-            btn.style.background = activo ? '#ea4335' : '#fbbc05';
+            btn.textContent = activo ? '🗑️ Modo Borrar: ON' : '🗑️ Modo Borrar: OFF';
+            btn.style.background = activo ? '#ff4757' : '#ffa502';
         }
 
         actualizarBarras();
