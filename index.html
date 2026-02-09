@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Admin Pro</title>
+    <title>Clean Solutions - Catálogo Interactivo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +21,26 @@
 
     <div class="container">
         <div id="contenedorProductos" class="grid-productos">
-            <p>Cargando productos de limpieza...</p>
+            <p>Cargando catálogo...</p>
+        </div>
+    </div>
+
+    <div id="modalVerProducto" class="modal">
+        <div class="modal-content vista-detalle">
+            <span class="close-detalle" onclick="cerrarModal('modalVerProducto')">&times;</span>
+            <div class="detalle-grid">
+                <div class="detalle-img">
+                    <img id="det-img" src="" alt="">
+                </div>
+                <div class="detalle-info">
+                    <h2 id="det-nombre"></h2>
+                    <p class="det-precio" id="det-precio"></p>
+                    <div class="det-separador"></div>
+                    <p class="det-desc-titulo">Descripción:</p>
+                    <p id="det-desc" class="det-descripcion"></p>
+                    <button class="btn-comprar" onclick="alert('Función de compra próximamente')">Consultar Disponibilidad</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -41,11 +60,11 @@
         <div class="modal-content">
             <h3 id="tituloForm">Producto</h3>
             <form id="formularioPrincipal">
-                <input type="text" id="f_id" placeholder="ID (Código único)" required>
+                <input type="text" id="f_id" placeholder="ID (Código)" required>
                 <input type="text" id="f_nombre" placeholder="Nombre" required>
                 <input type="number" id="f_precio" placeholder="Precio ($)" required>
                 <input type="url" id="f_img" placeholder="URL de imagen">
-                <textarea id="f_desc" placeholder="Descripción"></textarea>
+                <textarea id="f_desc" placeholder="Descripción completa"></textarea>
                 <div class="modal-buttons">
                     <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cancel">Cerrar</button>
                     <button type="submit" id="btnEnviarForm" class="btn-confirm">Guardar</button>
@@ -101,16 +120,17 @@
             res.productos.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'card';
+                // El onclick principal abre la vista de detalle
                 div.innerHTML = `
-                    <div class="img-container">
+                    <div class="img-container" onclick="verDetalle('${p.id}')">
                         <img src="${p.imagen || 'https://via.placeholder.com/400'}" alt="${p.nombre}">
-                        ${isAdmin ? `<button onclick="ejecutarBorrar('${p.id}')" class="btn-quick-del">✕</button>` : ''}
+                        ${isAdmin ? `<button onclick="event.stopPropagation(); ejecutarBorrar('${p.id}')" class="btn-quick-del">✕</button>` : ''}
                     </div>
-                    <div class="info">
+                    <div class="info" onclick="verDetalle('${p.id}')">
                         <h4>${p.nombre}</h4>
                         <p class="price">$${p.precio}</p>
                         ${isAdmin ? `
-                            <button onclick="prepararFormulario('edit', '${p.id}')" class="btn-edit-modern">
+                            <button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="btn-edit-modern">
                                <span class="icon">✎</span> Editar Datos
                             </button>
                         ` : ''}
@@ -118,6 +138,19 @@
                 `;
                 caja.appendChild(div);
             });
+        }
+
+        // NUEVA FUNCIÓN: VER DETALLE
+        function verDetalle(id) {
+            const p = productosLocales.find(x => x.id == id);
+            if(!p) return;
+
+            document.getElementById('det-img').src = p.imagen || 'https://via.placeholder.com/400';
+            document.getElementById('det-nombre').textContent = p.nombre;
+            document.getElementById('det-precio').textContent = `$${p.precio}`;
+            document.getElementById('det-desc').textContent = p.descripcion || 'Sin descripción disponible.';
+            
+            abrirModal('modalVerProducto');
         }
 
         function prepararFormulario(tipo, idProd = null) {
@@ -148,12 +181,9 @@
             btn.textContent = 'Guardando...';
 
             const p = new URLSearchParams({
-                action: modoActual,
-                id: document.getElementById('f_id').value,
-                nombre: document.getElementById('f_nombre').value,
-                precio: document.getElementById('f_precio').value,
-                imagen: document.getElementById('f_img').value,
-                descripcion: document.getElementById('f_desc').value,
+                action: modoActual, id: document.getElementById('f_id').value,
+                nombre: document.getElementById('f_nombre').value, precio: document.getElementById('f_precio').value,
+                imagen: document.getElementById('f_img').value, descripcion: document.getElementById('f_desc').value,
                 callback: 'respuestaServidor'
             });
             const script = document.createElement('script');
@@ -170,7 +200,7 @@
         }
 
         window.ejecutarBorrar = function(id) {
-            if(!confirm('¿Eliminar este producto permanentemente?')) return;
+            if(!confirm('¿Eliminar este producto?')) return;
             const s = document.createElement('script');
             s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=respuestaServidor`;
             document.body.appendChild(s);
