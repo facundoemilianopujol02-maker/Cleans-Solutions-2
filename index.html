@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Catálogo</title>
+    <title>Clean Solutions - Administración</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,154 +11,168 @@
     <div class="franjaSuperior">
         <div class="logo">Clean Solutions</div>
         
-        <button id="btnAdminLogin" class="btn-main">🔑 Admin</button>
+        <button id="btnAbrirLogin" class="btn-main">🔑 Admin</button>
 
-        <div id="panelAdmin" class="admin-controls" style="display: none;">
-            <button onclick="abrirModal('modalProducto')" class="btn-admin btn-add">➕ Agregar</button>
-            <button id="btnToggleDelete" onclick="toggleModoEliminar()" class="btn-admin btn-mode">🗑️ Eliminar: OFF</button>
-            <button onclick="cerrarSesion()" class="btn-admin btn-logout">🚪 Salir</button>
+        <div id="panelControlAdmin" class="admin-panel" style="display: none;">
+            <button onclick="abrirModal('modalProducto')" class="btn-admin btn-add">➕ Agregar Producto</button>
+            <button id="btnToggleDelete" onclick="toggleModoEliminar()" class="btn-admin btn-mode">🗑️ Modo Eliminar: OFF</button>
+            <button onclick="cerrarSesion()" class="btn-admin btn-logout">🚪 Cerrar Sesión</button>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container main-content">
         <div id="productosContainer" class="grid-productos">
-            </div>
+            <p>Cargando catálogo...</p>
+        </div>
     </div>
 
     <div id="modalLogin" class="modal">
         <div class="modal-content">
-            <h3>Acceso Restringido</h3>
+            <h3>Panel de Administración</h3>
+            <p>Introduce la clave para gestionar productos.</p>
             <input type="password" id="passInput" placeholder="Contraseña">
             <div class="modal-buttons">
-                <button onclick="cerrarModal('modalLogin')">Cancelar</button>
-                <button onclick="intentarLogin()" class="btn-add">Entrar</button>
+                <button onclick="cerrarModal('modalLogin')" class="btn-cancel">Cancelar</button>
+                <button onclick="verificarPassword()" class="btn-confirm">Entrar</button>
             </div>
-            <p id="errorLogin" style="color:red; display:none; margin-top:10px;">Clave incorrecta</p>
+            <p id="errorMsg" style="color:red; display:none; margin-top:10px;">❌ Contraseña incorrecta</p>
         </div>
     </div>
 
     <div id="modalProducto" class="modal">
         <div class="modal-content">
             <h3>Nuevo Producto</h3>
-            <form id="formProducto">
-                <input type="text" id="p_id" placeholder="ID Único" required>
-                <input type="text" id="p_nombre" placeholder="Nombre" required>
-                <input type="number" id="p_precio" placeholder="Precio" required>
-                <input type="url" id="p_img" placeholder="URL de imagen">
-                <textarea id="p_desc" placeholder="Descripción"></textarea>
+            <form id="formNuevoProducto">
+                <input type="text" id="id_prod" placeholder="ID (Ej: COD-01)" required>
+                <input type="text" id="nombre_prod" placeholder="Nombre del producto" required>
+                <input type="number" id="precio_prod" placeholder="Precio ($)" required>
+                <input type="url" id="img_prod" placeholder="URL de la imagen (Opcional)">
+                <textarea id="desc_prod" placeholder="Breve descripción"></textarea>
                 <div class="modal-buttons">
-                    <button type="button" onclick="cerrarModal('modalProducto')">Cerrar</button>
-                    <button type="submit" class="btn-add">Guardar</button>
+                    <button type="button" onclick="cerrarModal('modalProducto')" class="btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn-confirm">Guardar Producto</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec'; // <--- PEGA TU URL AQUÍ
-        let modoEliminarActivo = false;
+        // URL DE TU GOOGLE SCRIPT (YA ACTUALIZADA)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec';
+        let modoEliminar = false;
 
-        // --- GESTIÓN DE INTERFAZ ---
-        function actualizarVistaAdmin() {
-            const logueado = localStorage.getItem('adminOK') === 'true';
-            document.getElementById('btnAdminLogin').style.display = logueado ? 'none' : 'block';
-            document.getElementById('panelAdmin').style.display = logueado ? 'flex' : 'none';
+        // --- SISTEMA DE VISTA ---
+        function actualizarInterfaz() {
+            const esAdmin = localStorage.getItem('cleanAdmin') === 'true';
+            document.getElementById('btnAbrirLogin').style.display = esAdmin ? 'none' : 'block';
+            document.getElementById('panelControlAdmin').style.display = esAdmin ? 'flex' : 'none';
         }
 
+        // --- GESTIÓN DE MODALES ---
         function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
         function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- LOGIN / LOGOUT ---
-        document.getElementById('btnAdminLogin').onclick = () => abrirModal('modalLogin');
+        // --- LOGIN Y LOGOUT ---
+        document.getElementById('btnAbrirLogin').onclick = () => abrirModal('modalLogin');
 
-        function intentarLogin() {
-            if(document.getElementById('passInput').value === 'Ragnar2025') {
-                localStorage.setItem('adminOK', 'true');
+        function verificarPassword() {
+            const pass = document.getElementById('passInput').value;
+            if (pass === 'Ragnar2025') {
+                localStorage.setItem('cleanAdmin', 'true');
                 cerrarModal('modalLogin');
-                actualizarVistaAdmin();
+                actualizarInterfaz();
                 renderizar();
             } else {
-                document.getElementById('errorLogin').style.display = 'block';
+                document.getElementById('errorMsg').style.display = 'block';
             }
         }
 
         function cerrarSesion() {
-            localStorage.removeItem('adminOK');
-            modoEliminarActivo = false;
-            document.body.classList.remove('delete-active');
-            actualizarVistaAdmin();
+            localStorage.removeItem('cleanAdmin');
+            modoEliminar = false;
+            document.body.classList.remove('delete-mode-active');
+            actualizarInterfaz();
             renderizar();
         }
 
+        // --- MODO ELIMINAR ---
         function toggleModoEliminar() {
-            modoEliminarActivo = !modoEliminarActivo;
+            modoEliminar = !modoEliminar;
             const btn = document.getElementById('btnToggleDelete');
-            document.body.classList.toggle('delete-active', modoEliminarActivo);
-            btn.textContent = modoEliminarActivo ? '🗑️ Eliminar: ON' : '🗑️ Eliminar: OFF';
-            btn.style.background = modoEliminarActivo ? '#e74c3c' : '#f39c12';
+            document.body.classList.toggle('delete-mode-active', modoEliminar);
+            btn.textContent = modoEliminar ? '🗑️ Eliminar: ON' : '🗑️ Eliminar: OFF';
+            btn.className = modoEliminar ? 'btn-admin btn-mode-on' : 'btn-admin btn-mode';
         }
 
-        // --- CARGA Y RENDER ---
+        // --- CARGAR PRODUCTOS ---
         function renderizar() {
             const s = document.createElement('script');
-            s.src = `${SCRIPT_URL}?action=get&callback=pintar`;
+            s.src = `${SCRIPT_URL}?action=get&callback=callbackData`;
             document.body.appendChild(s);
         }
 
-        window.pintar = function(res) {
+        window.callbackData = function(data) {
             const box = document.getElementById('productosContainer');
             box.innerHTML = '';
-            const isAdmin = localStorage.getItem('adminOK') === 'true';
+            const isAdmin = localStorage.getItem('cleanAdmin') === 'true';
 
-            res.productos.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.innerHTML = `
-                    <img src="${p.imagen || 'https://via.placeholder.com/150'}">
+            if (!data.productos || data.productos.length === 0) {
+                box.innerHTML = '<p>No hay productos en el catálogo.</p>';
+                return;
+            }
+
+            data.productos.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'producto-card';
+                card.innerHTML = `
+                    <div class="img-wrapper">
+                        <img src="${p.imagen || 'https://via.placeholder.com/200'}" alt="${p.nombre}">
+                    </div>
                     <div class="info">
                         <h4>${p.nombre}</h4>
-                        <p class="price">$${p.precio}</p>
-                        ${isAdmin ? `<button onclick="eliminar('${p.id}')" class="btn-card-del">Eliminar</button>` : ''}
+                        <p class="precio">$${p.precio}</p>
+                        <p class="desc">${p.descripcion || ''}</p>
+                        ${isAdmin ? `<button onclick="borrar('${p.id}')" class="btn-borrar-card">Eliminar Producto</button>` : ''}
                     </div>
                 `;
-                box.appendChild(div);
+                box.appendChild(card);
             });
         }
 
-        // --- ACCIONES ---
-        window.eliminar = function(id) {
-            if(!confirm('¿Eliminar producto?')) return;
+        // --- ACCIONES (BORRAR Y AGREGAR) ---
+        window.borrar = function(id) {
+            if(!confirm('¿Seguro que quieres eliminar este producto?')) return;
             const s = document.createElement('script');
-            s.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=refrescar`;
+            s.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=finalizarAccion`;
             document.body.appendChild(s);
         }
 
-        document.getElementById('formProducto').onsubmit = function(e) {
+        document.getElementById('formNuevoProducto').onsubmit = function(e) {
             e.preventDefault();
-            const p = new URLSearchParams({
+            const params = new URLSearchParams({
                 action: 'add',
-                id: document.getElementById('p_id').value,
-                nombre: document.getElementById('p_nombre').value,
-                precio: document.getElementById('p_precio').value,
-                imagen: document.getElementById('p_img').value,
-                descripcion: document.getElementById('p_desc').value,
-                callback: 'refrescar'
+                id: document.getElementById('id_prod').value,
+                nombre: document.getElementById('nombre_prod').value,
+                precio: document.getElementById('precio_prod').value,
+                imagen: document.getElementById('img_prod').value,
+                descripcion: document.getElementById('desc_prod').value,
+                callback: 'finalizarAccion'
             });
             const s = document.createElement('script');
-            s.src = `${SCRIPT_URL}?${p.toString()}`;
+            s.src = `${SCRIPT_URL}?${params.toString()}`;
             document.body.appendChild(s);
         }
 
-        window.refrescar = function(res) {
+        window.finalizarAccion = function(res) {
             alert(res.message || res.error);
             cerrarModal('modalProducto');
+            document.getElementById('formNuevoProducto').reset();
             renderizar();
         }
 
-        actualizarVistaAdmin();
+        // INICIAR
+        actualizarInterfaz();
         renderizar();
     </script>
 </body>
 </html>
-
-
