@@ -1,49 +1,284 @@
-/* DISEÑO BASE */
-body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; }
-.franjaSuperior { 
-    background: #fff; padding: 0 40px; height: 80px; display: flex; 
-    justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky; top: 0; z-index: 100;
+/* ============================================
+   CLEAN SOLUTIONS - HOJA DE ESTILOS FINAL
+   ============================================ */
+
+:root {
+    --primario: #1a73e8;    /* Azul profesional */
+    --secundario: #2c3e50;  /* Gris oscuro */
+    --exito: #34a853;       /* Verde para Agregar */
+    --alerta: #fbbc05;      /* Naranja para Modo Eliminar */
+    --peligro: #ea4335;     /* Rojo para Borrar/Salir */
+    --fondo: #f8f9fa;       /* Gris muy claro */
+    --blanco: #ffffff;
+    --sombra: 0 4px 12px rgba(0,0,0,0.1);
 }
-.logo { font-size: 1.6rem; font-weight: 800; color: #1a73e8; }
 
-/* PANEL ADMIN */
-.admin-panel { display: flex; gap: 12px; }
-.btn-main { background: #1a73e8; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.btn-admin { padding: 10px 16px; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
-.btn-add { background: #34a853; }
-.btn-mode { background: #fbbc05; }
-.btn-mode-on { background: #ea4335; animation: pulse 1.5s infinite; }
+/* RESET BÁSICO */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--fondo);
+    color: var(--secundario);
+    line-height: 1.6;
+}
+
+/* BARRA SUPERIOR (HEADER) */
+.franjaSuperior {
+    background: var(--blanco);
+    height: 80px;
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primario);
+    letter-spacing: -1px;
+}
+
+/* BOTONES GENERALES */
+.btn-main {
+    background: var(--primario);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-main:hover {
+    background: #1557b0;
+}
+
+/* PANEL DE ADMINISTRACIÓN */
+.admin-controls {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-admin {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-add { background: var(--exito); }
+.btn-add:hover { background: #2d8a44; }
+
+.btn-mode { background: var(--alerta); }
+.btn-mode:hover { background: #eab104; }
+
+/* Efecto cuando el Modo Eliminar está activo */
+.btn-mode-on {
+    background: var(--peligro);
+    animation: pulsacion-roja 1.5s infinite;
+}
+
+@keyframes pulsacion-roja {
+    0% { box-shadow: 0 0 0 0px rgba(234, 67, 53, 0.7); }
+    100% { box-shadow: 0 0 0 10px rgba(234, 67, 53, 0); }
+}
+
 .btn-logout { background: #5f6368; }
+.btn-logout:hover { background: #3c4043; }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+/* CONTENEDOR PRINCIPAL */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* CUADRÍCULA DE PRODUCTOS */
+.grid-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+/* TARJETA DE PRODUCTO */
+.card {
+    background: var(--blanco);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    background: #eee;
+}
+
+.card .info {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.card .price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--exito);
+    margin-bottom: 12px;
+}
+
+.card .desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* BOTÓN ELIMINAR DENTRO DE LA TARJETA */
+.btn-card-del {
+    display: none; /* Oculto por defecto */
+    background: var(--peligro);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: auto;
+    transition: 0.2s;
+}
+
+.btn-card-del:hover {
+    background: #c53026;
+}
+
+/* Esta clase se activa vía JavaScript al presionar "Modo Eliminar" */
+body.delete-active .btn-card-del {
+    display: block;
 }
 
 /* MODALES */
-.modal { 
-    position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); 
-    display:none; justify-content:center; align-items:center; z-index:1000;
-}
-.modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; }
-.modal-content input, .modal-content textarea { width: 100%; margin-bottom: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
-
-/* TARJETAS DE PRODUCTO */
-.grid-productos { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 40px; }
-.producto-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
-.img-wrapper { height: 200px; background: #eee; }
-.img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-.info { padding: 20px; text-align: center; }
-.precio { color: #34a853; font-weight: bold; font-size: 1.3rem; margin: 10px 0; }
-
-/* EL BOTÓN DE BORRAR EN LA CARTA */
-.btn-borrar-card { 
-    display: none; /* OCULTO POR DEFECTO */
-    background: #ea4335; color: white; border: none; width: 100%; 
-    padding: 10px; margin-top: 15px; border-radius: 6px; cursor: pointer; 
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none; /* Se cambia a flex con JS */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
 }
 
-/* SOLO APARECE CUANDO ACTIVAS EL MODO ELIMINAR */
-body.delete-mode-active .btn-borrar-card { display: block; }
+.modal-content {
+    background: var(--blanco);
+    padding: 35px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+    color: var(--secundario);
+    text-align: center;
+}
+
+/* FORMULARIOS EN MODAL */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primario);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-cancel {
+    background: #e0e0e0;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-confirm {
+    background: var(--primario);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .franjaSuperior {
+        flex-direction: column;
+        height: auto;
+        padding: 20px;
+        gap: 15px;
+    }
+    
+    .admin-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .grid-productos {
+        grid-template-columns: 1fr;
+    }
+}
