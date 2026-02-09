@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions | Catálogo Profesional</title>
+    <title>Clean Solutions | Catálogo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,17 +15,17 @@
                 <span class="brand-name">CLEAN SOLUTIONS</span>
             </div>
             
-            <div class="search-container">
-                <input type="text" id="inputBusqueda" placeholder="Buscar producto..." onkeyup="filtrarProductos()">
+            <div class="search-wrapper">
+                <input type="text" id="inputBusqueda" placeholder="Buscar productos..." onkeyup="filtrarProductos()">
                 <span class="search-icon">🔍</span>
             </div>
             
             <div class="nav-actions">
-                <button id="btnEntrarAdmin" class="btn-admin-nav" onclick="abrirModal('modalDeLogin')">🔑 Acceso Admin</button>
+                <button id="btnEntrarAdmin" class="btn-admin-nav" onclick="abrirModal('modalDeLogin')">🔑 Admin</button>
                 <div id="panelAdminGlobal" class="admin-group" style="display: none;">
-                    <button onclick="prepararFormulario('add')" class="btn-pro nav-btn bg-verde">➕ Agregar</button>
-                    <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-pro nav-btn bg-naranja">🗑️ Borrar: OFF</button>
-                    <button onclick="salirAdmin()" class="btn-pro nav-btn bg-gris">🚪 Salir</button>
+                    <button onclick="prepararFormulario('add')" class="btn-pro-nav bg-verde">➕</button>
+                    <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-pro-nav bg-naranja">🗑️</button>
+                    <button onclick="salirAdmin()" class="btn-pro-nav bg-gris">🚪</button>
                 </div>
             </div>
         </div>
@@ -37,25 +37,16 @@
         </div>
     </main>
 
-    <footer class="main-footer">
-        <div class="footer-info">
-            <h4>CONTACTO COMERCIAL</h4>
-            <p>🟢 WhatsApp: <a href="https://wa.me/543794034489">3794034489</a></p>
-            <p>📸 Instagram: <a href="https://www.instagram.com/clean.solutions610">@clean.solutions610</a></p>
-            <div class="footer-copy">&copy; 2026 Clean Solutions.</div>
-        </div>
-    </footer>
-
     <div id="modalVerProducto" class="modal-overlay">
         <div class="modal-card detail-card">
-            <span class="close-btn" onclick="cerrarModal('modalVerProducto')">&times;</span>
+            <button class="modal-close-x" onclick="cerrarModal('modalVerProducto')">&times;</button>
             <div class="detail-layout">
                 <div class="detail-media"><img id="det-img" src="" alt="Producto"></div>
                 <div class="detail-content">
                     <h2 id="det-nombre"></h2>
                     <span class="detail-price" id="det-precio"></span>
                     <p id="det-desc" class="product-description-text"></p>
-                    <a href="https://wa.me/543794034489" target="_blank" class="btn-pro bg-verde w-100-mobile">Consultar por WhatsApp</a>
+                    <a href="https://wa.me/543794034489" target="_blank" class="btn-pro bg-verde">Consultar por WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -63,30 +54,28 @@
 
     <div id="modalDeLogin" class="modal-overlay">
         <div class="modal-card small-card">
-            <h3>Panel de Control</h3>
+            <button class="modal-close-x" onclick="cerrarModal('modalDeLogin')">&times;</button>
+            <h3>Acceso Administrativo</h3>
             <div class="input-box-login">
-                <input type="password" id="inputClave" placeholder="Contraseña Admin">
+                <input type="password" id="inputClave" placeholder="Contraseña">
                 <span id="togglePassword" class="eye-icon">👁️</span>
             </div>
-            <button onclick="validarAcceso()" class="btn-pro bg-azul w-100-mobile">Entrar</button>
-            <button onclick="cerrarModal('modalDeLogin')" class="btn-pro bg-rojo w-100-mobile" style="margin-top:10px;">Cerrar</button>
-            <p id="errorTexto" style="display:none; color: #ff4757; margin-top: 15px; font-weight: bold;">❌ Clave incorrecta</p>
+            <button onclick="validarAcceso()" class="btn-pro bg-azul" style="width:100%">Entrar</button>
+            <p id="errorTexto" style="display:none; color: #ff4757; margin-top: 10px; font-weight: bold;">❌ Clave incorrecta</p>
         </div>
     </div>
 
     <div id="modalDeProducto" class="modal-overlay">
         <div class="modal-card medium-card">
-            <h3 id="tituloForm">Gestionar Producto</h3>
+            <button class="modal-close-x" onclick="cerrarModal('modalDeProducto')">&times;</button>
+            <h3 id="tituloForm">Producto</h3>
             <form id="formularioPrincipal" class="admin-form">
-                <div class="field"><label>ID Único</label><input type="text" id="f_id" required></div>
+                <div class="field"><label>ID</label><input type="text" id="f_id" required></div>
                 <div class="field"><label>Nombre</label><input type="text" id="f_nombre" required></div>
                 <div class="field"><label>Precio</label><input type="number" id="f_precio" required></div>
                 <div class="field"><label>URL Imagen</label><input type="url" id="f_img"></div>
                 <div class="field"><label>Descripción</label><textarea id="f_desc" rows="3"></textarea></div>
-                <div class="form-row">
-                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-pro bg-rojo">Cancelar</button>
-                    <button type="submit" class="btn-pro bg-verde">Guardar</button>
-                </div>
+                <button type="submit" class="btn-pro bg-verde" style="width:100%; margin-top:10px;">Guardar Cambios</button>
             </form>
         </div>
     </div>
@@ -109,7 +98,7 @@
         };
 
         function obtenerImagen(p) {
-            return p.imagen || p.img || p.foto || p.url || 'https://via.placeholder.com/400?text=Sin+Imagen';
+            return p.imagen || p.img || p.foto || 'https://via.placeholder.com/400?text=Sin+Imagen';
         }
 
         function renderizarCards(lista) {
@@ -120,9 +109,7 @@
             lista.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'item-card';
-                // REINSTALADO: Al hacer clic en la tarjeta se abre el detalle
                 card.onclick = () => verDetalle(p.id);
-                
                 card.innerHTML = `
                     <div class="item-img">
                         <img src="${obtenerImagen(p)}" alt="${p.nombre}">
@@ -144,36 +131,52 @@
             document.getElementById('det-img').src = obtenerImagen(p);
             document.getElementById('det-nombre').innerText = p.nombre;
             document.getElementById('det-precio').innerText = `$${p.precio}`;
-            document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción disponible.';
+            document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción.';
             abrirModal('modalVerProducto');
+        }
+
+        function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function filtrarProductos() {
+            const b = document.getElementById('inputBusqueda').value.toLowerCase();
+            renderizarCards(productosLocales.filter(p => p.nombre.toLowerCase().includes(b)));
+        }
+
+        function validarAcceso() {
+            if(document.getElementById('inputClave').value === 'Ragnar2025') {
+                localStorage.setItem('sesionClean', 'true');
+                location.reload();
+            } else { document.getElementById('errorTexto').style.display = 'block'; }
+        }
+
+        function actualizarBarras() {
+            const admin = localStorage.getItem('sesionClean') === 'true';
+            document.getElementById('btnEntrarAdmin').style.display = admin ? 'block' : 'block'; // Mantenemos botón siempre o según prefieras
+            if(admin) {
+                document.getElementById('btnEntrarAdmin').style.display = 'none';
+                document.getElementById('panelAdminGlobal').style.display = 'flex';
+            }
         }
 
         function prepararFormulario(tipo, idProd) {
             const fId = document.getElementById('f_id');
             fId.disabled = false;
             document.getElementById('formularioPrincipal').reset();
-            
             if(tipo === 'edit') {
                 const p = productosLocales.find(x => x.id == idProd);
                 if(p) {
-                    fId.value = p.id; 
-                    fId.disabled = true;
-                    document.getElementById('f_nombre').value = p.nombre || '';
-                    document.getElementById('f_precio').value = p.precio || '';
+                    fId.value = p.id; fId.disabled = true;
+                    document.getElementById('f_nombre').value = p.nombre;
+                    document.getElementById('f_precio').value = p.precio;
                     document.getElementById('f_img').value = obtenerImagen(p).includes('placeholder') ? '' : obtenerImagen(p);
                     document.getElementById('f_desc').value = p.descripcion || '';
                     document.getElementById('tituloForm').innerText = 'Modificar Producto';
                 }
-            } else {
-                document.getElementById('tituloForm').innerText = 'Agregar Nuevo Producto';
             }
             abrirModal('modalDeProducto');
         }
 
-        function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        // --- Lógica de Admin y Formulario ---
         document.getElementById('formularioPrincipal').onsubmit = function(e) {
             e.preventDefault();
             const valImg = document.getElementById('f_img').value;
@@ -192,26 +195,7 @@
             document.body.appendChild(s);
         };
 
-        window.respuestaServidor = (res) => { alert(res.message || "Operación exitosa"); location.reload(); };
-
-        function filtrarProductos() {
-            const b = document.getElementById('inputBusqueda').value.toLowerCase();
-            renderizarCards(productosLocales.filter(p => p.nombre.toLowerCase().includes(b)));
-        }
-
-        function validarAcceso() {
-            if(document.getElementById('inputClave').value === 'Ragnar2025') {
-                localStorage.setItem('sesionClean', 'true');
-                location.reload();
-            } else { document.getElementById('errorTexto').style.display = 'block'; }
-        }
-
-        function actualizarBarras() {
-            const admin = localStorage.getItem('sesionClean') === 'true';
-            document.getElementById('btnEntrarAdmin').style.display = admin ? 'none' : 'block';
-            document.getElementById('panelAdminGlobal').style.display = admin ? 'flex' : 'none';
-        }
-
+        window.respuestaServidor = (res) => { alert(res.message); location.reload(); };
         function salirAdmin() { localStorage.removeItem('sesionClean'); location.reload(); }
         function toggleBorrado() { document.body.classList.toggle('borrar-on'); }
     </script>
