@@ -3,105 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Administración</title>
+    <title>Clean Solutions - Admin Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="franjaSuperior">
         <div class="logo">Clean Solutions</div>
-        
         <button id="btnAbrirLogin" class="btn-main">🔑 Admin</button>
 
         <div id="panelControlAdmin" class="admin-panel" style="display: none;">
-            <button onclick="abrirModal('modalProducto')" class="btn-admin btn-add">➕ Agregar Producto</button>
-            <button id="btnToggleDelete" onclick="toggleModoEliminar()" class="btn-admin btn-mode">🗑️ Modo Eliminar: OFF</button>
-            <button onclick="cerrarSesion()" class="btn-admin btn-logout">🚪 Cerrar Sesión</button>
+            <button onclick="prepararFormulario('add')" class="btn-admin btn-add">➕ Agregar</button>
+            <button id="btnToggleDelete" onclick="toggleModoEliminar()" class="btn-admin btn-mode">🗑️ Eliminar: OFF</button>
+            <button onclick="cerrarSesion()" class="btn-admin btn-logout">🚪 Salir</button>
         </div>
     </div>
 
-    <div class="container main-content">
+    <div class="container">
         <div id="productosContainer" class="grid-productos">
             <p>Cargando catálogo...</p>
         </div>
     </div>
 
-    <div id="modalLogin" class="modal">
-        <div class="modal-content">
-            <h3>Panel de Administración</h3>
-            <p>Introduce la clave para gestionar productos.</p>
-            <input type="password" id="passInput" placeholder="Contraseña">
-            <div class="modal-buttons">
-                <button onclick="cerrarModal('modalLogin')" class="btn-cancel">Cancelar</button>
-                <button onclick="verificarPassword()" class="btn-confirm">Entrar</button>
-            </div>
-            <p id="errorMsg" style="color:red; display:none; margin-top:10px;">❌ Contraseña incorrecta</p>
-        </div>
-    </div>
-
     <div id="modalProducto" class="modal">
         <div class="modal-content">
-            <h3>Nuevo Producto</h3>
+            <h3 id="modalTitulo">Nuevo Producto</h3>
             <form id="formNuevoProducto">
                 <input type="text" id="id_prod" placeholder="ID (Ej: COD-01)" required>
-                <input type="text" id="nombre_prod" placeholder="Nombre del producto" required>
+                <input type="text" id="nombre_prod" placeholder="Nombre" required>
                 <input type="number" id="precio_prod" placeholder="Precio ($)" required>
-                <input type="url" id="img_prod" placeholder="URL de la imagen (Opcional)">
-                <textarea id="desc_prod" placeholder="Breve descripción"></textarea>
+                <input type="url" id="img_prod" placeholder="URL de imagen">
+                <textarea id="desc_prod" placeholder="Descripción"></textarea>
                 <div class="modal-buttons">
                     <button type="button" onclick="cerrarModal('modalProducto')" class="btn-cancel">Cancelar</button>
-                    <button type="submit" class="btn-confirm">Guardar Producto</button>
+                    <button type="submit" id="btnGuardarForm" class="btn-confirm">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <div id="modalLogin" class="modal">
+        <div class="modal-content">
+            <h3>Acceso Admin</h3>
+            <input type="password" id="passInput" placeholder="Contraseña">
+            <div class="modal-buttons">
+                <button onclick="cerrarModal('modalLogin')">Cancelar</button>
+                <button onclick="verificarPassword()" class="btn-confirm">Entrar</button>
+            </div>
+            <p id="errorMsg" style="color:red; display:none; margin-top:10px;">❌ Incorrecto</p>
+        </div>
+    </div>
+
     <script>
-        // URL DE TU GOOGLE SCRIPT (YA ACTUALIZADA)
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec';
         let modoEliminar = false;
+        let modoFormulario = 'add'; // Puede ser 'add' o 'edit'
 
-        // --- SISTEMA DE VISTA ---
         function actualizarInterfaz() {
             const esAdmin = localStorage.getItem('cleanAdmin') === 'true';
             document.getElementById('btnAbrirLogin').style.display = esAdmin ? 'none' : 'block';
             document.getElementById('panelControlAdmin').style.display = esAdmin ? 'flex' : 'none';
         }
 
-        // --- GESTIÓN DE MODALES ---
         function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
         function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- LOGIN Y LOGOUT ---
-        document.getElementById('btnAbrirLogin').onclick = () => abrirModal('modalLogin');
+        // --- PREPARAR FORMULARIO PARA EDITAR O AGREGAR ---
+        function prepararFormulario(modo, data = null) {
+            modoFormulario = modo;
+            const titulo = document.getElementById('modalTitulo');
+            const idInput = document.getElementById('id_prod');
+            
+            document.getElementById('formNuevoProducto').reset();
+            idInput.disabled = false;
 
-        function verificarPassword() {
-            const pass = document.getElementById('passInput').value;
-            if (pass === 'Ragnar2025') {
-                localStorage.setItem('cleanAdmin', 'true');
-                cerrarModal('modalLogin');
-                actualizarInterfaz();
-                renderizar();
+            if (modo === 'edit') {
+                titulo.textContent = '📝 Editar Producto';
+                idInput.value = data.id;
+                idInput.disabled = true; // El ID no se debe cambiar al editar
+                document.getElementById('nombre_prod').value = data.nombre;
+                document.getElementById('precio_prod').value = data.precio;
+                document.getElementById('img_prod').value = data.imagen;
+                document.getElementById('desc_prod').value = data.descripcion;
             } else {
-                document.getElementById('errorMsg').style.display = 'block';
+                titulo.textContent = '➕ Nuevo Producto';
             }
-        }
-
-        function cerrarSesion() {
-            localStorage.removeItem('cleanAdmin');
-            modoEliminar = false;
-            document.body.classList.remove('delete-mode-active');
-            actualizarInterfaz();
-            renderizar();
-        }
-
-        // --- MODO ELIMINAR ---
-        function toggleModoEliminar() {
-            modoEliminar = !modoEliminar;
-            const btn = document.getElementById('btnToggleDelete');
-            document.body.classList.toggle('delete-mode-active', modoEliminar);
-            btn.textContent = modoEliminar ? '🗑️ Eliminar: ON' : '🗑️ Eliminar: OFF';
-            btn.className = modoEliminar ? 'btn-admin btn-mode-on' : 'btn-admin btn-mode';
+            abrirModal('modalProducto');
         }
 
         // --- CARGAR PRODUCTOS ---
@@ -116,41 +103,57 @@
             box.innerHTML = '';
             const isAdmin = localStorage.getItem('cleanAdmin') === 'true';
 
-            if (!data.productos || data.productos.length === 0) {
-                box.innerHTML = '<p>No hay productos en el catálogo.</p>';
-                return;
-            }
-
             data.productos.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'producto-card';
                 card.innerHTML = `
-                    <div class="img-wrapper">
-                        <img src="${p.imagen || 'https://via.placeholder.com/200'}" alt="${p.nombre}">
-                    </div>
+                    <div class="img-wrapper"><img src="${p.imagen || 'https://via.placeholder.com/200'}"></div>
                     <div class="info">
                         <h4>${p.nombre}</h4>
                         <p class="precio">$${p.precio}</p>
-                        <p class="desc">${p.descripcion || ''}</p>
-                        ${isAdmin ? `<button onclick="borrar('${p.id}')" class="btn-borrar-card">Eliminar Producto</button>` : ''}
+                        ${isAdmin ? `
+                            <div class="admin-actions-card">
+                                <button onclick='prepararFormulario("edit", ${JSON.stringify(p)})' class="btn-edit-card">Editar</button>
+                                <button onclick="borrar('${p.id}')" class="btn-borrar-card">Eliminar</button>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
                 box.appendChild(card);
             });
         }
 
-        // --- ACCIONES (BORRAR Y AGREGAR) ---
-        window.borrar = function(id) {
-            if(!confirm('¿Seguro que quieres eliminar este producto?')) return;
-            const s = document.createElement('script');
-            s.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=finalizarAccion`;
-            document.body.appendChild(s);
+        // --- LOGIN / LOGOUT ---
+        function verificarPassword() {
+            if (document.getElementById('passInput').value === 'Ragnar2025') {
+                localStorage.setItem('cleanAdmin', 'true');
+                cerrarModal('modalLogin');
+                actualizarInterfaz();
+                renderizar();
+            } else { document.getElementById('errorMsg').style.display = 'block'; }
         }
 
+        function cerrarSesion() {
+            localStorage.removeItem('cleanAdmin');
+            actualizarInterfaz();
+            renderizar();
+        }
+
+        function toggleModoEliminar() {
+            modoEliminar = !modoEliminar;
+            document.body.classList.toggle('delete-mode-active', modoEliminar);
+            document.getElementById('btnToggleDelete').textContent = modoEliminar ? '🗑️ Eliminar: ON' : '🗑️ Eliminar: OFF';
+        }
+
+        // --- ENVIAR DATOS (ADD o EDIT) ---
         document.getElementById('formNuevoProducto').onsubmit = function(e) {
             e.preventDefault();
+            const btn = document.getElementById('btnGuardarForm');
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
             const params = new URLSearchParams({
-                action: 'add',
+                action: modoFormulario,
                 id: document.getElementById('id_prod').value,
                 nombre: document.getElementById('nombre_prod').value,
                 precio: document.getElementById('precio_prod').value,
@@ -158,22 +161,30 @@
                 descripcion: document.getElementById('desc_prod').value,
                 callback: 'finalizarAccion'
             });
+
             const s = document.createElement('script');
             s.src = `${SCRIPT_URL}?${params.toString()}`;
             document.body.appendChild(s);
-        }
+        };
 
         window.finalizarAccion = function(res) {
             alert(res.message || res.error);
             cerrarModal('modalProducto');
-            document.getElementById('formNuevoProducto').reset();
+            document.getElementById('btnGuardarForm').disabled = false;
+            document.getElementById('btnGuardarForm').textContent = 'Guardar';
             renderizar();
         }
 
-        // INICIAR
+        window.borrar = function(id) {
+            if(confirm('¿Eliminar?')) {
+                const s = document.createElement('script');
+                s.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=finalizarAccion`;
+                document.body.appendChild(s);
+            }
+        }
+
         actualizarInterfaz();
         renderizar();
     </script>
 </body>
 </html>
-
