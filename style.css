@@ -1,228 +1,215 @@
 /* ============================================
-   CLEAN SOLUTIONS - HOJA DE ESTILOS FINAL
+   CLEAN SOLUTIONS - HOJA DE ESTILOS DEFINITIVA
    ============================================ */
 
 :root {
-    --primario: #1a73e8;    /* Azul profesional */
-    --secundario: #2c3e50;  /* Gris oscuro */
-    --exito: #34a853;       /* Verde para Agregar */
-    --alerta: #fbbc05;      /* Naranja para Modo Eliminar */
-    --peligro: #ea4335;     /* Rojo para Borrar/Salir */
-    --fondo: #f8f9fa;       /* Gris muy claro */
+    --azul: #1a73e8;
+    --verde: #34a853;
+    --rojo: #ea4335;
+    --gris: #5f6368;
+    --naranja: #fbbc05;
+    --fondo: #f0f2f5;
     --blanco: #ffffff;
-    --sombra: 0 4px 12px rgba(0,0,0,0.1);
+    --sombra: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* RESET BÁSICO */
+/* RESET Y ESTILOS BASE */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 body {
     background-color: var(--fondo);
-    color: var(--secundario);
+    color: #333;
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* BARRA SUPERIOR (HEADER) */
+/* CABECERA (Sticky) */
 .franjaSuperior {
     background: var(--blanco);
-    height: 80px;
     padding: 0 5%;
+    height: 90px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: var(--sombra);
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
 .logo {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: 800;
-    color: var(--primario);
+    color: var(--azul);
+    text-transform: uppercase;
     letter-spacing: -1px;
 }
 
-/* BOTONES GENERALES */
+/* BOTONES DE ADMINISTRACIÓN */
+.admin-panel {
+    display: none; /* Se activa por JS */
+    gap: 12px;
+}
+
 .btn-main {
-    background: var(--primario);
+    background: var(--azul);
     color: white;
+    padding: 12px 24px;
     border: none;
-    padding: 10px 20px;
     border-radius: 8px;
-    font-weight: 600;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
     transition: 0.3s;
 }
 
 .btn-main:hover {
     background: #1557b0;
-}
-
-/* PANEL DE ADMINISTRACIÓN */
-.admin-controls {
-    display: flex;
-    gap: 12px;
+    transform: scale(1.05);
 }
 
 .btn-admin {
-    padding: 10px 18px;
     border: none;
+    padding: 10px 18px;
     border-radius: 6px;
     color: white;
-    font-weight: 600;
-    font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: 0.2s;
 }
 
-.btn-add { background: var(--exito); }
-.btn-add:hover { background: #2d8a44; }
+.btn-add { background: var(--verde); }
+.btn-mode { background: var(--naranja); }
+.btn-logout { background: var(--gris); }
 
-.btn-mode { background: var(--alerta); }
-.btn-mode:hover { background: #eab104; }
+.btn-admin:hover { opacity: 0.9; transform: translateY(-2px); }
 
-/* Efecto cuando el Modo Eliminar está activo */
-.btn-mode-on {
-    background: var(--peligro);
-    animation: pulsacion-roja 1.5s infinite;
-}
-
-@keyframes pulsacion-roja {
-    0% { box-shadow: 0 0 0 0px rgba(234, 67, 53, 0.7); }
-    100% { box-shadow: 0 0 0 10px rgba(234, 67, 53, 0); }
-}
-
-.btn-logout { background: #5f6368; }
-.btn-logout:hover { background: #3c4043; }
-
-/* CONTENEDOR PRINCIPAL */
+/* CONTENEDOR Y GRID */
 .container {
+    flex: 1;
     max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
 }
 
-/* CUADRÍCULA DE PRODUCTOS */
 .grid-productos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
 }
 
-/* TARJETA DE PRODUCTO */
+/* TARJETAS DE PRODUCTO */
 .card {
     background: var(--blanco);
-    border-radius: 12px;
+    border-radius: 15px;
     overflow: hidden;
     box-shadow: var(--sombra);
-    transition: transform 0.3s ease;
+    transition: 0.3s;
     display: flex;
     flex-direction: column;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
 .card img {
     width: 100%;
     height: 220px;
     object-fit: cover;
-    background: #eee;
+    background: #f8f9fa;
 }
 
 .card .info {
     padding: 20px;
-    flex-grow: 1;
+    text-align: center;
     display: flex;
     flex-direction: column;
-    text-align: center;
+    flex-grow: 1;
 }
 
 .card h4 {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
 }
 
-.card .price {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--exito);
-    margin-bottom: 12px;
-}
-
-.card .desc {
-    font-size: 0.9rem;
-    color: #666;
+.price {
+    color: var(--verde);
+    font-size: 1.5rem;
+    font-weight: 800;
     margin-bottom: 15px;
 }
 
-/* BOTÓN ELIMINAR DENTRO DE LA TARJETA */
-.btn-card-del {
-    display: none; /* Oculto por defecto */
-    background: var(--peligro);
+/* ACCIONES DE ADMIN EN LA TARJETA */
+.admin-btns-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.btn-edit-card {
+    background: var(--azul);
     color: white;
     border: none;
-    padding: 12px;
+    padding: 10px;
     border-radius: 6px;
-    font-weight: bold;
     cursor: pointer;
-    margin-top: auto;
-    transition: 0.2s;
+    font-weight: bold;
 }
 
-.btn-card-del:hover {
-    background: #c53026;
+.btn-borrar-card {
+    background: var(--rojo);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    display: none; /* Solo visible en modo eliminar activo */
 }
 
-/* Esta clase se activa vía JavaScript al presionar "Modo Eliminar" */
-body.delete-active .btn-card-del {
+/* Activación del modo eliminar */
+body.delete-active .btn-borrar-card {
     display: block;
 }
 
 /* MODALES */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    display: none; /* Se cambia a flex con JS */
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    padding: 20px;
 }
 
 .modal-content {
     background: var(--blanco);
-    padding: 35px;
-    border-radius: 15px;
-    width: 100%;
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%;
     max-width: 450px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
 
 .modal-content h3 {
-    margin-bottom: 20px;
-    color: var(--secundario);
     text-align: center;
+    margin-bottom: 25px;
+    color: var(--azul);
 }
 
-/* FORMULARIOS EN MODAL */
 input, textarea {
     width: 100%;
     padding: 12px;
@@ -230,92 +217,43 @@ input, textarea {
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s;
 }
 
-input:focus, textarea:focus {
-    border-color: var(--primario);
+input:focus {
+    border-color: var(--azul);
+    outline: none;
 }
 
 .modal-buttons {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 12px;
     margin-top: 10px;
 }
 
-.btn-cancel {
-    background: #e0e0e0;
-    color: #333;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
 .btn-confirm {
-    background: var(--primario);
+    background: var(--azul);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
+    padding: 12px 25px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .franjaSuperior {
-        flex-direction: column;
-        height: auto;
-        padding: 20px;
-        gap: 15px;
-    }
-    
-    .admin-controls {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .grid-productos {
-        grid-template-columns: 1fr;
-    }
-}
-
-.admin-actions-card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 15px;
-}
-
-/* Botón Editar (Siempre visible si eres Admin) */
-.btn-edit-card {
-    background: #1a73e8;
-    color: white;
+.btn-cancel {
+    background: #eee;
+    padding: 12px 25px;
     border: none;
-    padding: 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
 }
 
-/* Botón Eliminar (Solo visible si el modo Eliminar está ON) */
-.btn-borrar-card {
-    display: none;
-    background: #ea4335;
+/* FOOTER */
+footer {
+    background: #333;
     color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
+    padding: 30px;
+    text-align: center;
+    margin-top: 50px;
 }
-
-body.delete-mode-active .btn-borrar-card {
-    display: block;
-}
-
-.btn-edit-card:hover { background: #1557b0; }
-.btn-borrar-card:hover { background: #c53026; }
