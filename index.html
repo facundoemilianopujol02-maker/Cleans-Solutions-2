@@ -21,11 +21,11 @@
             </div>
             
             <div class="nav-actions">
-                <button id="btnEntrarAdmin" class="btn-primary-nav" onclick="abrirModal('modalDeLogin')">🔑 Acceso</button>
+                <button id="btnEntrarAdmin" class="btn-pro nav-btn bg-azul" onclick="abrirModal('modalDeLogin')">🔑 Acceso</button>
                 <div id="panelAdminGlobal" class="admin-group" style="display: none;">
-                    <button onclick="prepararFormulario('add')" class="btn-action btn-add">➕ Agregar</button>
-                    <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-action btn-del-mode">🗑️ Borrar: OFF</button>
-                    <button onclick="salirAdmin()" class="btn-action btn-exit">🚪 Salir</button>
+                    <button onclick="prepararFormulario('add')" class="btn-pro nav-btn bg-verde">➕ Agregar</button>
+                    <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-pro nav-btn bg-naranja">🗑️ Borrar: OFF</button>
+                    <button onclick="salirAdmin()" class="btn-pro nav-btn bg-gris">🚪 Salir</button>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
                     <h2 id="det-nombre"></h2>
                     <span class="detail-price" id="det-precio"></span>
                     <p id="det-desc" style="margin: 20px 0; color: #555;"></p>
-                    <a href="https://wa.me/543794034489" target="_blank" class="wpp-buy-btn">Consultar por WhatsApp</a>
+                    <a href="https://wa.me/543794034489" target="_blank" class="btn-pro bg-verde" style="padding: 18px; font-size: 1.1rem;">Consultar por WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -64,15 +64,12 @@
     <div id="modalDeLogin" class="modal-overlay">
         <div class="modal-card small-card">
             <h3>Panel de Control</h3>
-            
             <div class="input-box-login">
                 <input type="password" id="inputClave" placeholder="Contraseña Admin">
                 <span id="togglePassword" class="eye-icon">👁️</span>
             </div>
-            
-            <button onclick="validarAcceso()" class="btn-modal btn-azul">Entrar</button>
-            <button onclick="cerrarModal('modalDeLogin')" class="btn-modal btn-rojo">Cerrar</button>
-            
+            <button onclick="validarAcceso()" class="btn-pro bg-azul" style="width:100%; margin-bottom:12px;">Entrar</button>
+            <button onclick="cerrarModal('modalDeLogin')" class="btn-pro bg-rojo" style="width:100%;">Cerrar</button>
             <p id="errorTexto" style="display:none; color: #ff4757; margin-top: 15px; font-weight: bold;">❌ Clave incorrecta</p>
         </div>
     </div>
@@ -86,9 +83,9 @@
                 <div class="field"><label>Precio</label><input type="number" id="f_precio" required></div>
                 <div class="field"><label>URL Imagen</label><input type="url" id="f_img"></div>
                 <div class="field"><label>Descripción</label><textarea id="f_desc" rows="3"></textarea></div>
-                <div class="form-row">
-                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-modal btn-rojo" style="flex:1">Cancelar</button>
-                    <button type="submit" id="btnEnviarForm" class="btn-modal btn-verde" style="flex:2">Guardar</button>
+                <div class="form-row" style="display:flex; gap:10px; margin-top:10px;">
+                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-pro bg-rojo" style="flex:1">Cancelar</button>
+                    <button type="submit" class="btn-pro bg-verde" style="flex:2">Guardar Producto</button>
                 </div>
             </form>
         </div>
@@ -98,13 +95,11 @@
         const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec';
         let productosLocales = [];
 
-        // LÓGICA DEL OJO (PASSWORD)
-        const btnToggle = document.getElementById('togglePassword');
-        const inputPass = document.getElementById('inputClave');
-
-        btnToggle.addEventListener('click', function() {
-            const type = inputPass.getAttribute('type') === 'password' ? 'text' : 'password';
-            inputPass.setAttribute('type', type);
+        // Lógica Ver/Ocultar Contraseña
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const input = document.getElementById('inputClave');
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
             this.textContent = type === 'password' ? '👁️' : '🙈';
         });
 
@@ -190,7 +185,6 @@
             document.getElementById('btnModoBorrar').innerText = act ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
         }
 
-        // Script de comunicación con Google
         document.getElementById('formularioPrincipal').onsubmit = function(e) {
             e.preventDefault();
             const params = new URLSearchParams({
