@@ -3,105 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Catálogo Profesional</title>
-    <link rel="stylesheet" href="style.css?v=101">
+    <title>Clean Solutions | Catálogo</title>
+    <link rel="stylesheet" href="style.css?v=200">
 </head>
 <body>
 
-    <header class="header-principal">
-        <div class="header-left">
-            <img src="logo.png" alt="Logo Clean Solutions" class="main-logo">
-            <h1 class="main-title">CLEAN SOLUTIONS</h1>
-        </div>
-        
-        <div class="header-right">
-            <button id="btnEntrarAdmin" class="btn-login" onclick="abrirModal('modalDeLogin')">🔑 Admin</button>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <img src="logo.png" alt="Logo" class="logo-img">
+                <span class="brand-name">CLEAN SOLUTIONS</span>
+            </div>
             
-            <div id="panelAdminGlobal" class="panel-admin" style="display: none;">
-                <button onclick="prepararFormulario('add')" class="btn-adm btn-verde">➕ Agregar</button>
-                <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-adm btn-naranja">🗑️ Borrar: OFF</button>
-                <button onclick="salirAdmin()" class="btn-adm btn-gris">🚪 Salir</button>
+            <div class="nav-actions">
+                <button id="btnEntrarAdmin" class="btn-primary" onclick="abrirModal('modalDeLogin')">🔑 Acceso</button>
+                
+                <div id="panelAdminGlobal" class="admin-group" style="display: none;">
+                    <button onclick="prepararFormulario('add')" class="btn-action btn-add">➕ Agregar</button>
+                    <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-action btn-del-mode">🗑️ Borrar: OFF</button>
+                    <button onclick="salirAdmin()" class="btn-action btn-exit">🚪 Salir</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="main-content">
-        <div id="contenedorProductos" class="grid-productos">
-            <p>Cargando productos de limpieza...</p>
+    <main class="content-wrapper">
+        <div id="contenedorProductos" class="product-grid">
+            <p class="loading">Cargando catálogo...</p>
         </div>
     </main>
 
-    <footer class="footer-limpio">
-        <div class="footer-box">
-            <h3>DATOS DE CONTACTO</h3>
-            <p>📱 WhatsApp: <a href="https://wa.me/543794034489" target="_blank">3794034489</a></p>
-            <p>📸 Instagram: <a href="https://www.instagram.com/clean.solutions610" target="_blank">@clean.solutions610</a></p>
-            <div class="footer-divider"></div>
-            <p class="copyright">&copy; 2026 Clean Solutions - Todos los derechos reservados.</p>
+    <footer class="main-footer">
+        <div class="footer-inner">
+            <div class="footer-info">
+                <h4>CONTACTO COMERCIAL</h4>
+                <p>🟢 <strong>WhatsApp:</strong> <a href="https://wa.me/543794034489">3794034489</a></p>
+                <p>📸 <strong>Instagram:</strong> <a href="https://www.instagram.com/clean.solutions610">@clean.solutions610</a></p>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Clean Solutions. Todos los derechos reservados.
+            </div>
         </div>
     </footer>
 
-    <div id="modalVerProducto" class="modal-base">
-        <div class="modal-det">
-            <span class="cerrar" onclick="cerrarModal('modalVerProducto')">&times;</span>
-            <div class="det-flex">
-                <div class="det-img-box">
-                    <img id="det-img" src="" alt="Producto">
+    <div id="modalVerProducto" class="modal-overlay">
+        <div class="modal-card detail-card">
+            <span class="close-btn" onclick="cerrarModal('modalVerProducto')">&times;</span>
+            <div class="detail-layout">
+                <div class="detail-media">
+                    <img id="det-img" src="" alt="">
                 </div>
-                <div class="det-txt">
+                <div class="detail-content">
                     <h2 id="det-nombre"></h2>
-                    <p class="det-precio" id="det-precio"></p>
-                    <div class="det-separator"></div>
-                    <p class="det-desc-titulo">Descripción:</p>
-                    <p id="det-desc" class="det-desc-body"></p>
-                    <a href="https://wa.me/543794034489" target="_blank" class="btn-wpp">Consultar por WhatsApp</a>
+                    <span class="detail-price" id="det-precio"></span>
+                    <hr>
+                    <p class="desc-label">Descripción del producto:</p>
+                    <p id="det-desc" class="desc-text"></p>
+                    <a href="https://wa.me/543794034489" target="_blank" class="wpp-buy-btn">Consultar disponibilidad</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="modalDeLogin" class="modal-base">
-        <div class="modal-mini">
-            <h3>Acceso Administrativo</h3>
-            <p style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">Ingresa tu contraseña para gestionar el catálogo.</p>
-            <div class="pass-box">
-                <input type="password" id="inputClave" placeholder="Contraseña">
-                <span id="togglePassword" class="eye">👁️</span>
+    <div id="modalDeLogin" class="modal-overlay">
+        <div class="modal-card small-card">
+            <h3>Panel de Control</h3>
+            <div class="input-box">
+                <input type="password" id="inputClave" placeholder="Contraseña Admin">
+                <span id="togglePassword" class="eye-toggle">👁️</span>
             </div>
-            <button onclick="validarAcceso()" class="btn-full">Entrar al Panel</button>
-            <button onclick="cerrarModal('modalDeLogin')" class="btn-link">Cancelar</button>
-            <p id="errorTexto" class="error-msg" style="display:none;">❌ Clave incorrecta</p>
+            <button onclick="validarAcceso()" class="btn-block">Entrar</button>
+            <button onclick="cerrarModal('modalDeLogin')" class="btn-text">Cerrar</button>
+            <p id="errorTexto" class="err-msg" style="display:none;">Clave incorrecta</p>
         </div>
     </div>
 
-    <div id="modalDeProducto" class="modal-base">
-        <div class="modal-mini">
-            <h3 id="tituloForm">Gestión de Producto</h3>
-            <form id="formularioPrincipal" class="form-admin">
-                <div class="input-group">
-                    <label>ID / Código Único</label>
-                    <input type="text" id="f_id" placeholder="Ej: CL001" required>
+    <div id="modalDeProducto" class="modal-overlay">
+        <div class="modal-card medium-card">
+            <h3 id="tituloForm">Nuevo Producto</h3>
+            <form id="formularioPrincipal" class="admin-form">
+                <div class="field">
+                    <label>Código ID</label>
+                    <input type="text" id="f_id" required>
                 </div>
-                <div class="input-group">
-                    <label>Nombre del Producto</label>
-                    <input type="text" id="f_nombre" placeholder="Nombre visible" required>
+                <div class="field">
+                    <label>Nombre</label>
+                    <input type="text" id="f_nombre" required>
                 </div>
-                <div class="input-group">
+                <div class="field">
                     <label>Precio ($)</label>
-                    <input type="number" id="f_precio" placeholder="0.00" required>
+                    <input type="number" id="f_precio" required>
                 </div>
-                <div class="input-group">
-                    <label>URL de la Imagen</label>
-                    <input type="url" id="f_img" placeholder="https://ejemplo.com/foto.jpg">
+                <div class="field">
+                    <label>Imagen (URL)</label>
+                    <input type="url" id="f_img">
                 </div>
-                <div class="input-group">
-                    <label>Descripción del Producto</label>
-                    <textarea id="f_desc" rows="3" placeholder="Detalles, usos, etc."></textarea>
+                <div class="field">
+                    <label>Descripción</label>
+                    <textarea id="f_desc" rows="3"></textarea>
                 </div>
-                
-                <div class="form-buttons">
-                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cancelar">Cerrar</button>
-                    <button type="submit" id="btnEnviarForm" class="btn-guardar">Guardar Cambios</button>
+                <div class="form-row">
+                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cancel">Cerrar</button>
+                    <button type="submit" id="btnEnviarForm" class="btn-save">Guardar</button>
                 </div>
             </form>
         </div>
@@ -115,14 +118,10 @@
         window.onload = () => {
             actualizarBarras();
             dibujarCatalogo();
-            
-            // Lógica Ver/Ocultar Password
-            const toggle = document.querySelector('#togglePassword');
-            const input = document.querySelector('#inputClave');
-            toggle.onclick = () => {
-                const isPass = input.type === 'password';
-                input.type = isPass ? 'text' : 'password';
-                toggle.textContent = isPass ? '🙈' : '👁️';
+            document.getElementById('togglePassword').onclick = function() {
+                const input = document.getElementById('inputClave');
+                input.type = input.type === 'password' ? 'text' : 'password';
+                this.textContent = input.type === 'password' ? '👁️' : '🙈';
             };
         };
 
@@ -142,10 +141,7 @@
             } else { document.getElementById('errorTexto').style.display = 'block'; }
         }
 
-        function salirAdmin() {
-            localStorage.removeItem('sesionClean');
-            location.reload();
-        }
+        function salirAdmin() { localStorage.removeItem('sesionClean'); location.reload(); }
 
         function dibujarCatalogo() {
             const s = document.createElement('script');
@@ -161,17 +157,17 @@
 
             res.productos.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'item-card';
                 card.onclick = () => verDetalle(p.id);
                 card.innerHTML = `
-                    <div class="card-img">
+                    <div class="item-img">
                         <img src="${p.imagen || 'https://via.placeholder.com/400'}" alt="">
-                        ${isAdmin ? `<button onclick="event.stopPropagation(); ejecutarBorrar('${p.id}')" class="btn-del">✕</button>` : ''}
+                        ${isAdmin ? `<button onclick="event.stopPropagation(); ejecutarBorrar('${p.id}')" class="quick-del">✕</button>` : ''}
                     </div>
-                    <div class="card-info">
+                    <div class="item-info">
                         <h4>${p.nombre}</h4>
-                        <p class="p-price">$${p.precio}</p>
-                        ${isAdmin ? `<button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="btn-edit">✎ Editar Datos</button>` : ''}
+                        <p class="item-price">$${p.precio}</p>
+                        ${isAdmin ? `<button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="edit-btn">✎ Modificar</button>` : ''}
                     </div>
                 `;
                 caja.appendChild(card);
@@ -184,21 +180,19 @@
             document.getElementById('det-img').src = p.imagen || 'https://via.placeholder.com/400';
             document.getElementById('det-nombre').innerText = p.nombre;
             document.getElementById('det-precio').innerText = `$${p.precio}`;
-            document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción.';
+            document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción disponible.';
             abrirModal('modalVerProducto');
         }
 
         function prepararFormulario(tipo, idProd) {
             modoActual = tipo;
             document.getElementById('formularioPrincipal').reset();
-            const inpId = document.getElementById('f_id');
-            inpId.disabled = false;
-            document.getElementById('tituloForm').innerText = tipo === 'add' ? 'Agregar Producto' : 'Editar Producto';
-            
+            document.getElementById('f_id').disabled = false;
             if(tipo === 'edit') {
                 const p = productosLocales.find(x => x.id == idProd);
                 if(p) {
-                    inpId.value = p.id; inpId.disabled = true;
+                    document.getElementById('f_id').value = p.id;
+                    document.getElementById('f_id').disabled = true;
                     document.getElementById('f_nombre').value = p.nombre;
                     document.getElementById('f_precio').value = p.precio;
                     document.getElementById('f_img').value = p.imagen;
@@ -211,7 +205,7 @@
         document.getElementById('formularioPrincipal').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnEnviarForm');
-            btn.disabled = true; btn.innerText = 'Guardando...';
+            btn.innerText = 'Enviando...';
             const params = new URLSearchParams({
                 action: modoActual, id: document.getElementById('f_id').value,
                 nombre: document.getElementById('f_nombre').value, precio: document.getElementById('f_precio').value,
@@ -226,7 +220,7 @@
         window.respuestaServidor = (res) => { alert(res.message); location.reload(); }
 
         window.ejecutarBorrar = (id) => {
-            if(confirm('¿Seguro que deseas eliminar este producto?')) {
+            if(confirm('¿Eliminar producto?')) {
                 const s = document.createElement('script');
                 s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=respuestaServidor`;
                 document.body.appendChild(s);
@@ -234,8 +228,8 @@
         }
 
         function toggleBorrado() {
-            const activo = document.body.classList.toggle('borrar-on');
-            document.getElementById('btnModoBorrar').innerText = activo ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
+            const act = document.body.classList.toggle('borrar-on');
+            document.getElementById('btnModoBorrar').innerText = act ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
         }
     </script>
 </body>
