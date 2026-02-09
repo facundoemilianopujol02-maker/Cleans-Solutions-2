@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Catálogo Profesional</title>
+    <title>Clean Solutions - Catálogo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="franjaSuperior">
-        <div class="logo">CLEAN SOLUTIONS</div>
+    <header class="franjaSuperior">
+        <div class="logo-container">
+            <img src="https://facundoemilianopujol02-maker.github.io/Cleans-Solutions-2/logo.png" alt="Logo Clean Solutions" class="img-logo">
+            <span class="logo-texto">CLEAN SOLUTIONS</span>
+        </div>
+        
         <button id="btnEntrarAdmin" class="btn-main">🔑 Admin</button>
 
         <div id="panelAdminGlobal" class="admin-panel" style="display: none;">
@@ -17,13 +21,26 @@
             <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-admin btn-mode">🗑️ Borrar: OFF</button>
             <button onclick="salirAdmin()" class="btn-admin btn-logout">🚪 Salir</button>
         </div>
-    </div>
+    </header>
 
-    <div class="container">
+    <main class="container">
         <div id="contenedorProductos" class="grid-productos">
-            <p>Cargando productos...</p>
+            <p>Cargando catálogo de limpieza...</p>
         </div>
-    </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>📞 WhatsApp: <a href="https://wa.me/543794034489" target="_blank">3794034489</a></p>
+                <p>📸 Instagram: <a href="https://www.instagram.com/clean.solutions610" target="_blank">@clean.solutions610</a></p>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2025 Clean Solutions - Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
 
     <div id="modalVerProducto" class="modal">
         <div class="modal-content vista-detalle">
@@ -36,9 +53,9 @@
                     <h2 id="det-nombre"></h2>
                     <p class="det-precio" id="det-precio"></p>
                     <div class="det-separador"></div>
-                    <p class="det-desc-titulo">Descripción del producto:</p>
+                    <p class="det-desc-titulo">Descripción:</p>
                     <p id="det-desc" class="det-descripcion"></p>
-                    <button class="btn-comprar" onclick="alert('Consultando disponibilidad por WhatsApp...')">Consultar Disponibilidad</button>
+                    <a id="btnWppDetalle" href="https://wa.me/543794034489" target="_blank" class="btn-comprar">Consultar por WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -64,10 +81,10 @@
             <h3 id="tituloForm">Producto</h3>
             <form id="formularioPrincipal">
                 <input type="text" id="f_id" placeholder="ID (Código)" required>
-                <input type="text" id="f_nombre" placeholder="Nombre del producto" required>
+                <input type="text" id="f_nombre" placeholder="Nombre" required>
                 <input type="number" id="f_precio" placeholder="Precio ($)" required>
                 <input type="url" id="f_img" placeholder="URL de imagen">
-                <textarea id="f_desc" placeholder="Descripción detallada"></textarea>
+                <textarea id="f_desc" placeholder="Descripción"></textarea>
                 <div class="modal-buttons">
                     <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cancel">Cerrar</button>
                     <button type="submit" id="btnEnviarForm" class="btn-confirm">Guardar</button>
@@ -90,26 +107,21 @@
         function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
         function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- LÓGICA DE LOGIN ---
-        document.getElementById('btnEntrarAdmin').onclick = () => abrirModal('modalDeLogin');
-
         function configurarVerPassword() {
             const toggle = document.querySelector('#togglePassword');
             const input = document.querySelector('#inputClave');
-            toggle.addEventListener('click', () => {
+            toggle.onclick = () => {
                 const type = input.type === 'password' ? 'text' : 'password';
                 input.type = type;
                 toggle.textContent = type === 'password' ? '👁️' : '🙈';
-            });
+            };
         }
 
         function validarAcceso() {
             if(document.getElementById('inputClave').value === 'Ragnar2025') {
                 localStorage.setItem('sesionClean', 'true');
                 location.reload();
-            } else {
-                document.getElementById('errorTexto').style.display = 'block';
-            }
+            } else { document.getElementById('errorTexto').style.display = 'block'; }
         }
 
         function salirAdmin() {
@@ -123,7 +135,6 @@
             document.getElementById('panelAdminGlobal').style.display = estaLogueado ? 'flex' : 'none';
         }
 
-        // --- CATÁLOGO ---
         function dibujarCatalogo() {
             const script = document.createElement('script');
             script.src = `${URL_GOOGLE}?action=get&callback=procesarGet`;
@@ -140,7 +151,6 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => verDetalle(p.id);
-
                 card.innerHTML = `
                     <div class="img-container">
                         <img src="${p.imagen || 'https://via.placeholder.com/400'}" alt="${p.nombre}">
@@ -149,11 +159,7 @@
                     <div class="info">
                         <h4>${p.nombre}</h4>
                         <p class="price">$${p.precio}</p>
-                        ${isAdmin ? `
-                            <button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="btn-edit-modern">
-                               ✎ Editar Datos
-                            </button>
-                        ` : ''}
+                        ${isAdmin ? `<button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="btn-edit-modern">✎ Editar Datos</button>` : ''}
                     </div>
                 `;
                 caja.appendChild(card);
@@ -170,7 +176,6 @@
             abrirModal('modalVerProducto');
         }
 
-        // --- FUNCIONES ADMIN ---
         function prepararFormulario(tipo, idProd) {
             modoActual = tipo;
             document.getElementById('formularioPrincipal').reset();
