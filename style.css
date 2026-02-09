@@ -16,68 +16,48 @@ body { background: #f0f2f5; display: flex; flex-direction: column; min-height: 1
 #inputBusqueda:focus { border-color: #0052cc; background: white; box-shadow: 0 4px 15px rgba(0, 82, 204, 0.1); }
 .search-icon { position: absolute; right: 18px; color: #888; pointer-events: none; }
 
-.nav-actions { min-width: 200px; display: flex; justify-content: flex-end; align-items: center; }
+.nav-actions { min-width: 250px; display: flex; justify-content: flex-end; align-items: center; }
 .admin-group { display: flex; gap: 8px; }
 
-/* BOTONES NAVBAR */
-.btn-primary-nav, .btn-action { border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; color: white; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; }
-.btn-primary-nav { background: #0052cc; }
-.btn-add { background: #28a745; }
-.btn-del-mode { background: #ff9800; }
-.btn-exit { background: #6c757d; }
-.btn-primary-nav:hover, .btn-action:hover { transform: scale(1.05); opacity: 0.9; }
-
-/* BOTONES MODAL (UNIFICADOS) */
-.btn-modal {
-    width: 100%;
+/* --- SISTEMA UNIFICADO DE BOTONES (PRO) --- */
+.btn-pro {
     border: none;
-    padding: 12px 20px;
-    border-radius: 50px;
+    padding: 12px 22px;
+    border-radius: 50px !important;
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s ease;
-    color: white;
-    font-size: 1rem;
-    display: flex;
+    color: white !important;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
-}
-
-.btn-azul { background: #0052cc; box-shadow: 0 4px 10px rgba(0, 82, 204, 0.2); }
-.btn-rojo { background: #ff4757; box-shadow: 0 4px 10px rgba(255, 71, 87, 0.2); }
-.btn-verde { background: #28a745; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); }
-
-.btn-modal:hover { transform: scale(1.05); opacity: 0.95; }
-.btn-modal:active { transform: scale(0.98); }
-
-/* CAJA DE LOGIN CON OJO */
-.input-box-login {
-    position: relative;
-    margin: 20px 0;
-    width: 100%;
-}
-.input-box-login input {
-    width: 100%;
-    padding: 12px 45px 12px 15px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
     font-size: 1rem;
+    text-decoration: none;
+    gap: 8px;
 }
-.eye-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 1.2rem;
-    user-select: none;
+
+.btn-pro:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
+
+.btn-pro:active { transform: scale(0.95); }
+
+/* Colores de fondo */
+.bg-azul { background-color: #0052cc !important; }
+.bg-rojo { background-color: #ff4757 !important; }
+.bg-verde { background-color: #28a745 !important; }
+.bg-naranja { background-color: #ff9800 !important; }
+.bg-gris { background-color: #6c757d !important; }
+
+/* Ajuste botones del header */
+.nav-btn { padding: 8px 18px; font-size: 0.9rem; }
 
 /* GRID Y CARDS */
 .content-wrapper { flex: 1; width: 100%; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
 .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
-.loading { text-align: center; grid-column: 1 / -1; font-size: 1.2rem; color: #666; margin-top: 50px; }
+.loading { text-align: center; grid-column: 1 / -1; color: #666; margin-top: 50px; }
 
 .item-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; }
 .item-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
@@ -88,8 +68,13 @@ body { background: #f0f2f5; display: flex; flex-direction: column; min-height: 1
 body.borrar-on .quick-del { display: flex; }
 
 .item-info { padding: 20px; text-align: center; }
-.item-price { font-size: 1.8rem; color: #2ecc71; font-weight: 800; }
-.edit-btn { background: #f8f9fa; color: #0052cc; border: 1px solid #e0e0e0; width: 100%; padding: 10px; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+.item-price { font-size: 1.8rem; color: #2ecc71; font-weight: 800; margin-bottom: 10px; }
+.edit-btn { background: #f8f9fa; color: #0052cc; border: 1px solid #e0e0e0; width: 100%; padding: 10px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+
+/* LOGIN CON OJO */
+.input-box-login { position: relative; width: 100%; margin: 20px 0; }
+.input-box-login input { width: 100%; padding: 12px 45px 12px 15px; border-radius: 10px; border: 1px solid #ddd; }
+.eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; user-select: none; }
 
 /* MODALES */
 .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display:none; justify-content:center; align-items:center; z-index:2000; padding: 15px; }
@@ -103,15 +88,14 @@ body.borrar-on .quick-del { display: flex; }
 .detail-media img { width: 100%; height: 100%; object-fit: cover; }
 .detail-content { width: 50%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
 .detail-price { font-size: 2.5rem; color: #2ecc71; font-weight: 900; }
-.wpp-buy-btn { background: #25d366; color: white; text-decoration: none; text-align: center; padding: 18px; border-radius: 15px; font-weight: bold; margin-top: 20px; }
 
 .close-btn { position: absolute; top: 15px; right: 20px; font-size: 35px; cursor: pointer; color: #333; z-index: 5; }
 
 /* FORMULARIOS */
 .admin-form { display: flex; flex-direction: column; gap: 15px; }
 .field { display: flex; flex-direction: column; gap: 5px; text-align: left; }
-.field input, .field textarea { padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-.form-row { display: flex; gap: 10px; }
+.field label { font-size: 0.85rem; font-weight: bold; color: #666; }
+.field input, .field textarea { padding: 12px; border: 1px solid #ddd; border-radius: 10px; }
 
 /* FOOTER */
 .main-footer { background: #1a1a1a; color: white; padding: 40px 20px; margin-top: 50px; text-align: center; }
