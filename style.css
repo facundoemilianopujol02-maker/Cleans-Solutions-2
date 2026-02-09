@@ -23,6 +23,36 @@
     height: 180px;
     background: #eee;
 }
+/* Forzar que el modal sea visible cuando se activa */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Botón de admin siempre visible para poder loguearse */
+.admin-btn {
+    display: block !important;
+    cursor: pointer;
+}
+
+/* Mejoras para las tarjetas */
+.producto-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    transition: transform 0.2s;
+}
+.producto-card:hover {
+    transform: translateY(-5px);
+}
 
 .producto-imagen {
     width: 100%;
@@ -610,3 +640,4 @@ body {
     -webkit-box-orient: vertical;
 
 }
+
