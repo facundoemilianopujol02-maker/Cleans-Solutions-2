@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Catálogo</title>
+    <title>Clean Solutions - Catálogo Profesional</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="franjaSuperior">
-        <div class="logo">Clean Solutions</div>
+        <div class="logo">CLEAN SOLUTIONS</div>
         
         <button id="btnEntrarAdmin" class="btn-main">🔑 Admin</button>
 
@@ -42,11 +42,11 @@
         <div class="modal-content">
             <h3 id="tituloForm">Producto</h3>
             <form id="formularioPrincipal">
-                <input type="text" id="f_id" placeholder="ID (Código)" required>
-                <input type="text" id="f_nombre" placeholder="Nombre" required>
+                <input type="text" id="f_id" placeholder="ID (Código único)" required>
+                <input type="text" id="f_nombre" placeholder="Nombre del producto" required>
                 <input type="number" id="f_precio" placeholder="Precio ($)" required>
-                <input type="url" id="f_img" placeholder="URL de imagen">
-                <textarea id="f_desc" placeholder="Descripción"></textarea>
+                <input type="url" id="f_img" placeholder="URL de imagen (opcional)">
+                <textarea id="f_desc" placeholder="Descripción breve"></textarea>
                 <div class="modal-buttons">
                     <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cancel">Cerrar</button>
                     <button type="submit" id="btnEnviarForm" class="btn-confirm">Guardar</button>
@@ -60,7 +60,6 @@
         let productosLocales = [];
         let modoActual = 'add';
 
-        // 1. FUNCIONES DE INTERFAZ
         function actualizarBarras() {
             const estaLogueado = localStorage.getItem('sesionClean') === 'true';
             document.getElementById('btnEntrarAdmin').style.display = estaLogueado ? 'none' : 'block';
@@ -70,14 +69,10 @@
         function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
         function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // 2. BOTÓN ADMIN (CORRECCIÓN)
-        document.getElementById('btnEntrarAdmin').addEventListener('click', function() {
-            abrirModal('modalDeLogin');
-        });
+        document.getElementById('btnEntrarAdmin').onclick = () => abrirModal('modalDeLogin');
 
         function validarAcceso() {
-            const clave = document.getElementById('inputClave').value;
-            if(clave === 'Ragnar2025') {
+            if(document.getElementById('inputClave').value === 'Ragnar2025') {
                 localStorage.setItem('sesionClean', 'true');
                 cerrarModal('modalDeLogin');
                 actualizarBarras();
@@ -94,7 +89,6 @@
             dibujarCatalogo();
         }
 
-        // 3. LOGICA DE PRODUCTOS
         function dibujarCatalogo() {
             const script = document.createElement('script');
             script.src = `${URL_GOOGLE}?action=get&callback=procesarGet`;
@@ -111,14 +105,18 @@
                 const div = document.createElement('div');
                 div.className = 'card';
                 div.innerHTML = `
-                    <img src="${p.imagen || 'https://via.placeholder.com/200'}">
+                    <div class="img-container">
+                        <img src="${p.imagen || 'https://via.placeholder.com/400'}" alt="${p.nombre}">
+                        ${isAdmin ? `<button onclick="ejecutarBorrar('${p.id}')" class="btn-quick-del" title="Eliminar producto">✕</button>` : ''}
+                    </div>
                     <div class="info">
                         <h4>${p.nombre}</h4>
                         <p class="price">$${p.precio}</p>
                         ${isAdmin ? `
                             <div class="admin-btns">
-                                <button onclick="prepararFormulario('edit', '${p.id}')" class="btn-edit">Editar</button>
-                                <button onclick="ejecutarBorrar('${p.id}')" class="btn-del">Eliminar</button>
+                                <button onclick="prepararFormulario('edit', '${p.id}')" class="btn-edit-modern">
+                                   📝 Editar Producto
+                                </button>
                             </div>
                         ` : ''}
                     </div>
@@ -134,7 +132,7 @@
             inputId.disabled = false;
 
             if(tipo === 'edit') {
-                document.getElementById('tituloForm').textContent = '📝 Editar';
+                document.getElementById('tituloForm').textContent = '📝 Editar Producto';
                 const p = productosLocales.find(x => x.id == idProd);
                 if(p) {
                     inputId.value = p.id;
@@ -145,7 +143,7 @@
                     document.getElementById('f_desc').value = p.descripcion;
                 }
             } else {
-                document.getElementById('tituloForm').textContent = '➕ Nuevo';
+                document.getElementById('tituloForm').textContent = '➕ Nuevo Producto';
             }
             abrirModal('modalDeProducto');
         }
@@ -179,7 +177,7 @@
         }
 
         window.ejecutarBorrar = function(id) {
-            if(!confirm('¿Eliminar producto?')) return;
+            if(!confirm('¿Estás seguro de eliminar este producto?')) return;
             const s = document.createElement('script');
             s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=respuestaServidor`;
             document.body.appendChild(s);
@@ -187,8 +185,9 @@
 
         function toggleBorrado() {
             const activo = document.body.classList.toggle('borrar-activo');
-            document.getElementById('btnModoBorrar').textContent = activo ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
-            document.getElementById('btnModoBorrar').style.background = activo ? '#ea4335' : '#fbbc05';
+            const btn = document.getElementById('btnModoBorrar');
+            btn.textContent = activo ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
+            btn.style.background = activo ? '#ea4335' : '#fbbc05';
         }
 
         actualizarBarras();
