@@ -50,7 +50,7 @@
         <div class="modal-card detail-card">
             <span class="close-btn" onclick="cerrarModal('modalVerProducto')">&times;</span>
             <div class="detail-layout">
-                <div class="detail-media"><img id="det-img" src="" alt=""></div>
+                <div class="detail-media"><img id="det-img" src="" alt="Producto"></div>
                 <div class="detail-content">
                     <h2 id="det-nombre"></h2>
                     <span class="detail-price" id="det-precio"></span>
@@ -81,7 +81,7 @@
                 <div class="field"><label>ID Único</label><input type="text" id="f_id" required></div>
                 <div class="field"><label>Nombre</label><input type="text" id="f_nombre" required></div>
                 <div class="field"><label>Precio</label><input type="number" id="f_precio" required></div>
-                <div class="field"><label>URL Imagen</label><input type="url" id="f_img"></div>
+                <div class="field"><label>URL Imagen</label><input type="url" id="f_img" placeholder="https://ejemplo.com/foto.jpg"></div>
                 <div class="field"><label>Descripción</label><textarea id="f_desc" rows="3"></textarea></div>
                 <div class="form-row" style="display:flex; gap:10px; margin-top:10px;">
                     <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-pro bg-rojo" style="flex:1">Cancelar</button>
@@ -95,7 +95,6 @@
         const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec';
         let productosLocales = [];
 
-        // Ojo de contraseña
         document.getElementById('togglePassword').addEventListener('click', function() {
             const input = document.getElementById('inputClave');
             const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -103,10 +102,7 @@
             this.textContent = type === 'password' ? '👁️' : '🙈';
         });
 
-        window.onload = () => {
-            actualizarBarras();
-            dibujarCatalogo();
-        };
+        window.onload = () => { actualizarBarras(); dibujarCatalogo(); };
 
         function dibujarCatalogo() {
             const s = document.createElement('script');
@@ -119,19 +115,23 @@
             renderizarCards(productosLocales);
         };
 
+        function obtenerImagen(p) {
+            // Busca la imagen en cualquier nombre de propiedad común
+            return p.imagen || p.img || p.foto || p.url || 'https://via.placeholder.com/400?text=Sin+Imagen';
+        }
+
         function renderizarCards(lista) {
             const caja = document.getElementById('contenedorProductos');
             caja.innerHTML = '';
             const isAdmin = localStorage.getItem('sesionClean') === 'true';
 
             lista.forEach(p => {
-                const imgUrl = p.imagen || p.img || 'https://via.placeholder.com/400';
                 const card = document.createElement('div');
                 card.className = 'item-card';
                 card.onclick = () => verDetalle(p.id);
                 card.innerHTML = `
                     <div class="item-img">
-                        <img src="${imgUrl}" alt="">
+                        <img src="${obtenerImagen(p)}" alt="${p.nombre}">
                         ${isAdmin ? `<button onclick="event.stopPropagation(); ejecutarBorrar('${p.id}')" class="quick-del">✕</button>` : ''}
                     </div>
                     <div class="item-info">
@@ -159,10 +159,10 @@
         function verDetalle(id) {
             const p = productosLocales.find(x => x.id == id);
             if(!p) return;
-            document.getElementById('det-img').src = p.imagen || p.img || 'https://via.placeholder.com/400';
+            document.getElementById('det-img').src = obtenerImagen(p);
             document.getElementById('det-nombre').innerText = p.nombre;
             document.getElementById('det-precio').innerText = `$${p.precio}`;
-            document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción disponible.';
+            document.getElementById('det-desc').innerText = p.descripcion || 'Sin descripción.';
             abrirModal('modalVerProducto');
         }
 
@@ -188,12 +188,15 @@
 
         document.getElementById('formularioPrincipal').onsubmit = function(e) {
             e.preventDefault();
+            // Enviamos tanto 'imagen' como 'img' para asegurar que el servidor reciba lo que espera
+            const imgVal = document.getElementById('f_img').value;
             const params = new URLSearchParams({
                 action: document.getElementById('f_id').disabled ? 'edit' : 'add',
                 id: document.getElementById('f_id').value,
                 nombre: document.getElementById('f_nombre').value,
                 precio: document.getElementById('f_precio').value,
-                imagen: document.getElementById('f_img').value,
+                imagen: imgVal,
+                img: imgVal, 
                 descripcion: document.getElementById('f_desc').value,
                 callback: 'respuestaServidor'
             });
@@ -203,9 +206,8 @@
         };
 
         window.respuestaServidor = (res) => { 
-            // Manejo de error undefined
-            const mensaje = (res && res.message) ? res.message : "Operación realizada correctamente.";
-            alert(mensaje); 
+            const msg = (res && res.message) ? res.message : "Operación realizada.";
+            alert(msg); 
             location.reload(); 
         };
 
@@ -227,8 +229,7 @@
                     fId.value = p.id; fId.disabled = true;
                     document.getElementById('f_nombre').value = p.nombre || '';
                     document.getElementById('f_precio').value = p.precio || '';
-                    // Corregido error de imagen undefined en edición
-                    document.getElementById('f_img').value = p.imagen || p.img || '';
+                    document.getElementById('f_img').value = obtenerImagen(p).includes('placeholder') ? '' : obtenerImagen(p);
                     document.getElementById('f_desc').value = p.descripcion || '';
                     document.getElementById('tituloForm').innerText = 'Modificar Producto';
                 }
