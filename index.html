@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Catálogo</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Clean Solutions - Catálogo Profesional</title>
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
     <header class="franjaSuperior">
         <div class="logo-container">
-            <img src="https://facundoemilianopujol02-maker.github.io/Cleans-Solutions-2/logo.png" alt="Logo Clean Solutions" class="img-logo">
+            <img src="logo.png" alt="Logo Clean Solutions" class="img-logo">
             <span class="logo-texto">CLEAN SOLUTIONS</span>
         </div>
         
-        <button id="btnEntrarAdmin" class="btn-main">🔑 Admin</button>
+        <div class="admin-controls">
+            <button id="btnEntrarAdmin" class="btn-main">🔑 Admin</button>
 
-        <div id="panelAdminGlobal" class="admin-panel" style="display: none;">
-            <button onclick="prepararFormulario('add')" class="btn-admin btn-add">➕ Agregar</button>
-            <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-admin btn-mode">🗑️ Borrar: OFF</button>
-            <button onclick="salirAdmin()" class="btn-admin btn-logout">🚪 Salir</button>
+            <div id="panelAdminGlobal" class="admin-panel" style="display: none;">
+                <button onclick="prepararFormulario('add')" class="btn-admin btn-add">➕ Agregar</button>
+                <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-admin btn-mode">🗑️ Borrar: OFF</button>
+                <button onclick="salirAdmin()" class="btn-admin btn-logout">🚪 Salir</button>
+            </div>
         </div>
     </header>
 
@@ -37,7 +39,7 @@
                 <p>📸 Instagram: <a href="https://www.instagram.com/clean.solutions610" target="_blank">@clean.solutions610</a></p>
             </div>
             <div class="footer-bottom">
-                &copy; 2025 Clean Solutions - Todos los derechos reservados.
+                &copy; 2026 Clean Solutions - Todos los derechos reservados.
             </div>
         </div>
     </footer>
