@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions | Catálogo</title>
+    <title>Clean Solutions | Catálogo Profesional</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
             </div>
             
             <div class="search-container">
-                <input type="text" id="inputBusqueda" placeholder="Buscar por nombre o descripción..." onkeyup="filtrarProductos()">
+                <input type="text" id="inputBusqueda" placeholder="Buscar producto..." onkeyup="filtrarProductos()">
                 <span class="search-icon">🔍</span>
             </div>
             
@@ -54,9 +54,8 @@
                 <div class="detail-content">
                     <h2 id="det-nombre"></h2>
                     <span class="detail-price" id="det-precio"></span>
-                    <hr>
-                    <p id="det-desc" class="desc-text"></p>
-                    <a href="https://wa.me/543794034489" target="_blank" class="wpp-buy-btn">Consultar disponibilidad</a>
+                    <p id="det-desc" class="desc-text" style="margin: 20px 0; color: #555;"></p>
+                    <a href="https://wa.me/543794034489" target="_blank" class="wpp-buy-btn">Consultar por WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -64,35 +63,35 @@
 
     <div id="modalDeLogin" class="modal-overlay">
         <div class="modal-card small-card">
-            <h3>Panel de Control</h3>
-            <div class="input-box" style="margin: 20px 0; position: relative;">
-                <input type="password" id="inputClave" placeholder="Contraseña Admin" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd;">
+            <h3>Acceso Administrativo</h3>
+            <div class="input-box" style="margin: 25px 0;">
+                <input type="password" id="inputClave" placeholder="Contraseña">
             </div>
-            <button onclick="validarAcceso()" class="btn-primary" style="width:100%; margin-bottom: 10px;">Entrar</button>
-            <button onclick="cerrarModal('modalDeLogin')" class="btn-action btn-exit-red" style="width:100%">Cerrar</button>
-            <p id="errorTexto" style="display:none; color: red; margin-top: 10px;">❌ Clave incorrecta</p>
+            <button onclick="validarAcceso()" class="btn-primary" style="width:100%; margin-bottom: 12px;">Entrar</button>
+            <button onclick="cerrarModal('modalDeLogin')" class="btn-cerrar-modal">Cerrar</button>
+            <p id="errorTexto" style="display:none; color: #ff4757; margin-top: 15px; font-weight: bold;">❌ Clave incorrecta</p>
         </div>
     </div>
 
     <div id="modalDeProducto" class="modal-overlay">
         <div class="modal-card medium-card">
-            <h3 id="tituloForm">Nuevo Producto</h3>
+            <h3 id="tituloForm" style="margin-bottom:20px;">Gestionar Producto</h3>
             <form id="formularioPrincipal" class="admin-form">
-                <div class="field"><label>ID</label><input type="text" id="f_id" required></div>
-                <div class="field"><label>Nombre</label><input type="text" id="f_nombre" required></div>
-                <div class="field"><label>Precio</label><input type="number" id="f_precio" required></div>
-                <div class="field"><label>Imagen (URL)</label><input type="url" id="f_img"></div>
+                <div class="field"><label>ID Único</label><input type="text" id="f_id" required></div>
+                <div class="field"><label>Nombre del Producto</label><input type="text" id="f_nombre" required></div>
+                <div class="field"><label>Precio ($)</label><input type="number" id="f_precio" required></div>
+                <div class="field"><label>URL de Imagen</label><input type="url" id="f_img"></div>
                 <div class="field"><label>Descripción</label><textarea id="f_desc" rows="3"></textarea></div>
-                <div class="form-row">
-                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-action btn-exit">Cancelar</button>
-                    <button type="submit" id="btnEnviarForm" class="btn-action btn-add">Guardar</button>
+                <div class="form-row" style="margin-top:20px; display:flex; gap:10px;">
+                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cerrar-modal" style="flex:1">Cancelar</button>
+                    <button type="submit" id="btnEnviarForm" class="btn-action btn-add" style="flex:2">Guardar Producto</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbyC9SljxVkVtzx_13FJ9C3gDwKYRrIeuiVDG5KUNAT5dK8qoG_ptTOez7bO5i3Ed06e/execc';
+        const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec';
         let productosLocales = [];
 
         window.onload = () => {
@@ -107,7 +106,7 @@
         }
 
         window.procesarGet = function(res) {
-            productosLocales = res.productos;
+            productosLocales = res.productos || [];
             renderizarCards(productosLocales);
         };
 
@@ -115,6 +114,11 @@
             const caja = document.getElementById('contenedorProductos');
             caja.innerHTML = '';
             const isAdmin = localStorage.getItem('sesionClean') === 'true';
+
+            if(lista.length === 0) {
+                caja.innerHTML = '<p class="loading">No se encontraron productos.</p>';
+                return;
+            }
 
             lista.forEach(p => {
                 const card = document.createElement('div');
@@ -177,7 +181,6 @@
             document.getElementById('btnModoBorrar').innerText = act ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
         }
 
-        // Script para envío de formularios (se mantiene igual)
         document.getElementById('formularioPrincipal').onsubmit = function(e) {
             e.preventDefault();
             const params = new URLSearchParams({
@@ -193,14 +196,17 @@
             s.src = `${URL_GOOGLE}?${params.toString()}`;
             document.body.appendChild(s);
         };
+
         window.respuestaServidor = (res) => { alert(res.message); location.reload(); };
+
         window.ejecutarBorrar = (id) => {
-            if(confirm('¿Eliminar producto?')) {
+            if(confirm('¿Eliminar producto permanentemente?')) {
                 const s = document.createElement('script');
                 s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=respuestaServidor`;
                 document.body.appendChild(s);
             }
         };
+
         function prepararFormulario(tipo, idProd) {
             const fId = document.getElementById('f_id');
             fId.disabled = false;
