@@ -44,117 +44,133 @@
             <p id="loginError" style="color:red; display:none;">Contraseña incorrecta</p>
         </div>
     </div>
+     <script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjRjtL51Ym89aKA3xma6wmUODJchdJXiLRuOdTc7b9FKJ8lbeqGZE2aUXUYPxvqrsR/exec'; //
+function checkAdminStatus() {
+    if (localStorage.getItem('admin') === 'true') {
+        document.body.classList.add('modo-admin');
+        // Si tienes un botón de "Cerrar Sesión", podrías mostrarlo aquí
+    }
+}
 
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjRjtL51Ym89aKA3xma6wmUODJchdJXiLRuOdTc7b9FKJ8lbeqGZE2aUXUYPxvqrsR/exec'; //
+// 2. CARGAR PRODUCTOS
+async function cargarProductos() {
+    console.log("Cargando productos...");
+    const script = document.createElement('script');
+    script.src = `${SCRIPT_URL}?action=get&callback=callbackProductos`;
+    document.body.appendChild(script);
+}
 
-        // --- LÓGICA DE CARGA ---
-        async function cargarProductos() {
-            const script = document.createElement('script');
-            script.src = `${SCRIPT_URL}?action=get&callback=callbackProductos`;
-            document.body.appendChild(script);
-        }
+window.callbackProductos = function(data) {
+    const container = document.getElementById('productosContainer');
+    container.innerHTML = '';
+    
+    const isAdmin = localStorage.getItem('admin') === 'true';
 
-        window.callbackProductos = function(data) {
-            const container = document.getElementById('productosContainer');
-            container.innerHTML = '';
+    if (data.productos && data.productos.length > 0) {
+        data.productos.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'producto-card';
+            const imgUrl = p.imagen || 'https://via.placeholder.com/250x200?text=Sin+Imagen';
             
-            if (data.productos && data.productos.length > 0) {
-                data.productos.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'producto-card';
-                    const imgUrl = p.imagen || 'https://via.placeholder.com/200?text=Sin+Imagen';
-                    
-                    card.innerHTML = `
-                        <div class="producto-imagen-container">
-                            <img src="${imgUrl}" class="producto-imagen">
-                        </div>
-                        <div class="producto-info">
-                            <h4>${p.nombre}</h4>
-                            <p class="precio">$${p.precio}</p>
-                            <p>${p.descripcion}</p>
-                            <small>ID: ${p.id}</small>
-                            ${localStorage.getItem('admin') ? `<button onclick="eliminar('${p.id}')" class="btn-delete">Eliminar</button>` : ''}
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } else {
-                container.innerHTML = '<p>No hay productos disponibles.</p>';
-            }
-        };
+            card.innerHTML = `
+                <div class="producto-imagen-container">
+                    <img src="${imgUrl}" class="producto-imagen">
+                </div>
+                <div class="producto-info">
+                    <h4>${p.nombre || 'Sin nombre'}</h4>
+                    <p class="precio">$${p.precio || '0'}</p>
+                    <p>${p.descripcion || ''}</p>
+                    <small>ID: ${p.id}</small>
+                    ${isAdmin ? `<button onclick="eliminar('${p.id}')" class="btn-delete" style="background:#ff4444; color:white; border:none; padding:8px; width:100%; border-radius:5px; cursor:pointer; margin-top:10px;">Eliminar Producto</button>` : ''}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } else {
+        container.innerHTML = '<p>No hay productos para mostrar.</p>';
+    }
+};
 
-        // --- ELIMINAR ---
-        window.eliminar = function(id) {
-            if(!confirm('¿Seguro que deseas eliminar este producto?')) return;
-            const script = document.createElement('script');
-            script.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=afterDelete`;
-            document.body.appendChild(script);
-        };
+// 3. ELIMINAR PRODUCTO
+window.eliminar = function(id) {
+    if(!confirm('¿Estás seguro de que quieres borrar este producto?')) return;
+    
+    const script = document.createElement('script');
+    script.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=afterDelete`;
+    document.body.appendChild(script);
+};
 
-        window.afterDelete = function(res) {
-            alert(res.message || res.error);
-            cargarProductos();
-        };
+window.afterDelete = function(res) {
+    alert(res.message || res.error);
+    if(res.success) cargarProductos();
+};
 
-        // --- AGREGAR ---
-        document.getElementById('productForm').onsubmit = function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnGuardar');
-            btn.disabled = true;
-            btn.textContent = 'Guardando...';
+// 4. AGREGAR PRODUCTO (FORMULARIO)
+document.getElementById('productForm').onsubmit = function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnGuardar');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
 
-            const params = new URLSearchParams({
-                action: 'add',
-                id: document.getElementById('id').value,
-                nombre: document.getElementById('nombre').value,
-                precio: document.getElementById('precio').value,
-                imagen: document.getElementById('imagen').value,
-                descripcion: document.getElementById('descripcion').value,
-                callback: 'afterAdd'
-            });
+    const params = new URLSearchParams({
+        action: 'add',
+        id: document.getElementById('id').value,
+        nombre: document.getElementById('nombre').value,
+        precio: document.getElementById('precio').value,
+        imagen: document.getElementById('imagen').value,
+        descripcion: document.getElementById('descripcion').value,
+        callback: 'afterAdd'
+    });
 
-            const script = document.createElement('script');
-            script.src = `${SCRIPT_URL}?${params.toString()}`;
-            document.body.appendChild(script);
-        };
+    const script = document.createElement('script');
+    script.src = `${SCRIPT_URL}?${params.toString()}`;
+    document.body.appendChild(script);
+};
 
-        window.afterAdd = function(res) {
-            if(res.success) {
-                document.getElementById('modalProducto').style.display = 'none';
-                document.getElementById('productForm').reset();
-                cargarProductos();
-            }
-            alert(res.message || res.error);
-            document.getElementById('btnGuardar').disabled = false;
-            document.getElementById('btnGuardar').textContent = 'Guardar';
-        };
-
-        // --- MODALES Y LOGIN (Simplificado) ---
-        document.getElementById('btnAdmin').onclick = () => {
-            if(localStorage.getItem('admin')) {
-                document.getElementById('modalProducto').style.display = 'flex';
-            } else {
-                document.getElementById('modalLogin').style.display = 'flex';
-            }
-        };
-
-        document.getElementById('btnLogin').onclick = () => {
-            if(document.getElementById('inputPassword').value === 'Ragnar2025') {
-                localStorage.setItem('admin', 'true');
-                location.reload();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
-        };
-
-        document.getElementById('cancelarForm').onclick = () => {
-            document.getElementById('modalProducto').style.display = 'none';
-        };
-
-        // Carga inicial
+window.afterAdd = function(res) {
+    alert(res.message || res.error);
+    if(res.success) {
+        document.getElementById('modalProducto').style.display = 'none';
+        document.getElementById('productForm').reset();
         cargarProductos();
-    </script>
+    }
+    document.getElementById('btnGuardar').disabled = false;
+    document.getElementById('btnGuardar').textContent = 'Guardar';
+};
+
+// 5. MANEJO DE MODALES Y LOGIN
+document.getElementById('btnAdmin').onclick = () => {
+    if(localStorage.getItem('admin') === 'true') {
+        document.getElementById('modalProducto').style.display = 'flex';
+    } else {
+        document.getElementById('modalLogin').style.display = 'flex';
+    }
+};
+
+document.getElementById('btnLogin').onclick = () => {
+    const pass = document.getElementById('inputPassword').value;
+    if(pass === 'Ragnar2025') {
+        localStorage.setItem('admin', 'true');
+        alert('¡Bienvenido Admin!');
+        location.reload(); // Recargamos para que aparezcan los botones de eliminar
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+    }
+};
+
+// Cerrar modales si se hace clic fuera
+window.onclick = function(event) {
+    if (event.target.className === 'modal') {
+        event.target.style.display = "none";
+    }
+}
+
+// Iniciar
+checkAdminStatus();
+cargarProductos();
+          </script>
 </body>
 </html>
+
 
