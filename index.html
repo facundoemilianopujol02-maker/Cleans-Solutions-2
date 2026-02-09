@@ -3,37 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Admin Pro</title>
+    <title>Clean Solutions - Catálogo Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="franjaSuperior">
         <div class="logo">Clean Solutions</div>
-        <button id="btnAbrirLogin" class="btn-main">🔑 Admin</button>
+        
+        <button id="btnAdmin" class="btn-main">🔑 Admin</button>
 
-        <div id="panelControlAdmin" class="admin-panel" style="display: none;">
+        <div id="panelAdmin" class="admin-panel" style="display: none;">
             <button onclick="prepararFormulario('add')" class="btn-admin btn-add">➕ Agregar</button>
-            <button id="btnToggleDelete" onclick="toggleModoEliminar()" class="btn-admin btn-mode">🗑️ Eliminar: OFF</button>
+            <button id="btnToggleDelete" onclick="toggleModoEliminar()" class="btn-admin btn-mode">🗑️ Borrar: OFF</button>
             <button onclick="cerrarSesion()" class="btn-admin btn-logout">🚪 Salir</button>
         </div>
     </div>
 
     <div class="container">
         <div id="productosContainer" class="grid-productos">
-            <p>Cargando catálogo...</p>
+            <p>Cargando productos...</p>
         </div>
     </div>
 
     <div id="modalProducto" class="modal">
         <div class="modal-content">
             <h3 id="modalTitulo">Nuevo Producto</h3>
-            <form id="formNuevoProducto">
-                <input type="text" id="id_prod" placeholder="ID (Ej: COD-01)" required>
-                <input type="text" id="nombre_prod" placeholder="Nombre" required>
-                <input type="number" id="precio_prod" placeholder="Precio ($)" required>
-                <input type="url" id="img_prod" placeholder="URL de imagen">
-                <textarea id="desc_prod" placeholder="Descripción"></textarea>
+            <form id="formProducto">
+                <input type="text" id="p_id" placeholder="ID (Ej: COD-01)" required>
+                <input type="text" id="p_nombre" placeholder="Nombre" required>
+                <input type="number" id="p_precio" placeholder="Precio ($)" required>
+                <input type="url" id="p_img" placeholder="URL de imagen">
+                <textarea id="p_desc" placeholder="Descripción"></textarea>
                 <div class="modal-buttons">
                     <button type="button" onclick="cerrarModal('modalProducto')" class="btn-cancel">Cancelar</button>
                     <button type="submit" id="btnGuardarForm" class="btn-confirm">Guardar</button>
@@ -44,130 +45,133 @@
 
     <div id="modalLogin" class="modal">
         <div class="modal-content">
-            <h3>Acceso Admin</h3>
+            <h3>Acceso Administrador</h3>
             <input type="password" id="passInput" placeholder="Contraseña">
             <div class="modal-buttons">
-                <button onclick="cerrarModal('modalLogin')">Cancelar</button>
+                <button onclick="cerrarModal('modalLogin')" class="btn-cancel">Cerrar</button>
                 <button onclick="verificarPassword()" class="btn-confirm">Entrar</button>
             </div>
-            <p id="errorMsg" style="color:red; display:none; margin-top:10px;">❌ Incorrecto</p>
+            <p id="errorLogin" style="color:red; display:none; margin-top:10px;">❌ Clave incorrecta</p>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx4GzLzLS7Ty8xp9TT7iOdHzpOvlIqQbCdhfZ2TQJjbg2xvHic7t6M5eLXWiBmhiXvo/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBAvY2gVqHykxIN_c0l46nJfWELdkiwn43VE2hvlZ5bmhOYMFqK_XOZA-vy4Op-3la/exec';
         let modoEliminar = false;
-        let modoFormulario = 'add'; // Puede ser 'add' o 'edit'
+        let modoFormulario = 'add';
+        let listaProductos = []; // Guardamos los productos para editarlos fácilmente
 
+        // --- MANEJO DE VISTAS ---
         function actualizarInterfaz() {
-            const esAdmin = localStorage.getItem('cleanAdmin') === 'true';
-            document.getElementById('btnAbrirLogin').style.display = esAdmin ? 'none' : 'block';
-            document.getElementById('panelControlAdmin').style.display = esAdmin ? 'flex' : 'none';
+            const logueado = localStorage.getItem('cleanAdminOK') === 'true';
+            document.getElementById('btnAdmin').style.display = logueado ? 'none' : 'block';
+            document.getElementById('panelAdmin').style.display = logueado ? 'flex' : 'none';
         }
 
         function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
         function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- PREPARAR FORMULARIO PARA EDITAR O AGREGAR ---
-        function prepararFormulario(modo, data = null) {
+        // --- LOGIN ---
+        document.getElementById('btnAdmin').onclick = () => abrirModal('modalLogin');
+
+        function verificarPassword() {
+            if(document.getElementById('passInput').value === 'Ragnar2025') {
+                localStorage.setItem('cleanAdminOK', 'true');
+                cerrarModal('modalLogin');
+                actualizarInterfaz();
+                renderizar();
+            } else {
+                document.getElementById('errorLogin').style.display = 'block';
+            }
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('cleanAdminOK');
+            modoEliminar = false;
+            document.body.classList.remove('delete-active');
+            actualizarInterfaz();
+            renderizar();
+        }
+
+        // --- FORMULARIO (ADD / EDIT) ---
+        function prepararFormulario(modo, idProd = null) {
             modoFormulario = modo;
-            const titulo = document.getElementById('modalTitulo');
-            const idInput = document.getElementById('id_prod');
-            
-            document.getElementById('formNuevoProducto').reset();
+            document.getElementById('formProducto').reset();
+            const idInput = document.getElementById('p_id');
             idInput.disabled = false;
 
             if (modo === 'edit') {
-                titulo.textContent = '📝 Editar Producto';
-                idInput.value = data.id;
-                idInput.disabled = true; // El ID no se debe cambiar al editar
-                document.getElementById('nombre_prod').value = data.nombre;
-                document.getElementById('precio_prod').value = data.precio;
-                document.getElementById('img_prod').value = data.imagen;
-                document.getElementById('desc_prod').value = data.descripcion;
+                document.getElementById('modalTitulo').textContent = '📝 Editar Producto';
+                const p = listaProductos.find(item => item.id == idProd);
+                if (p) {
+                    idInput.value = p.id;
+                    idInput.disabled = true;
+                    document.getElementById('p_nombre').value = p.nombre;
+                    document.getElementById('p_precio').value = p.precio;
+                    document.getElementById('p_img').value = p.imagen;
+                    document.getElementById('p_desc').value = p.descripcion;
+                }
             } else {
-                titulo.textContent = '➕ Nuevo Producto';
+                document.getElementById('modalTitulo').textContent = '➕ Nuevo Producto';
             }
             abrirModal('modalProducto');
         }
 
-        // --- CARGAR PRODUCTOS ---
+        // --- CARGAR DATOS ---
         function renderizar() {
             const s = document.createElement('script');
-            s.src = `${SCRIPT_URL}?action=get&callback=callbackData`;
+            s.src = `${SCRIPT_URL}?action=get&callback=pintar`;
             document.body.appendChild(s);
         }
 
-        window.callbackData = function(data) {
-            const box = document.getElementById('productosContainer');
-            box.innerHTML = '';
-            const isAdmin = localStorage.getItem('cleanAdmin') === 'true';
+        window.pintar = function(res) {
+            listaProductos = res.productos;
+            const container = document.getElementById('productosContainer');
+            container.innerHTML = '';
+            const isAdmin = localStorage.getItem('cleanAdminOK') === 'true';
 
-            data.productos.forEach(p => {
+            res.productos.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'producto-card';
+                card.className = 'card';
                 card.innerHTML = `
-                    <div class="img-wrapper"><img src="${p.imagen || 'https://via.placeholder.com/200'}"></div>
+                    <img src="${p.imagen || 'https://via.placeholder.com/200'}">
                     <div class="info">
                         <h4>${p.nombre}</h4>
-                        <p class="precio">$${p.precio}</p>
+                        <p class="price">$${p.precio}</p>
                         ${isAdmin ? `
-                            <div class="admin-actions-card">
-                                <button onclick='prepararFormulario("edit", ${JSON.stringify(p)})' class="btn-edit-card">Editar</button>
+                            <div class="admin-btns-card">
+                                <button onclick="prepararFormulario('edit', '${p.id}')" class="btn-edit-card">Editar</button>
                                 <button onclick="borrar('${p.id}')" class="btn-borrar-card">Eliminar</button>
                             </div>
                         ` : ''}
                     </div>
                 `;
-                box.appendChild(card);
+                container.appendChild(card);
             });
         }
 
-        // --- LOGIN / LOGOUT ---
-        function verificarPassword() {
-            if (document.getElementById('passInput').value === 'Ragnar2025') {
-                localStorage.setItem('cleanAdmin', 'true');
-                cerrarModal('modalLogin');
-                actualizarInterfaz();
-                renderizar();
-            } else { document.getElementById('errorMsg').style.display = 'block'; }
-        }
-
-        function cerrarSesion() {
-            localStorage.removeItem('cleanAdmin');
-            actualizarInterfaz();
-            renderizar();
-        }
-
-        function toggleModoEliminar() {
-            modoEliminar = !modoEliminar;
-            document.body.classList.toggle('delete-mode-active', modoEliminar);
-            document.getElementById('btnToggleDelete').textContent = modoEliminar ? '🗑️ Eliminar: ON' : '🗑️ Eliminar: OFF';
-        }
-
-        // --- ENVIAR DATOS (ADD o EDIT) ---
-        document.getElementById('formNuevoProducto').onsubmit = function(e) {
+        // --- ACCIONES ---
+        document.getElementById('formProducto').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnGuardarForm');
             btn.disabled = true;
-            btn.textContent = 'Enviando...';
+            btn.textContent = 'Procesando...';
 
-            const params = new URLSearchParams({
+            const p = new URLSearchParams({
                 action: modoFormulario,
-                id: document.getElementById('id_prod').value,
-                nombre: document.getElementById('nombre_prod').value,
-                precio: document.getElementById('precio_prod').value,
-                imagen: document.getElementById('img_prod').value,
-                descripcion: document.getElementById('desc_prod').value,
-                callback: 'finalizarAccion'
+                id: document.getElementById('p_id').value,
+                nombre: document.getElementById('p_nombre').value,
+                precio: document.getElementById('p_precio').value,
+                imagen: document.getElementById('p_img').value,
+                descripcion: document.getElementById('p_desc').value,
+                callback: 'finalizar'
             });
-
             const s = document.createElement('script');
-            s.src = `${SCRIPT_URL}?${params.toString()}`;
+            s.src = `${SCRIPT_URL}?${p.toString()}`;
             document.body.appendChild(s);
-        };
+        }
 
-        window.finalizarAccion = function(res) {
+        window.finalizar = function(res) {
             alert(res.message || res.error);
             cerrarModal('modalProducto');
             document.getElementById('btnGuardarForm').disabled = false;
@@ -176,16 +180,22 @@
         }
 
         window.borrar = function(id) {
-            if(confirm('¿Eliminar?')) {
-                const s = document.createElement('script');
-                s.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=finalizarAccion`;
-                document.body.appendChild(s);
-            }
+            if(!confirm('¿Eliminar producto?')) return;
+            const s = document.createElement('script');
+            s.src = `${SCRIPT_URL}?action=delete&id=${id}&callback=finalizar`;
+            document.body.appendChild(s);
         }
 
+        function toggleModoEliminar() {
+            modoEliminar = !modoEliminar;
+            document.body.classList.toggle('delete-active', modoEliminar);
+            document.getElementById('btnToggleDelete').textContent = modoEliminar ? '🗑️ Borrar: ON' : '🗑️ Borrar: OFF';
+            document.getElementById('btnToggleDelete').style.background = modoEliminar ? '#ea4335' : '#fbbc05';
+        }
+
+        // Inicio
         actualizarInterfaz();
         renderizar();
     </script>
 </body>
 </html>
-
