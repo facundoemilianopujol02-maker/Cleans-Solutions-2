@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clean Solutions | Catálogo</title>
-    <link rel="stylesheet" href="style.css?v=200">
+    <link rel="stylesheet" href="style.css?v=300">
 </head>
 <body>
 
@@ -13,6 +13,11 @@
             <div class="brand">
                 <img src="logo.png" alt="Logo" class="logo-img">
                 <span class="brand-name">CLEAN SOLUTIONS</span>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" id="inputBusqueda" placeholder="Buscar por nombre o descripción..." onkeyup="filtrarProductos()">
+                <span class="search-icon">🔍</span>
             </div>
             
             <div class="nav-actions">
@@ -37,8 +42,8 @@
         <div class="footer-inner">
             <div class="footer-info">
                 <h4>CONTACTO COMERCIAL</h4>
-                <p>🟢 <strong>WhatsApp:</strong> <a href="https://wa.me/543794034489">3794034489</a></p>
-                <p>📸 <strong>Instagram:</strong> <a href="https://www.instagram.com/clean.solutions610">@clean.solutions610</a></p>
+                <p>🟢 WhatsApp: <a href="https://wa.me/543794034489">3794034489</a></p>
+                <p>📸 Instagram: <a href="https://www.instagram.com/clean.solutions610">@clean.solutions610</a></p>
             </div>
             <div class="footer-copy">
                 &copy; 2026 Clean Solutions. Todos los derechos reservados.
@@ -74,7 +79,7 @@
             </div>
             <button onclick="validarAcceso()" class="btn-block">Entrar</button>
             <button onclick="cerrarModal('modalDeLogin')" class="btn-text">Cerrar</button>
-            <p id="errorTexto" class="err-msg" style="display:none;">Clave incorrecta</p>
+            <p id="errorTexto" class="err-msg" style="display:none;">❌ Clave incorrecta</p>
         </div>
     </div>
 
@@ -111,8 +116,8 @@
     </div>
 
     <script>
-        const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbwDNt0kgjhW2Sh-zu-xJnaEkFtMQmk_lpLJDt66U5gqwdDizq8ZWwQ1ArYeW8SnXFML/exec';
-        let productosLocales = [];
+        const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbyHpYtuWlS2FhQHafdTIeK3vsOIZ9_Vc45tGBB_0rUYkk7HTMNSIoFq5hZ2BQLSUElq/exec';
+        let productosLocales = []; 
         let modoActual = 'add';
 
         window.onload = () => {
@@ -128,34 +133,28 @@
         function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
         function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function actualizarBarras() {
-            const admin = localStorage.getItem('sesionClean') === 'true';
-            document.getElementById('btnEntrarAdmin').style.display = admin ? 'none' : 'block';
-            document.getElementById('panelAdminGlobal').style.display = admin ? 'flex' : 'none';
+        // FILTRO DE BÚSQUEDA
+        function filtrarProductos() {
+            const busqueda = document.getElementById('inputBusqueda').value.toLowerCase();
+            const filtrados = productosLocales.filter(p => 
+                p.nombre.toLowerCase().includes(busqueda) || 
+                (p.descripcion && p.descripcion.toLowerCase().includes(busqueda))
+            );
+            renderizarCards(filtrados);
         }
 
-        function validarAcceso() {
-            if(document.getElementById('inputClave').value === 'Ragnar2025') {
-                localStorage.setItem('sesionClean', 'true');
-                location.reload();
-            } else { document.getElementById('errorTexto').style.display = 'block'; }
-        }
-
-        function salirAdmin() { localStorage.removeItem('sesionClean'); location.reload(); }
-
-        function dibujarCatalogo() {
-            const s = document.createElement('script');
-            s.src = `${URL_GOOGLE}?action=get&callback=procesarGet`;
-            document.body.appendChild(s);
-        }
-
-        window.procesarGet = function(res) {
-            productosLocales = res.productos;
+        // DIBUJAR LAS TARJETAS
+        function renderizarCards(lista) {
             const caja = document.getElementById('contenedorProductos');
             caja.innerHTML = '';
             const isAdmin = localStorage.getItem('sesionClean') === 'true';
 
-            res.productos.forEach(p => {
+            if (lista.length === 0) {
+                caja.innerHTML = '<p class="loading">No se encontraron coincidencias...</p>';
+                return;
+            }
+
+            lista.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'item-card';
                 card.onclick = () => verDetalle(p.id);
@@ -172,6 +171,17 @@
                 `;
                 caja.appendChild(card);
             });
+        }
+
+        function dibujarCatalogo() {
+            const s = document.createElement('script');
+            s.src = `${URL_GOOGLE}?action=get&callback=procesarGet`;
+            document.body.appendChild(s);
+        }
+
+        window.procesarGet = function(res) {
+            productosLocales = res.productos;
+            renderizarCards(productosLocales);
         }
 
         function verDetalle(id) {
@@ -226,6 +236,21 @@
                 document.body.appendChild(s);
             }
         }
+
+        function actualizarBarras() {
+            const admin = localStorage.getItem('sesionClean') === 'true';
+            document.getElementById('btnEntrarAdmin').style.display = admin ? 'none' : 'block';
+            document.getElementById('panelAdminGlobal').style.display = admin ? 'flex' : 'none';
+        }
+
+        function validarAcceso() {
+            if(document.getElementById('inputClave').value === 'Ragnar2025') {
+                localStorage.setItem('sesionClean', 'true');
+                location.reload();
+            } else { document.getElementById('errorTexto').style.display = 'block'; }
+        }
+
+        function salirAdmin() { localStorage.removeItem('sesionClean'); location.reload(); }
 
         function toggleBorrado() {
             const act = document.body.classList.toggle('borrar-on');
