@@ -1,166 +1,95 @@
-/* =========================================
-   VARIABLES Y CONFIGURACIÓN BASE
-   ========================================= */
 :root {
     --azul-pro: #0052cc;
-    --azul-hover: #0747a6;
     --verde-wpp: #25d366;
-    --verde-precio: #059669;
     --rojo: #ff4757;
     --naranja: #ffa502;
-    --gris-suave: #f1f5f9;
     --negro-footer: #121212;
-    --texto-oscuro: #1e293b;
 }
 
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: #f8fafc; display: flex; flex-direction: column; min-height: 100vh; }
 
-body { 
-    background: #f8fafc; 
-    color: var(--texto-oscuro); 
-    display: flex; 
-    flex-direction: column; 
-    min-height: 100vh; 
-}
-
-/* =========================================
-   HEADER (CABECERA) - LOGO GRANDE
-   ========================================= */
+/* HEADER */
 .franjaSuperior {
-    background: white; 
-    height: 115px; /* Altura aumentada para el logo */
+    background: white;
+    height: 120px; /* Altura fija para el logo grande */
     padding: 0 5%;
-    display: flex; 
-    justify-content: space-between; 
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-    position: sticky; 
-    top: 0; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
     z-index: 1000;
 }
 
-.logo-container { 
-    display: flex; 
-    align-items: center; 
-    gap: 20px; 
-}
+.logo-container { display: flex; align-items: center; gap: 15px; }
+.img-logo { height: 95px; width: auto; object-fit: contain; }
+.logo-texto { font-size: 1.8rem; font-weight: 900; color: var(--azul-pro); }
 
-.img-logo { 
-    height: 95px; /* Tamaño del logo aumentado */
-    width: auto; 
-    object-fit: contain;
-}
+/* ADMIN CONTROLS (ARRIBA) */
+.admin-controls { display: flex; align-items: center; }
+.admin-panel { display: none; gap: 8px; }
 
-.logo-texto { 
-    font-size: 1.8rem; 
-    font-weight: 900; 
-    color: var(--azul-pro); 
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
+.btn-main, .btn-admin { border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; }
+.btn-main { background: var(--azul-pro); }
+.btn-add { background: #10b981; }
+.btn-mode { background: var(--naranja); }
+.btn-logout { background: #64748b; }
 
-/* =========================================
-   PANEL ADMINISTRADOR
-   ========================================= */
-.admin-panel { 
-    display: none; 
-    gap: 12px; 
-}
+/* GRID PRODUCTOS */
+.container { flex: 1; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+.grid-productos { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
 
-.btn-main, .btn-admin { 
-    border: none; 
-    padding: 12px 20px; 
-    border-radius: 10px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    transition: all 0.3s ease; 
-}
+/* TARJETA */
+.card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; position: relative; transition: 0.3s; }
+.card:hover { transform: translateY(-5px); }
+.img-container { height: 230px; }
+.img-container img { width: 100%; height: 100%; object-fit: cover; }
 
-.btn-main { background: var(--azul-pro); color: white; }
-.btn-main:hover { background: var(--azul-hover); transform: translateY(-2px); }
-
-.btn-add { background: #10b981; color: white; }
-.btn-mode { background: var(--naranja); color: white; }
-.btn-logout { background: #64748b; color: white; }
-.btn-admin:hover { opacity: 0.9; transform: translateY(-2px); }
-
-/* =========================================
-   GRID DE PRODUCTOS
-   ========================================= */
-.container { 
-    flex: 1; 
-    max-width: 1200px; 
-    margin: 40px auto; 
-    padding: 0 20px; 
-}
-
-.grid-productos { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 35px; 
-}
-
-/* =========================================
-   TARJETAS DE PRODUCTO (CARDS)
-   ========================================= */
-.card { 
-    background: white; 
-    border-radius: 20px; 
-    overflow: hidden; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-    cursor: pointer; 
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    position: relative; 
-}
-
-.card:hover { 
-    transform: translateY(-10px); 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
-}
-
-.img-container { 
-    height: 250px; 
-    position: relative; 
-    background: #f1f5f9;
-}
-
-.img-container img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-}
-
-/* BOTÓN BORRAR RÁPIDO (X) */
 .btn-quick-del {
-    position: absolute; 
-    top: 15px; 
-    right: 15px; 
-    width: 38px; 
-    height: 38px;
-    background: rgba(255, 71, 87, 0.95); 
-    backdrop-filter: blur(5px);
-    border: none; 
-    color: white; 
-    border-radius: 50%; 
-    font-weight: bold;
-    display: none; 
-    cursor: pointer; 
-    justify-content: center; 
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    z-index: 5;
+    position: absolute; top: 10px; right: 10px; width: 35px; height: 35px;
+    background: var(--rojo); color: white; border: none; border-radius: 50%;
+    display: none; justify-content: center; align-items: center; cursor: pointer;
 }
+body.borrar-activo .btn-quick-del { display: flex; }
 
-body.borrar-activo .btn-quick-del { display: flex; animation: popIn 0.3s ease; }
+.info { padding: 20px; text-align: center; }
+.price { color: #059669; font-size: 1.6rem; font-weight: 800; margin-bottom: 10px; }
+.btn-edit-modern { background: #f1f5f9; color: var(--azul-pro); border: none; width: 100%; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-.info { padding: 25px; text-align: center; }
-.info h4 { font-size: 1.2rem; color: #334155; margin-bottom: 8px; }
+/* FOOTER (LIMPIO) */
+.footer {
+    background: var(--negro-footer);
+    color: white;
+    padding: 40px 0 20px 0;
+    margin-top: auto; /* Empuja el footer siempre al final */
+    width: 100%;
+}
+.footer-content { max-width: 1200px; margin: 0 auto; text-align: center; }
+.footer-section h4 { color: var(--azul-pro); margin-bottom: 15px; }
+.footer-section p { margin-bottom: 8px; }
+.footer-section a { color: white; text-decoration: none; font-weight: bold; }
+.footer-bottom { border-top: 1px solid #333; margin-top: 20px; padding-top: 20px; color: #777; font-size: 0.9rem; }
 
-.price { 
-    color: var(--verde-precio); 
-    font-size: 1.
+/* MODALES */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 2000; }
+.modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; }
+.password-container { position: relative; margin-bottom: 20px; }
+.password-container input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; }
+.eye-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; }
+
+/* VISTA DETALLE */
+.vista-detalle { max-width: 800px; padding: 0; overflow: hidden; }
+.detalle-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.detalle-img img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; }
+.detalle-info { padding: 30px; }
+.det-precio { font-size: 2.2rem; color: #059669; font-weight: 900; }
+.btn-comprar { background: var(--verde-wpp); color: white; text-decoration: none; display: block; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; margin-top: 20px; }
+
+@media (max-width: 768px) {
+    .detalle-grid { grid-template-columns: 1fr; }
+    .logo-texto { display: none; }
+    .img-logo { height: 70px; }
+    .franjaSuperior { height: 90px; }
+}
