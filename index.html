@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions - Catálogo</title>
-    <link rel="stylesheet" href="style.css?v=99">
+    <title>Clean Solutions - Catálogo Profesional</title>
+    <link rel="stylesheet" href="style.css?v=101">
 </head>
 <body>
 
     <header class="header-principal">
         <div class="header-left">
-            <img src="logo.png" alt="Logo" class="main-logo">
+            <img src="logo.png" alt="Logo Clean Solutions" class="main-logo">
             <h1 class="main-title">CLEAN SOLUTIONS</h1>
         </div>
         
@@ -27,17 +27,17 @@
 
     <main class="main-content">
         <div id="contenedorProductos" class="grid-productos">
-            <p>Cargando productos...</p>
+            <p>Cargando productos de limpieza...</p>
         </div>
     </main>
 
     <footer class="footer-limpio">
         <div class="footer-box">
-            <h3>CONTACTO</h3>
+            <h3>DATOS DE CONTACTO</h3>
             <p>📱 WhatsApp: <a href="https://wa.me/543794034489" target="_blank">3794034489</a></p>
             <p>📸 Instagram: <a href="https://www.instagram.com/clean.solutions610" target="_blank">@clean.solutions610</a></p>
-            <hr>
-            <p class="copyright">&copy; 2026 Clean Solutions</p>
+            <div class="footer-divider"></div>
+            <p class="copyright">&copy; 2026 Clean Solutions - Todos los derechos reservados.</p>
         </div>
     </footer>
 
@@ -45,11 +45,15 @@
         <div class="modal-det">
             <span class="cerrar" onclick="cerrarModal('modalVerProducto')">&times;</span>
             <div class="det-flex">
-                <img id="det-img" src="" alt="">
+                <div class="det-img-box">
+                    <img id="det-img" src="" alt="Producto">
+                </div>
                 <div class="det-txt">
                     <h2 id="det-nombre"></h2>
                     <p class="det-precio" id="det-precio"></p>
-                    <p id="det-desc"></p>
+                    <div class="det-separator"></div>
+                    <p class="det-desc-titulo">Descripción:</p>
+                    <p id="det-desc" class="det-desc-body"></p>
                     <a href="https://wa.me/543794034489" target="_blank" class="btn-wpp">Consultar por WhatsApp</a>
                 </div>
             </div>
@@ -58,28 +62,47 @@
 
     <div id="modalDeLogin" class="modal-base">
         <div class="modal-mini">
-            <h3>Acceso Admin</h3>
+            <h3>Acceso Administrativo</h3>
+            <p style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">Ingresa tu contraseña para gestionar el catálogo.</p>
             <div class="pass-box">
                 <input type="password" id="inputClave" placeholder="Contraseña">
                 <span id="togglePassword" class="eye">👁️</span>
             </div>
-            <button onclick="validarAcceso()" class="btn-full">Entrar</button>
+            <button onclick="validarAcceso()" class="btn-full">Entrar al Panel</button>
             <button onclick="cerrarModal('modalDeLogin')" class="btn-link">Cancelar</button>
-            <p id="errorTexto" class="error" style="display:none;">Clave incorrecta</p>
+            <p id="errorTexto" class="error-msg" style="display:none;">❌ Clave incorrecta</p>
         </div>
     </div>
 
     <div id="modalDeProducto" class="modal-base">
         <div class="modal-mini">
-            <h3 id="tituloForm">Producto</h3>
-            <form id="formularioPrincipal">
-                <input type="text" id="f_id" placeholder="ID (Código)" required>
-                <input type="text" id="f_nombre" placeholder="Nombre" required>
-                <input type="number" id="f_precio" placeholder="Precio" required>
-                <input type="url" id="f_img" placeholder="URL Imagen">
-                <textarea id="f_desc" placeholder="Descripción"></textarea>
-                <button type="submit" id="btnEnviarForm" class="btn-full">Guardar</button>
-                <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-link">Cerrar</button>
+            <h3 id="tituloForm">Gestión de Producto</h3>
+            <form id="formularioPrincipal" class="form-admin">
+                <div class="input-group">
+                    <label>ID / Código Único</label>
+                    <input type="text" id="f_id" placeholder="Ej: CL001" required>
+                </div>
+                <div class="input-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" id="f_nombre" placeholder="Nombre visible" required>
+                </div>
+                <div class="input-group">
+                    <label>Precio ($)</label>
+                    <input type="number" id="f_precio" placeholder="0.00" required>
+                </div>
+                <div class="input-group">
+                    <label>URL de la Imagen</label>
+                    <input type="url" id="f_img" placeholder="https://ejemplo.com/foto.jpg">
+                </div>
+                <div class="input-group">
+                    <label>Descripción del Producto</label>
+                    <textarea id="f_desc" rows="3" placeholder="Detalles, usos, etc."></textarea>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" onclick="cerrarModal('modalDeProducto')" class="btn-cancelar">Cerrar</button>
+                    <button type="submit" id="btnEnviarForm" class="btn-guardar">Guardar Cambios</button>
+                </div>
             </form>
         </div>
     </div>
@@ -93,12 +116,13 @@
             actualizarBarras();
             dibujarCatalogo();
             
-            // Lógica del ojo de la contraseña
+            // Lógica Ver/Ocultar Password
             const toggle = document.querySelector('#togglePassword');
             const input = document.querySelector('#inputClave');
             toggle.onclick = () => {
-                input.type = input.type === 'password' ? 'text' : 'password';
-                toggle.textContent = input.type === 'password' ? '👁️' : '🙈';
+                const isPass = input.type === 'password';
+                input.type = isPass ? 'text' : 'password';
+                toggle.textContent = isPass ? '🙈' : '👁️';
             };
         };
 
@@ -147,7 +171,7 @@
                     <div class="card-info">
                         <h4>${p.nombre}</h4>
                         <p class="p-price">$${p.precio}</p>
-                        ${isAdmin ? `<button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="btn-edit">✎ Editar</button>` : ''}
+                        ${isAdmin ? `<button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="btn-edit">✎ Editar Datos</button>` : ''}
                     </div>
                 `;
                 caja.appendChild(card);
@@ -169,6 +193,8 @@
             document.getElementById('formularioPrincipal').reset();
             const inpId = document.getElementById('f_id');
             inpId.disabled = false;
+            document.getElementById('tituloForm').innerText = tipo === 'add' ? 'Agregar Producto' : 'Editar Producto';
+            
             if(tipo === 'edit') {
                 const p = productosLocales.find(x => x.id == idProd);
                 if(p) {
@@ -200,7 +226,7 @@
         window.respuestaServidor = (res) => { alert(res.message); location.reload(); }
 
         window.ejecutarBorrar = (id) => {
-            if(confirm('¿Eliminar?')) {
+            if(confirm('¿Seguro que deseas eliminar este producto?')) {
                 const s = document.createElement('script');
                 s.src = `${URL_GOOGLE}?action=delete&id=${id}&callback=respuestaServidor`;
                 document.body.appendChild(s);
