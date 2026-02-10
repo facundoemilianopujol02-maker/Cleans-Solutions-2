@@ -10,35 +10,28 @@
 
     <header class="navbar">
         <div class="nav-container">
-            <div class="brand"><span class="brand-title">CLEAN SOLUTIONS</span></div>
-            
-            <div class="search-box">
-                <input type="text" id="inputBusqueda" placeholder="Buscar...">
-            </div>
-
+            <div class="brand"><span>CLEAN SOLUTIONS</span></div>
+            <input type="text" id="inputBusqueda" placeholder="Buscar productos..." class="search-input">
             <div class="nav-right">
                 <button id="btnAdmin" class="btn-login-minimal" onclick="window.abrirModal('modalDeLogin')">🔑 Admin</button>
-                
-                <div id="panelAdminGlobal" class="admin-controls" style="display: none;">
-                    <button onclick="window.prepararFormulario('add')" class="btn-circle bg-verde">➕</button>
-                    <button onclick="window.salirAdmin()" class="btn-circle bg-gris">🚪</button>
+                <div id="panelAdminGlobal" style="display: none; gap: 10px;">
+                    <button onclick="window.prepararFormulario('add')" class="btn-circle" style="background:#10b981; color:white">➕</button>
+                    <button onclick="window.salirAdmin()" class="btn-circle" style="background:#64748b; color:white">🚪</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="product-grid" id="contenedorProductos">
-        <p class="loading-text">Cargando...</p>
-    </main>
+    <main class="product-grid" id="contenedorProductos"></main>
 
     <div id="modalVerProducto" class="modal-overlay">
         <div class="modal-box modal-xl">
             <button class="close-x" onclick="window.cerrarModal('modalVerProducto')">&times;</button>
             <div class="product-detail-layout">
-                <div class="pd-image-col"><img id="det-img" src="" alt=""></div>
-                <div class="pd-info-col">
+                <img id="det-img" src="" class="pd-img">
+                <div class="pd-info">
                     <h2 id="det-nombre"></h2>
-                    <div id="det-precio"></div>
+                    <div id="det-precio" class="pd-price"></div>
                     <p id="det-desc"></p>
                     <a id="btnWsp" href="#" target="_blank" class="btn-whatsapp">WhatsApp</a>
                 </div>
@@ -49,10 +42,9 @@
     <div id="modalDeLogin" class="modal-overlay">
         <div class="modal-box">
             <button class="close-x" onclick="window.cerrarModal('modalDeLogin')">&times;</button>
-            <h3>Admin</h3>
-            <input type="password" id="inputClave" style="width:100%; padding:10px; margin:10px 0;">
-            <button onclick="window.validarAcceso()" class="btn-full bg-azul">Entrar</button>
-            <p id="errorTexto" style="color:red; display:none;">Clave incorrecta</p>
+            <h3>Acceso Admin</h3>
+            <input type="password" id="inputClave" placeholder="Contraseña" style="width:100%; margin:15px 0; padding:10px;">
+            <button onclick="window.validarAcceso()" class="btn-full" style="background:#3b82f6; color:white;">Entrar</button>
         </div>
     </div>
 
@@ -60,16 +52,14 @@
         <div class="modal-box">
             <button class="close-x" onclick="window.cerrarModal('modalProducto')">&times;</button>
             <h3 id="tituloForm">Producto</h3>
-            
             <form id="formProducto" class="admin-form">
                 <input type="text" id="f_id" placeholder="ID" required>
                 <input type="text" id="f_nombre" placeholder="Nombre" required>
                 <input type="number" id="f_precio" placeholder="Precio" required>
                 <input type="url" id="f_img" placeholder="URL Imagen">
                 <textarea id="f_desc" placeholder="Descripción"></textarea>
-                <button type="submit" id="btnEnviarForm" class="btn-full bg-verde">Guardar</button>
+                <button type="submit" id="btnEnviarForm" class="btn-full" style="background:#10b981; color:white;">Guardar</button>
             </form>
-
         </div>
     </div>
 
