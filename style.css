@@ -75,3 +75,6 @@ body { font-family: sans-serif; background: #f8fafc; color: #1e293b; line-height
     .nav-container { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
     .search-box { width: 100%; }
 }
+.borrar-on .product-card { border: 2px solid #ff4444; cursor: no-repeat; }
+.borrar-on .product-card::after { content: "🗑️"; position: absolute; top: 10px; right: 10px; font-size: 20px; background: white; border-radius: 50%; padding: 5px; }
+
