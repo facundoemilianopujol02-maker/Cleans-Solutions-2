@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clean Solutions | Catálogo Profesional</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style (1).css">
 </head>
 <body>
 
@@ -23,7 +22,7 @@
 
             <div class="nav-center">
                 <div class="search-box">
-                    <input type="text" id="inputBusqueda" placeholder="¿Qué estás buscando?" onkeyup="filtrarProductos()">
+                    <input type="text" id="inputBusqueda" placeholder="¿Qué estás buscando?">
                     <span class="search-icon">🔍</span>
                 </div>
             </div>
@@ -54,7 +53,6 @@
         </div>
     </footer>
 
-    <!-- Modal Detalle Producto -->
     <div id="modalVerProducto" class="modal-overlay">
         <div class="modal-box modal-xl">
             <button class="close-x" onclick="cerrarModal('modalVerProducto')">&times;</button>
@@ -67,7 +65,7 @@
                     <h2 class="pd-title" id="det-nombre"></h2>
                     <div class="pd-price" id="det-precio"></div>
                     <p class="pd-description" id="det-desc"></p>
-                    <a href="https://wa.me/543794034489" target="_blank" class="btn-whatsapp">
+                    <a id="linkWhatsapp" href="https://wa.me/543794034489" target="_blank" class="btn-whatsapp">
                         <span>Consultar por WhatsApp</span>
                     </a>
                 </div>
@@ -75,20 +73,19 @@
         </div>
     </div>
 
-    <!-- Modal Login -->
     <div id="modalDeLogin" class="modal-overlay">
         <div class="modal-box">
             <button class="close-x" onclick="cerrarModal('modalDeLogin')">&times;</button>
             <h3>Acceso Administrativo</h3>
-            <div class="form-group">
+            <div class="form-group" style="position:relative;">
                 <input type="password" id="inputClave" placeholder="Introduce la clave">
+                <button id="togglePassword" style="position:absolute; right:10px; top:12px; background:none; border:none; cursor:pointer;">👁️</button>
             </div>
             <button onclick="validarAcceso()" class="btn-full bg-azul">Ingresar</button>
-            <p id="errorTexto" class="error-hint" style="display:none">Clave incorrecta</p>
+            <p id="errorTexto" class="error-hint">Clave incorrecta</p>
         </div>
     </div>
 
-    <!-- Modal Gestión Producto -->
     <div id="modalDeProducto" class="modal-overlay">
         <div class="modal-box">
             <button class="close-x" onclick="cerrarModal('modalDeProducto')">&times;</button>
@@ -99,79 +96,11 @@
                 <input type="number" id="f_precio" placeholder="Precio ($)" required>
                 <input type="url" id="f_img" placeholder="URL de la imagen (Directa)">
                 <textarea id="f_desc" rows="3" placeholder="Breve descripción..."></textarea>
-                <button type="submit" class="btn-full bg-verde">Guardar Cambios</button>
+                <button type="submit" id="btnEnviarForm" class="btn-full bg-verde">Guardar Cambios</button>
             </form>
         </div>
     </div>
 
-    <script>
-        const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec';
-        let productosLocales = [];
-
-        window.onload = () => {
-            actualizarInterfazAdmin();
-            cargarDatos();
-        };
-
-        function cargarDatos() {
-            const s = document.createElement('script');
-            s.src = `${URL_GOOGLE}?action=get&callback=procesarRespuesta`;
-            document.body.appendChild(s);
-        }
-
-        window.procesarRespuesta = function(data) {
-            productosLocales = data.productos || [];
-            renderizarCards(productosLocales);
-        };
-
-        function renderizarCards(lista) {
-            const grid = document.getElementById('contenedorProductos');
-            grid.innerHTML = '';
-            const isAdmin = localStorage.getItem('sesionClean') === 'true';
-
-            lista.forEach(p => {
-                const img = p.imagen || p.img || 'https://via.placeholder.com/400?text=Clean+Solutions';
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                
-                // Agregar botones de acción solo si es admin
-                const acciones = isAdmin ? `
-                    <div class="card-actions">
-                        <button onclick="event.stopPropagation(); prepararFormulario('edit', '${p.id}')" class="btn-circle btn-edit-action">✎</button>
-                        <button onclick="event.stopPropagation(); eliminarProducto('${p.id}')" class="btn-circle btn-del-action">🗑️</button>
-                    </div>
-                ` : '';
-                
-                card.innerHTML = `
-                    <div class="card-img-container">
-                        <img src="${img}" alt="${p.nombre}">
-                        ${acciones}
-                    </div>
-                    <div class="card-body">
-                        <h4>${p.nombre}</h4>
-                        <p class="card-price">$${p.precio}</p>
-                    </div>
-                `;
-                
-                // Hacer click en la tarjeta para ver detalle
-                card.onclick = () => verDetalle(p.id);
-                grid.appendChild(card);
-            });
-        }
-
-        function verDetalle(id) {
-            const p = productosLocales.find(x => x.id == id);
-            if(!p) return;
-            
-            document.getElementById('det-img').src = p.imagen || p.img || 'https://via.placeholder.com/400';
-            document.getElementById('det-nombre').innerText = p.nombre;
-            document.getElementById('det-precio').innerText = `$${p.precio}`;
-            document.getElementById('det-desc').innerText = p.descripcion || 'No hay descripción disponible para este producto.';
-            abrirModal('modalVerProducto');
-        }
-
-        // Resto del código JavaScript se mantiene similar...
-        // (Las funciones de abrir/cerrar modales, validar acceso, etc.)
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
