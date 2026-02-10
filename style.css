@@ -2,7 +2,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 body { background: #f4f6f9; color: #333; }
 
-/* NAVBAR */
+/* NAVBAR - MEJORADO */
 .main-nav { 
     background: white; 
     padding: 15px 0; 
@@ -10,7 +10,7 @@ body { background: #f4f6f9; color: #333; }
     position: sticky; 
     top: 0; 
     z-index: 999; 
-    height: 80px; /* Altura fija para evitar saltos al recargar */
+    height: 80px; 
     display: flex;
     align-items: center;
 }
@@ -23,24 +23,25 @@ body { background: #f4f6f9; color: #333; }
     justify-content: space-between; 
     padding: 0 20px;
     width: 100%;
-    position: relative; /* Clave para el centrado del buscador */
+    position: relative; /* INDISPENSABLE para centrar el buscador */
 }
 
+/* LOGO A LA IZQUIERDA */
 .nav-brand { 
     display: flex; 
     align-items: center; 
     gap: 10px; 
-    flex: 1; /* Ocupa espacio a la izquierda */
+    z-index: 10;
 }
 .nav-logo { height: 45px; }
 .nav-title { font-weight: 800; color: #0052cc; font-size: 1.1rem; }
 
-/* BUSCADOR - AHORA CENTRADO REAL */
+/* BUSCADOR - CENTRADO MATEMÁTICO REAL */
 .nav-search {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
+    transform: translateX(-50%); /* Lo mueve al centro exacto */
+    z-index: 5;
 }
 .nav-search input { 
     padding: 10px 20px; 
@@ -49,17 +50,14 @@ body { background: #f4f6f9; color: #333; }
     width: 350px; 
     outline: none; 
     background: #f9f9f9; 
-    transition: 0.3s;
 }
-.nav-search input:focus { border-color: #0052cc; background: white; box-shadow: 0 0 8px rgba(0,82,204,0.1); }
 
-/* SECCIÓN ADMIN - DERECHA */
+/* ADMIN A LA DERECHA */
 .nav-user { 
     display: flex; 
     justify-content: flex-end; 
-    flex: 1; /* Ocupa espacio a la derecha */
-    flex-shrink: 0; 
-    min-width: fit-content; 
+    z-index: 10;
+    min-width: 100px;
 }
 
 .btn-lock { 
@@ -70,22 +68,12 @@ body { background: #f4f6f9; color: #333; }
     cursor: pointer; 
     font-weight: 600;
     white-space: nowrap; 
-    display: inline-block;
-    transition: 0.2s;
-}
-.btn-lock:hover { background: #e2e6ea; }
-
-.admin-tools { 
-    display: flex; 
-    gap: 8px; 
-    align-items: center; 
 }
 
-/* GRID */
+/* GRID Y CARDS (Igual a tu base) */
 .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
 .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
 
-/* CARDS */
 .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; position: relative; }
 .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
 .card-img { height: 240px; background: #eee; position: relative; }
@@ -93,45 +81,21 @@ body { background: #f4f6f9; color: #333; }
 
 .card-txt { padding: 20px; text-align: center; }
 .txt-price { color: #28a745; font-weight: 800; font-size: 1.5rem; margin-top: 5px; }
-.btn-edit { background: #f0f2f5; color: #0052cc; border: none; padding: 8px 15px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold; width: 100%; }
 
 /* MODALES */
 .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
-.modal-box { background: white; border-radius: 20px; position: relative; overflow: hidden; animation: zoom 0.2s ease; }
-.big { max-width: 800px; width: 100%; }
-.small { max-width: 400px; width: 100%; padding: 30px; }
-
+.modal-box { background: white; border-radius: 20px; position: relative; overflow: hidden; }
 .close-x { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: #999; z-index: 10; }
 
-.detail-split { display: flex; flex-wrap: wrap; }
-.split-img { width: 50%; height: 400px; background: #000; }
-.split-img img { width: 100%; height: 100%; object-fit: cover; }
-.split-info { width: 50%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
-
-.p-price { font-size: 2rem; color: #28a745; font-weight: 800; margin: 10px 0; }
-.p-desc { color: #666; margin-bottom: 25px; line-height: 1.5; }
-
-/* BOTONES ACCIÓN */
-.btn-wa { background: #28a745; color: white; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: bold; display: block; border: none; width: 100%; cursor: pointer; }
-.btn-action { width: 40px; height: 40px; border-radius: 50%; border: none; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+/* HERRAMIENTAS ADMIN */
+.admin-tools { display: flex; gap: 8px; align-items: center; }
+.btn-action { width: 40px; height: 40px; border-radius: 50%; border: none; color: white; cursor: pointer; font-weight: bold; }
 .b-green { background: #28a745; } .b-orange { background: #ff9800; } .b-gray { background: #6c757d; }
-
-.btn-del { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; display: none; cursor: pointer; font-weight: bold; }
-body.modo-del .btn-del { display: block; }
-
-.full-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; }
-.form-ui { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-.form-ui input, .form-ui textarea { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
-
-@keyframes zoom { from { transform: scale(0.9); } to { transform: scale(1); } }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-    .main-nav { height: auto; padding: 10px 0; }
-    .nav-content { flex-direction: column; gap: 15px; }
-    .nav-brand, .nav-user { flex: none; width: 100%; justify-content: center; }
+    .nav-content { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
     .nav-search { position: static; transform: none; width: 100%; }
     .nav-search input { width: 100%; }
-    .split-img, .split-info { width: 100%; height: auto; }
-    .split-img { height: 250px; }
+    .nav-user { justify-content: center; width: 100%; }
 }
