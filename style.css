@@ -1,247 +1,137 @@
-/* ============================================
-   CLEAN SOLUTIONS - HOJA DE ESTILOS COMPLETA
-   Versión Estabilizada y Corregida
-   ============================================ */
+/* RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+body { background: #f4f6f9; color: #333; }
 
-/* ===== RESET Y ESTILOS BASE ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ===== BARRA SUPERIOR (NAVBAR) ===== */
-.franjaSuperior {
-    background-color: #ffffff;
-    width: 100%;
-    height: 100px;
+/* NAVBAR */
+.main-nav { 
+    background: white; 
+    padding: 15px 0; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+    position: sticky; 
+    top: 0; 
+    z-index: 999; 
+    height: 80px; /* Altura fija para evitar saltos al recargar */
     display: flex;
     align-items: center;
-    padding: 0 40px;
-    border-bottom: 2px solid #e0e0e0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    /* Esto es clave para que el buscador se centre respecto a la barra */
-    position: relative; 
 }
 
-/* 1. Logo a la izquierda */
-.logoContainer {
-    flex-shrink: 0;
-    z-index: 10;
+.nav-content { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 20px;
+    width: 100%;
+    position: relative; /* Clave para el centrado del buscador */
 }
 
-.logoContainer img {
-    height: 75px;
-    width: auto;
-    object-fit: contain;
+.nav-brand { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    flex: 1; /* Ocupa espacio a la izquierda */
 }
+.nav-logo { height: 45px; }
+.nav-title { font-weight: 800; color: #0052cc; font-size: 1.1rem; }
 
-/* 2. Buscador CENTRADO MATEMÁTICO */
-.busquedaContainer {
+/* BUSCADOR - AHORA CENTRADO REAL */
+.nav-search {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
-    max-width: 500px;
-    z-index: 5;
-}
-
-.busquedaForma {
-    display: flex;
-    width: 100%;
-}
-
-.busquedaInput {
-    flex-grow: 1;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: 2px solid #A6D8E5;
-    border-right: none;
-    border-radius: 25px 0 0 25px;
-    outline: none;
-}
-
-.busquedaBoton {
-    background-color: #A6D8E5;
-    border: 2px solid #A6D8E5;
-    border-left: none;
-    border-radius: 0 25px 25px 0;
-    padding: 0 20px;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-/* 3. Botón Admin a la derecha */
-.botones {
-    margin-left: auto; /* Empuja todo a la derecha */
     z-index: 10;
 }
-
-#btnAdmin {
-    height: 40px;
-    padding: 0 20px;
-    background-color: #dd4040;
-    color: #ffffff;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    cursor: pointer;
-    border: none;
-    white-space: nowrap;
-}
-
-/* ===== GRID DE PRODUCTOS ===== */
-.container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-    flex: 1;
-}
-
-.productos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 25px;
-}
-
-.producto-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.nav-search input { 
+    padding: 10px 20px; 
+    border-radius: 30px; 
+    border: 1px solid #ddd; 
+    width: 350px; 
+    outline: none; 
+    background: #f9f9f9; 
     transition: 0.3s;
-    cursor: pointer;
+}
+.nav-search input:focus { border-color: #0052cc; background: white; box-shadow: 0 0 8px rgba(0,82,204,0.1); }
+
+/* SECCIÓN ADMIN - DERECHA */
+.nav-user { 
+    display: flex; 
+    justify-content: flex-end; 
+    flex: 1; /* Ocupa espacio a la derecha */
+    flex-shrink: 0; 
+    min-width: fit-content; 
 }
 
-.producto-card:hover {
-    transform: translateY(-5px);
+.btn-lock { 
+    background: #f1f3f5; 
+    border: 1px solid #ddd; 
+    padding: 10px 18px; 
+    border-radius: 50px; 
+    cursor: pointer; 
+    font-weight: 600;
+    white-space: nowrap; 
+    display: inline-block;
+    transition: 0.2s;
+}
+.btn-lock:hover { background: #e2e6ea; }
+
+.admin-tools { 
+    display: flex; 
+    gap: 8px; 
+    align-items: center; 
 }
 
-.producto-imagen-container {
-    width: 100%;
-    height: 200px;
-    background: #f0f0f0;
-}
+/* GRID */
+.container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
 
-.producto-imagen {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+/* CARDS */
+.card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; position: relative; }
+.card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+.card-img { height: 240px; background: #eee; position: relative; }
+.card-img img { width: 100%; height: 100%; object-fit: cover; }
 
-.producto-info {
-    padding: 20px;
-    text-align: center;
-}
+.card-txt { padding: 20px; text-align: center; }
+.txt-price { color: #28a745; font-weight: 800; font-size: 1.5rem; margin-top: 5px; }
+.btn-edit { background: #f0f2f5; color: #0052cc; border: none; padding: 8px 15px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold; width: 100%; }
 
-.producto-nombre { font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-.producto-precio { color: #4CAF50; font-size: 20px; font-weight: bold; }
+/* MODALES */
+.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
+.modal-box { background: white; border-radius: 20px; position: relative; overflow: hidden; animation: zoom 0.2s ease; }
+.big { max-width: 800px; width: 100%; }
+.small { max-width: 400px; width: 100%; padding: 30px; }
 
-/* ===== MODALES (CON LA "X" DE CIERRE) ===== */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 2000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
+.close-x { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: #999; z-index: 10; }
 
-.modal-contenido {
-    background-color: white;
-    border-radius: 12px;
-    padding: 30px;
-    position: relative;
-    max-width: 500px;
-    width: 90%;
-}
+.detail-split { display: flex; flex-wrap: wrap; }
+.split-img { width: 50%; height: 400px; background: #000; }
+.split-img img { width: 100%; height: 100%; object-fit: cover; }
+.split-info { width: 50%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
 
-/* Botón de cierre genérico para modales */
-.close-x {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 30px;
-    cursor: pointer;
-    color: #999;
-    border: none;
-    background: none;
-}
+.p-price { font-size: 2rem; color: #28a745; font-weight: 800; margin: 10px 0; }
+.p-desc { color: #666; margin-bottom: 25px; line-height: 1.5; }
 
-/* Modal Detalle Específico */
-#modalDetalle .modal-contenido {
-    max-width: 800px;
-    padding: 0;
-}
+/* BOTONES ACCIÓN */
+.btn-wa { background: #28a745; color: white; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: bold; display: block; border: none; width: 100%; cursor: pointer; }
+.btn-action { width: 40px; height: 40px; border-radius: 50%; border: none; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+.b-green { background: #28a745; } .b-orange { background: #ff9800; } .b-gray { background: #6c757d; }
 
-.detalle-flex {
-    display: flex;
-    flex-wrap: wrap;
-}
+.btn-del { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; display: none; cursor: pointer; font-weight: bold; }
+body.modo-del .btn-del { display: block; }
 
-.detalle-img { width: 50%; height: 400px; }
-.detalle-img img { width: 100%; height: 100%; object-fit: cover; }
-.detalle-info { width: 50%; padding: 30px; display: flex; flex-direction: column; justify-content: center; }
+.full-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; }
+.form-ui { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.form-ui input, .form-ui textarea { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 
-.btn-wa {
-    background-color: #25d366;
-    color: white;
-    text-decoration: none;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    margin-top: 20px;
-}
+@keyframes zoom { from { transform: scale(0.9); } to { transform: scale(1); } }
 
-/* ===== PANEL ADMIN (MODO EDICIÓN) ===== */
-.panel-admin {
-    position: fixed;
-    top: 110px;
-    right: 20px;
-    background: white;
-    border: 2px solid #4caf50;
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 1500;
-}
-
-/* ===== FOOTER ===== */
-.footer {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    margin-top: auto;
-}
-
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media (max-width: 768px) {
-    .franjaSuperior { height: auto; flex-direction: column; padding: 20px; }
-    .busquedaContainer { position: static; transform: none; margin: 20px 0; }
-    .botones { margin: 0; width: 100%; justify-content: center; }
-    .detalle-img, .detalle-info { width: 100%; }
-    .detalle-img { height: 250px; }
+    .main-nav { height: auto; padding: 10px 0; }
+    .nav-content { flex-direction: column; gap: 15px; }
+    .nav-brand, .nav-user { flex: none; width: 100%; justify-content: center; }
+    .nav-search { position: static; transform: none; width: 100%; }
+    .nav-search input { width: 100%; }
+    .split-img, .split-info { width: 100%; height: auto; }
+    .split-img { height: 250px; }
 }
