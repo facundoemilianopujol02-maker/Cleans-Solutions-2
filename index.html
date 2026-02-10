@@ -28,7 +28,7 @@
             </div>
 
             <div class="nav-right">
-                <button id="btnEntrarAdmin" class="btn-login-minimal" onclick="abrirModal('modalDeLogin')">🔑 Admin</button>
+                <button id="btnAdmin" class="btn-login-minimal" onclick="abrirModal('modalDeLogin')">🔑 Admin</button>
                 <div id="panelAdminGlobal" class="admin-controls" style="display: none;">
                     <button onclick="prepararFormulario('add')" class="btn-circle bg-verde">➕</button>
                     <button id="btnModoBorrar" onclick="toggleBorrado()" class="btn-circle bg-naranja">🗑️</button>
@@ -57,17 +57,13 @@
         <div class="modal-box modal-xl">
             <button class="close-x" onclick="cerrarModal('modalVerProducto')">&times;</button>
             <div class="product-detail-layout">
-                <div class="pd-image-col">
-                    <img id="det-img" src="" alt="">
-                </div>
+                <div class="pd-image-col"><img id="det-img" src="" alt=""></div>
                 <div class="pd-info-col">
-                    <div class="pd-category" id="det-categoria">Producto</div>
+                    <div class="pd-category">Producto</div>
                     <h2 class="pd-title" id="det-nombre"></h2>
                     <div class="pd-price" id="det-precio"></div>
                     <p class="pd-description" id="det-desc"></p>
-                    <a id="linkWhatsapp" href="https://wa.me/543794034489" target="_blank" class="btn-whatsapp">
-                        <span>Consultar por WhatsApp</span>
-                    </a>
+                    <a href="https://wa.me/543794034489" target="_blank" class="btn-whatsapp">Consultar WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -79,24 +75,24 @@
             <h3>Acceso Administrativo</h3>
             <div class="form-group" style="position:relative;">
                 <input type="password" id="inputClave" placeholder="Introduce la clave">
-                <button id="togglePassword" style="position:absolute; right:10px; top:12px; background:none; border:none; cursor:pointer;">👁️</button>
+                <button id="togglePassword" style="position:absolute; right:10px; top:12px; background:none; border:none;">👁️</button>
             </div>
             <button onclick="validarAcceso()" class="btn-full bg-azul">Ingresar</button>
             <p id="errorTexto" class="error-hint">Clave incorrecta</p>
         </div>
     </div>
 
-    <div id="modalDeProducto" class="modal-overlay">
+    <div id="modalProducto" class="modal-overlay">
         <div class="modal-box">
-            <button class="close-x" onclick="cerrarModal('modalDeProducto')">&times;</button>
+            <button class="close-x" onclick="cerrarModal('modalProducto')">&times;</button>
             <h3 id="tituloForm">Gestionar Producto</h3>
-            <form id="formularioPrincipal" class="admin-form">
-                <input type="text" id="f_id" placeholder="Código (ID)" required>
-                <input type="text" id="f_nombre" placeholder="Nombre del producto" required>
-                <input type="number" id="f_precio" placeholder="Precio ($)" required>
-                <input type="url" id="f_img" placeholder="URL de la imagen (Directa)">
-                <textarea id="f_desc" rows="3" placeholder="Breve descripción..."></textarea>
-                <button type="submit" id="btnEnviarForm" class="btn-full bg-verde">Guardar Cambios</button>
+            <form id="formProducto" class="admin-form">
+                <input type="text" id="f_id" placeholder="ID del producto" required>
+                <input type="text" id="f_nombre" placeholder="Nombre" required>
+                <input type="number" id="f_precio" placeholder="Precio" required>
+                <input type="url" id="f_img" placeholder="URL Imagen">
+                <textarea id="f_desc" rows="3" placeholder="Descripción"></textarea>
+                <button type="submit" id="btnEnviarForm" class="btn-full bg-verde">Guardar</button>
             </form>
         </div>
     </div>
