@@ -1,6 +1,6 @@
 /* ============================================
    CLEAN SOLUTIONS - HOJA DE ESTILOS COMPLETA
-   Versión Final Optimizada
+   Versión Estabilizada y Corregida
    ============================================ */
 
 /* ===== RESET Y ESTILOS BASE ===== */
@@ -27,32 +27,36 @@ body {
     height: 100px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0 40px;
     border-bottom: 2px solid #e0e0e0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
     z-index: 1000;
+    /* Esto es clave para que el buscador se centre respecto a la barra */
+    position: relative; 
 }
 
+/* 1. Logo a la izquierda */
 .logoContainer {
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
+    z-index: 10;
 }
 
 .logoContainer img {
-    height: 80px; /* Ajustado para que no desborde la franja de 100px */
+    height: 75px;
     width: auto;
     object-fit: contain;
 }
 
-/* Buscador Centrado */
+/* 2. Buscador CENTRADO MATEMÁTICO */
 .busquedaContainer {
-    flex-grow: 1;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
     max-width: 500px;
-    margin: 0 40px;
+    z-index: 5;
 }
 
 .busquedaForma {
@@ -68,12 +72,6 @@ body {
     border-right: none;
     border-radius: 25px 0 0 25px;
     outline: none;
-    transition: 0.3s;
-}
-
-.busquedaInput:focus {
-    border-color: #4CAF50;
-    background-color: #fff;
 }
 
 .busquedaBoton {
@@ -84,39 +82,27 @@ body {
     padding: 0 20px;
     cursor: pointer;
     font-size: 18px;
-    transition: 0.3s;
 }
 
-/* Contenedor de Botones Admin (Derecha) */
+/* 3. Botón Admin a la derecha */
 .botones {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-shrink: 0;
-    justify-content: flex-end;
-    min-width: 100px;
+    margin-left: auto; /* Empuja todo a la derecha */
+    z-index: 10;
 }
 
-/* El botón Admin ahora es parte del flujo, no vuela con fixed */
 #btnAdmin {
     height: 40px;
-    padding: 0 15px;
+    padding: 0 20px;
     background-color: #dd4040;
     color: #ffffff;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     border: none;
     white-space: nowrap;
-    transition: 0.3s;
-}
-
-#btnAdmin:hover {
-    background-color: #c03030;
-    transform: scale(1.05);
 }
 
 /* ===== GRID DE PRODUCTOS ===== */
@@ -129,33 +115,27 @@ body {
 
 .productos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 30px;
-    padding-bottom: 50px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
 }
 
 .producto-card {
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: 0.3s;
-    cursor: pointer; /* Indica que se puede hacer clic */
-    display: flex;
-    flex-direction: column;
+    cursor: pointer;
 }
 
 .producto-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .producto-imagen-container {
     width: 100%;
-    height: 220px;
-    overflow: hidden;
+    height: 200px;
     background: #f0f0f0;
-    position: relative;
 }
 
 .producto-imagen {
@@ -169,33 +149,10 @@ body {
     text-align: center;
 }
 
-.producto-nombre {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #333;
-}
+.producto-nombre { font-weight: bold; font-size: 18px; margin-bottom: 10px; }
+.producto-precio { color: #4CAF50; font-size: 20px; font-weight: bold; }
 
-.producto-precio {
-    font-size: 22px;
-    color: #4CAF50;
-    font-weight: 800;
-}
-
-/* Botón Modificar (Solo aparece en modo admin) */
-.btn-modificar-card {
-    background-color: #f1f2f6;
-    color: #0052cc;
-    border: 1px solid #dcdde1;
-    padding: 8px;
-    border-radius: 6px;
-    margin-top: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-}
-
-/* ===== MODALES (GENERAL) ===== */
+/* ===== MODALES (CON LA "X" DE CIERRE) ===== */
 .modal {
     position: fixed;
     top: 0;
@@ -204,71 +161,48 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 2000;
-    display: none; /* Se activa con JS */
+    display: none;
     justify-content: center;
     align-items: center;
-    padding: 20px;
 }
 
 .modal-contenido {
     background-color: white;
-    border-radius: 15px;
+    border-radius: 12px;
+    padding: 30px;
     position: relative;
     max-width: 500px;
-    width: 100%;
-    padding: 30px;
-    animation: zoom 0.3s ease;
+    width: 90%;
 }
 
-@keyframes zoom {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-/* Botón X de cierre */
+/* Botón de cierre genérico para modales */
 .close-x {
     position: absolute;
     top: 10px;
     right: 15px;
-    font-size: 28px;
+    font-size: 30px;
     cursor: pointer;
     color: #999;
     border: none;
     background: none;
 }
 
-/* ===== MODAL DE DETALLE (PRODUCTO CLICKEADO) ===== */
+/* Modal Detalle Específico */
 #modalDetalle .modal-contenido {
-    max-width: 850px;
+    max-width: 800px;
     padding: 0;
-    overflow: hidden;
 }
 
-.detalle-container {
+.detalle-flex {
     display: flex;
     flex-wrap: wrap;
 }
 
-.detalle-img-lado {
-    width: 50%;
-    height: 450px;
-}
+.detalle-img { width: 50%; height: 400px; }
+.detalle-img img { width: 100%; height: 100%; object-fit: cover; }
+.detalle-info { width: 50%; padding: 30px; display: flex; flex-direction: column; justify-content: center; }
 
-.detalle-img-lado img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.detalle-info-lado {
-    width: 50%;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.btn-whatsapp-grande {
+.btn-wa {
     background-color: #25d366;
     color: white;
     text-decoration: none;
@@ -277,86 +211,37 @@ body {
     text-align: center;
     font-weight: bold;
     margin-top: 20px;
-    display: block;
 }
 
-/* ===== PANEL ADMIN (CUANDO TE LOGUEAS) ===== */
+/* ===== PANEL ADMIN (MODO EDICIÓN) ===== */
 .panel-admin {
     position: fixed;
-    top: 110px; /* Debajo de la franja blanca */
+    top: 110px;
     right: 20px;
     background: white;
     border: 2px solid #4caf50;
-    border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    z-index: 1500;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-.btn-admin-tool {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-}
-
-/* Botón borrar encima de la imagen */
-.btn-eliminar-top {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: red;
-    color: white;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: none; /* Solo en modo borrar */
-}
-
-body.modo-borrar-activo .btn-eliminar-top {
-    display: block;
+    z-index: 1500;
 }
 
 /* ===== FOOTER ===== */
 .footer {
     background-color: #333;
     color: white;
-    padding: 30px 0;
+    padding: 20px;
     text-align: center;
     margin-top: auto;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .franjaSuperior {
-        height: auto;
-        flex-direction: column;
-        padding: 15px;
-    }
-    
-    .busquedaContainer {
-        margin: 15px 0;
-        width: 100%;
-    }
-    
-    .botones {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .detalle-img-lado, .detalle-info-lado {
-        width: 100%;
-    }
-    
-    .detalle-img-lado {
-        height: 250px;
-    }
+    .franjaSuperior { height: auto; flex-direction: column; padding: 20px; }
+    .busquedaContainer { position: static; transform: none; margin: 20px 0; }
+    .botones { margin: 0; width: 100%; justify-content: center; }
+    .detalle-img, .detalle-info { width: 100%; }
+    .detalle-img { height: 250px; }
 }
