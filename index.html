@@ -6,8 +6,20 @@
     <title>Clean Solutions | Catálogo Profesional</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .borrar-on .product-card { border: 2px solid #ff4444 !important; position: relative; }
-        .borrar-on .product-card::after { content: "🗑️"; position: absolute; top: 10px; right: 10px; background: white; border-radius: 50%; padding: 5px; font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        /* Estilos para el modo borrado */
+        .borrar-on .product-card { border: 2px solid #ff4444 !important; position: relative; cursor: pointer; }
+        .borrar-on .product-card::after { 
+            content: "🗑️"; 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background: white; 
+            border-radius: 50%; 
+            padding: 5px; 
+            font-size: 1.2rem; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +107,7 @@
     </div>
 
     <script>
-        const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbypMsMxY_wGaNy4BbIyrh4BFOftHY9EVeNB6kkq8ltMTRdAukdR2AunypyIqz_xG_EC/exec'; 
+        const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycbypMsMxY_wGaNy4BbIyrh4BFOftHY9EVeNB6kkq8ltMTRdAukdR2AunypyIqz_xG_EC/exec'; // <--- CAMBIA ESTO
         let productosLocales = [];
 
         window.onload = () => {
@@ -152,9 +164,10 @@
         }
 
         function eliminarProducto(id, nombre) {
-            if (!confirm(`¿Eliminar "${nombre}" (ID: ${id})?`)) return;
+            if (!confirm(`¿Eliminar definitivamente "${nombre}"?`)) return;
             const s = document.createElement('script');
-            s.src = `${URL_GOOGLE}?action=delete&id=${encodeURIComponent(id)}&callback=finalizar&t=${new Date().getTime()}`;
+            // Enviamos ID y Nombre para asegurar coincidencia
+            s.src = `${URL_GOOGLE}?action=delete&id=${encodeURIComponent(id)}&nombre=${encodeURIComponent(nombre)}&callback=finalizar&t=${new Date().getTime()}`;
             document.body.appendChild(s);
         }
 
@@ -178,6 +191,7 @@
         }
 
         window.finalizar = (res) => { alert(res.message); location.reload(); };
+
         function filtrarProductos() {
             const b = document.getElementById('inputBusqueda').value.toLowerCase();
             renderizarCards(productosLocales.filter(p => p.nombre.toLowerCase().includes(b)));
@@ -185,13 +199,16 @@
 
         window.abrirModal = (id) => document.getElementById(id).classList.add('active');
         window.cerrarModal = (id) => document.getElementById(id).classList.remove('active');
+
         window.validarAcceso = () => {
             if(document.getElementById('inputClave').value === 'Ragnar2025') {
                 localStorage.setItem('sesionClean', 'true');
                 location.reload();
             } else { alert('Incorrecto'); }
         };
+
         window.salirAdmin = () => { localStorage.removeItem('sesionClean'); location.reload(); };
+
         function actualizarInterfazAdmin() {
             const admin = localStorage.getItem('sesionClean') === 'true';
             document.getElementById('btnEntrarAdmin').style.display = admin ? 'none' : 'block';
