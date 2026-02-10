@@ -3,28 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Solutions | Catálogo</title>
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <title>Clean Solutions | Catálogo Profesional</title>
+    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     <header class="main-nav">
         <div class="nav-content">
             <div class="nav-brand">
-                <img src="logo.png" alt="Logo" class="nav-logo">
+                <img src="logo.png" alt="CS" class="nav-logo" onerror="this.style.display='none'"> 
                 <span class="nav-title">CLEAN SOLUTIONS</span>
             </div>
             
             <div class="nav-search">
-                <input type="text" id="busqueda" placeholder="Buscar producto..." onkeyup="filtrar()">
+                <input type="text" id="busqueda" placeholder="¿Qué estás buscando hoy?" onkeyup="filtrar()">
             </div>
             
             <div class="nav-user">
-                <button id="btnAdmin" class="btn-lock" onclick="abrir('modalLogin')">🔑 Admin</button>
+                <button id="btnAdmin" class="btn-lock" onclick="abrir('modalLogin')">
+                    <i class="fas fa-lock"></i> Admin
+                </button>
+
                 <div id="panelAdmin" class="admin-tools" style="display:none;">
-                    <button onclick="prepararForm('add')" class="btn-action b-green">➕</button>
-                    <button onclick="toggleBorrar()" class="btn-action b-orange">🗑️</button>
-                    <button onclick="salir()" class="btn-action b-gray">🚪</button>
+                    <button onclick="prepararForm('add')" class="btn-action b-green" title="Nuevo Producto">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button onclick="salir()" class="btn-action b-gray" title="Cerrar Sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -32,150 +39,217 @@
 
     <div class="container">
         <div id="grid" class="cards-grid">
-            <p>Cargando productos...</p>
+            <p style="text-align:center; width:100%; color:#64748b;">Cargando catálogo...</p>
         </div>
     </div>
 
     <div id="modalDetalle" class="overlay">
-        <div class="modal-box big">
-            <span class="close-x" onclick="cerrar('modalDetalle')">&times;</span>
-            <div class="detail-split">
-                <div class="split-img"><img id="d-img" src=""></div>
-                <div class="split-info">
-                    <h2 id="d-nombre"></h2>
-                    <p id="d-precio" class="p-price"></p>
-                    <p id="d-desc" class="p-desc"></p>
-                    <a id="d-link" href="#" target="_blank" class="btn-wa">Consultar WhatsApp</a>
+        <div class="modal-box modal-xl">
+            <button class="close-x" onclick="cerrar('modalDetalle')">×</button>
+            
+            <div class="product-detail-layout">
+                <div class="pd-image-col">
+                    <img id="d-img" src="" alt="Detalle Producto">
+                </div>
+                
+                <div class="pd-info-col">
+                    <span class="pd-category">Clean Solutions</span>
+                    <h2 class="pd-title" id="d-nombre">Nombre Producto</h2>
+                    <span class="pd-price" id="d-precio">$0.00</span>
+                    
+                    <p class="pd-description" id="d-desc">
+                        Descripción del producto...
+                    </p>
+                    
+                    <a id="d-link" href="#" target="_blank" class="btn-lock" style="text-decoration: none; text-align: center; background-color: #25D366;">
+                        <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="modalLogin" class="overlay">
-        <div class="modal-box small">
-            <span class="close-x" onclick="cerrar('modalLogin')">&times;</span>
-            <h3>Ingreso</h3>
-            <input type="password" id="clave" placeholder="Contraseña" class="full-input">
-            <button onclick="entrar()" class="btn-wa">Entrar</button>
-        </div>
-    </div>
-
     <div id="modalForm" class="overlay">
-        <div class="modal-box small">
-            <span class="close-x" onclick="cerrar('modalForm')">&times;</span>
-            <h3 id="f-titulo">Producto</h3>
-            <form id="formProd" class="form-ui">
-                <input type="text" id="f-id" placeholder="ID" required>
-                <input type="text" id="f-nombre" placeholder="Nombre" required>
-                <input type="number" id="f-precio" placeholder="Precio" required>
-                <input type="url" id="f-img" placeholder="URL Imagen">
-                <textarea id="f-desc" placeholder="Descripción"></textarea>
-                <button type="submit" class="btn-wa">Guardar</button>
+        <div class="modal-box">
+            <span class="close-x" onclick="cerrar('modalForm')">×</span>
+            <h3 id="f-titulo">Gestión de Producto</h3>
+            <form id="formProd">
+                <input type="text" id="f-id" placeholder="ID Único (ej: PROD-01)" required>
+                <input type="text" id="f-nombre" placeholder="Nombre del producto" required>
+                <input type="number" id="f-precio" placeholder="Precio (sin signos)" required>
+                <input type="url" id="f-img" placeholder="URL de la imagen (https://...)">
+                <textarea id="f-desc" placeholder="Descripción detallada del producto..." rows="4"></textarea>
+                <button type="submit">Guardar Cambios</button>
             </form>
         </div>
     </div>
 
+    <div id="modalLogin" class="overlay">
+        <div class="modal-box" style="max-width: 350px;">
+            <span class="close-x" onclick="cerrar('modalLogin')">×</span>
+            <h3>Acceso Admin</h3>
+            <input type="password" id="clave" placeholder="Ingresa tu contraseña">
+            <button onclick="entrar()">Ingresar</button>
+        </div>
+    </div>
+
     <script>
+        // Tu URL de Google Apps Script
         const API = 'https://script.google.com/macros/s/AKfycbweFnqUYyHxLkYvlECp6TG_zFo8XLf5V9-w4LW_80SS61krgXDyhBWzM6_gdtJy35eK/exec';
+        
         let datos = [];
 
-        window.onload = () => { checkAdmin(); load(); };
+        window.onload = () => { 
+            checkAdmin(); 
+            load(); 
+        };
 
+        // Cargar datos
         function load() {
             const s = document.createElement('script');
-            s.src = `${API}?action=get&callback=draw`;
+            // Usamos un parámetro timestamp para evitar caché del navegador
+            s.src = `${API}?action=get&callback=draw&t=${new Date().getTime()}`;
             document.body.appendChild(s);
         }
 
+        // Callback que recibe los datos
         window.draw = (res) => {
             datos = res.productos || [];
             render(datos);
         };
 
+        // Renderizar Tarjetas
         function render(lista) {
             const box = document.getElementById('grid');
             box.innerHTML = '';
             const isAdmin = localStorage.getItem('admin') === 'true';
 
+            if(lista.length === 0) {
+                box.innerHTML = '<p style="text-align:center; width:100%">No se encontraron productos.</p>';
+                return;
+            }
+
             lista.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'card';
+                // Al hacer click en la tarjeta, abre el detalle
                 div.onclick = () => ver(p.id);
+
+                // Si es admin, creamos el HTML de los botones flotantes
+                // IMPORTANTE: event.stopPropagation() evita que al dar click en editar se abra el modal de detalle
+                const botonesAdmin = isAdmin ? `
+                    <div class="card-actions" onclick="event.stopPropagation()">
+                        <button class="btn-circle btn-edit-action" onclick="prepararForm('edit', '${p.id}')" title="Editar">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="btn-circle btn-del-action" onclick="borrar('${p.id}')" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                ` : '';
+
                 div.innerHTML = `
                     <div class="card-img">
-                        <img src="${p.imagen || p.img || 'https://via.placeholder.com/300'}">
-                        ${isAdmin ? `<button class="btn-del" onclick="event.stopPropagation(); borrar('${p.id}')">✕</button>` : ''}
+                        <img src="${p.imagen || 'https://via.placeholder.com/300?text=Sin+Imagen'}" alt="${p.nombre}">
+                        ${botonesAdmin}
                     </div>
                     <div class="card-txt">
-                        <h4>${p.nombre}</h4>
-                        <p class="txt-price">$${p.precio}</p>
-                        ${isAdmin ? `<button class="btn-edit" onclick="event.stopPropagation(); edit('${p.id}')">Modificar</button>` : ''}
+                        <h3>${p.nombre}</h3>
+                        <span class="txt-price">$${parseInt(p.precio).toLocaleString('es-AR')}</span>
                     </div>
                 `;
                 box.appendChild(div);
             });
         }
 
+        // Ver Detalle (Modal Nuevo)
         function ver(id) {
             const p = datos.find(x => x.id == id);
-            document.getElementById('d-img').src = p.imagen || p.img || '';
+            if(!p) return;
+
+            document.getElementById('d-img').src = p.imagen || 'https://via.placeholder.com/300';
             document.getElementById('d-nombre').innerText = p.nombre;
-            document.getElementById('d-precio').innerText = `$${p.precio}`;
-            document.getElementById('d-desc').innerText = p.descripcion || '';
-            document.getElementById('d-link').href = `https://wa.me/543794034489?text=Hola, precio de ${p.nombre}`;
+            document.getElementById('d-precio').innerText = `$${parseInt(p.precio).toLocaleString('es-AR')}`;
+            document.getElementById('d-desc').innerText = p.descripcion || 'Sin descripción disponible.';
+            
+            // Link a WhatsApp
+            const mensaje = `Hola, me interesa el producto: ${p.nombre}`;
+            document.getElementById('d-link').href = `https://wa.me/543794034489?text=${encodeURIComponent(mensaje)}`;
+            
             abrir('modalDetalle');
         }
 
-        function edit(id) {
-            const p = datos.find(x => x.id == id);
-            document.getElementById('f-id').value = p.id;
-            document.getElementById('f-id').disabled = true;
-            document.getElementById('f-nombre').value = p.nombre;
-            document.getElementById('f-precio').value = p.precio;
-            document.getElementById('f-img').value = p.imagen || p.img || '';
-            document.getElementById('f-desc').value = p.descripcion || '';
-            document.getElementById('f-titulo').innerText = 'Editar';
+        // Preparar Formulario (Add o Edit)
+        function prepararForm(modo, id) {
+            const inputId = document.getElementById('f-id');
+            const titulo = document.getElementById('f-titulo');
+
+            if (modo === 'edit') {
+                const p = datos.find(x => x.id == id);
+                inputId.value = p.id;
+                inputId.disabled = true; // No permitir cambiar ID al editar
+                document.getElementById('f-nombre').value = p.nombre;
+                document.getElementById('f-precio').value = p.precio;
+                document.getElementById('f-img').value = p.imagen;
+                document.getElementById('f-desc').value = p.descripcion;
+                titulo.innerText = 'Editar Producto';
+            } else {
+                // Nuevo producto
+                inputId.value = '';
+                inputId.disabled = false; // Permitir escribir ID nuevo
+                document.getElementById('formProd').reset();
+                titulo.innerText = 'Nuevo Producto';
+            }
             abrir('modalForm');
         }
 
-        document.getElementById('formProd').onsubmit = function(e) {
-            e.preventDefault();
-            const act = document.getElementById('f-id').disabled ? 'edit' : 'add';
+        // Eliminar Producto
+        function borrar(id) {
+            if(!confirm('¿Estás seguro de eliminar este producto?')) return;
+            const s = document.createElement('script');
             const p = new URLSearchParams({
-                action: act,
-                id: document.getElementById('f-id').value,
-                nombre: document.getElementById('f-nombre').value,
-                precio: document.getElementById('f-precio').value,
-                imagen: document.getElementById('f-img').value,
-                descripcion: document.getElementById('f-desc').value,
+                action: 'delete',
+                id: id,
                 callback: 'end'
             });
-            const s = document.createElement('script');
             s.src = `${API}?${p.toString()}`;
             document.body.appendChild(s);
-        };
+        }
 
-        window.end = (r) => { alert(r.message); location.reload(); };
+        // Login Admin
+        function entrar() {
+            const pass = document.getElementById('clave').value;
+            if(pass === 'Ragnar2025') {
+                localStorage.setItem('admin', 'true');
+                cerrar('modalLogin');
+                checkAdmin();
+                render(datos); // Refrescar grid para mostrar botones
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        }
+
+        function checkAdmin() {
+            const isAdmin = localStorage.getItem('admin') === 'true';
+            document.getElementById('btnAdmin').style.display = isAdmin ? 'none' : 'block';
+            document.getElementById('panelAdmin').style.display = isAdmin ? 'flex' : 'none';
+        }
+
+        function salir() {
+            localStorage.removeItem('admin');
+            location.reload();
+        }
+
+        // Búsqueda
+        function filtrar() {
+            const txt = document.getElementById('busqueda').value.toLowerCase();
+            const res = datos.filter(x => x.nombre.toLowerCase().includes(txt));
+            render(res);
+        }
+
+        // Funciones auxiliares Modales
         function abrir(id) { document.getElementById(id).style.display = 'flex'; }
         function cerrar(id) { document.getElementById(id).style.display = 'none'; }
-        function filtrar() {
-            const b = document.getElementById('busqueda').value.toLowerCase();
-            render(datos.filter(x => x.nombre.toLowerCase().includes(b)));
-        }
-        function entrar() {
-            if(document.getElementById('clave').value === 'Ragnar2025') {
-                localStorage.setItem('admin', 'true');
-                location.reload();
-            }
-        }
-        function checkAdmin() {
-            if(localStorage.getItem('admin') === 'true') {
-                document.getElementById('btnAdmin').style.display = 'none';
-                document.getElementById('panelAdmin').style.display = 'flex';
-            }
-        }
-        function salir() { localStorage.removeItem('admin'); location.reload(); }
-        function toggleBorrar() { document.body.classList.toggle('modo-del'); }
     </script>
 </body>
 </html>
