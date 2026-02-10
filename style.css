@@ -55,6 +55,29 @@ body.modo-del .btn-del { display: block; }
 .form-ui { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
 .form-ui input, .form-ui textarea { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 
+.nav-user { 
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+    min-width: 120px; /* Evita que el buscador lo empuje */
+}
+
+.btn-lock { 
+    background: #f1f3f5; 
+    border: 1px solid #ddd; 
+    padding: 8px 16px; 
+    border-radius: 50px; 
+    cursor: pointer; 
+    font-weight: 600; 
+    white-space: nowrap; /* Evita que el texto se rompa en dos líneas */
+}
+
+.admin-tools { 
+    display: flex; 
+    gap: 8px; 
+    align-items: center; 
+}
+
 @keyframes zoom { from { transform: scale(0.9); } to { transform: scale(1); } }
 
 @media (max-width: 768px) {
@@ -63,3 +86,4 @@ body.modo-del .btn-del { display: block; }
     .split-img, .split-info { width: 100%; height: auto; }
     .split-img { height: 250px; }
 }
+
